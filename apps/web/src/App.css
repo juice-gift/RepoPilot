@@ -1,0 +1,42 @@
+:root {
+  font-family: Inter, system-ui, sans-serif;
+  color: #1f2937;
+  background: #f8fafc;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+}
+
+main {
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 1rem;
+}
+
+.status {
+  margin: 0;
+  font-weight: 600;
+}
+
+.status--checking {
+  color: #475569;
+}
+
+.status--connected {
+  color: #15803d;
+}
+
+.status--unavailable {
+  color: #b91c1c;
+}

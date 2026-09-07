@@ -1,0 +1,19 @@
+[project]
+name = "repopilot-api"
+version = "0.1.0"
+description = "RepoPilot FastAPI backend"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "fastapi>=0.116.1,<1.0.0",
+    "uvicorn>=0.35.0,<1.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1,<1.0.0",
+    "pytest>=8.4.1,<9.0.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
