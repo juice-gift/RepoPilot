@@ -10,7 +10,12 @@ from sqlalchemy.orm import Session
 
 
 def create_test_client(session: Session) -> TestClient:
-    settings = Settings(_env_file=None)
+    settings = Settings(
+        database_url=(
+            "postgresql+psycopg://repopilot:change-me@127.0.0.1:5432/repopilot"
+        ),
+        _env_file=None,
+    )
     app = create_app(settings=settings)
 
     def override_database_session() -> Iterator[Session]:
