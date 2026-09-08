@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "RepoPilot FastAPI backend"
 requires-python = ">=3.13,<3.14"
 dependencies = [
+    "alembic>=1.16,<2.0",
     "fastapi>=0.116.1,<1.0.0",
     "psycopg[binary]>=3.2,<4.0",
     "pydantic-settings>=2.10,<3.0",
@@ -20,3 +21,6 @@ dev = [
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
+markers = [
+    "database: requires a migrated live PostgreSQL database",
+]

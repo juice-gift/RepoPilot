@@ -15,12 +15,12 @@ Stage 0 establishes infrastructure, configuration, database connectivity, migrat
 | Task 1 | React, typed health client, FastAPI health API, baseline tests and documentation | Complete (`acedc03`) |
 | M1 | Docker Compose PostgreSQL/pgvector infrastructure and safe environment template | Complete |
 | M2 | Typed settings, SQLAlchemy engine/session foundation, database health API, and tests | Complete |
-| M3 | Alembic foundation and migration enabling the `vector` extension without application tables | Current |
-| M4 | Frontend database status, final documentation, clean-database validation, and Stage 0 audit | Pending |
+| M3 | Alembic foundation and migration enabling the `vector` extension without application tables | Complete |
+| M4 | Frontend database status, final documentation, clean-database validation, and Stage 0 audit | Current |
 
 ## Current Milestone
 
-M3 — Alembic migration foundation and pgvector extension migration.
+M4 — frontend database status, documentation, and final Stage 0 validation.
 
 ## Completed Work
 
@@ -31,6 +31,8 @@ M3 — Alembic migration foundation and pgvector extension migration.
 - Added a safe root environment template; local `.env` files remain ignored.
 - Added required typed settings, SQLAlchemy engine/session lifecycle, and a database-backed health route.
 - Added isolated tests for configuration, session setup, connectivity behavior, and API success/failure responses.
+- Added Alembic configuration and one migration that enables only the `vector` extension.
+- Added opt-in live database coverage for the API, migration revision, and pgvector availability.
 
 ## Validation Results
 
@@ -42,6 +44,11 @@ M3 — Alembic migration foundation and pgvector extension migration.
 - `uv sync --locked`: passed after adding database dependencies.
 - `uv run pytest`: 9 passed; one upstream Starlette/AnyIO deprecation warning remains.
 - `ruff check apps/api/src apps/api/tests`: passed.
+- `uv run alembic heads` / `history`: one head at `0001_enable_pgvector`.
+- `uv run alembic upgrade head --sql`: passed; generated `CREATE EXTENSION IF NOT EXISTS vector` and no application schema.
+- `uv run alembic downgrade 0001_enable_pgvector:base --sql`: passed; generated the matching extension downgrade.
+- `uv run pytest`: 9 passed and the live database test skipped while no database runtime is available.
+- `ruff check apps/api/src apps/api/tests apps/api/migrations`: passed.
 - Docker/PostgreSQL runtime validation: blocked because Docker, Podman, WSL, and `psql` are not installed on this host.
 
 ## Important Decisions
@@ -59,9 +66,7 @@ M3 — Alembic migration foundation and pgvector extension migration.
 
 ## Remaining Work
 
-1. Add Alembic configuration and the pgvector extension migration.
-2. Add opt-in live database integration coverage.
-3. Update the frontend to surface database connectivity.
-4. Update README commands and configuration documentation.
-5. Run full Stage 0 validation against a clean PostgreSQL database when a compatible runtime is available.
-6. Review scope, Git history, and mark Stage 0 complete only after every runtime check passes.
+1. Update the frontend to surface database connectivity.
+2. Update README commands and configuration documentation.
+3. Run full Stage 0 validation against a clean PostgreSQL database when a compatible runtime is available.
+4. Review scope, Git history, and mark Stage 0 complete only after every runtime check passes.
