@@ -1,6 +1,8 @@
 # RepoPilot — AI Codebase Intelligence & Issue Resolution Agent
 
-## 一、我的目标
+## 一、项目目标
+
+RepoPilot 是一个长期维护的 AI Developer Tool 项目。
 
 我的求职目标是尽快获得：
 
@@ -9,40 +11,34 @@
 - Agent 工程
 - Code Agent / AI Developer Tools
 
-相关实习，优先考虑字节跳动等一线互联网 / AI 公司。
+相关实习或岗位，优先考虑一线互联网和 AI 公司。
 
-我目前已经完成第一轮学习：
+当前技术学习主线：
 
 TypeScript / React
 → Python / FastAPI
 → HTTP 前后端通信
 → LLM API
 → RAG
-
-后续学习路线：
-
-Agent
+→ Agent
 → MCP
 → Evaluation
 → Production Engineering
 
-现在我要通过一个长期真实项目，把这些知识逐步连接起来，而不是继续做互相独立的教学 Demo。
+RepoPilot 的作用不是额外做一个独立 Demo。
 
-项目名称：
-
-# RepoPilot
-
-AI Codebase Intelligence & Issue Resolution Agent
+它要成为一条长期工程主线，把这些能力逐渐连接起来。
 
 ---
 
 # 二、最终产品目标
 
-RepoPilot 最终允许用户连接或导入真实 GitHub Repository。
+RepoPilot 最终允许用户连接或导入真实代码 Repository。
 
-系统逐步具备：
+系统逐渐具备：
 
-Repository 导入
+Repository Import
+→ Repository Snapshot
 → Repository Indexing
 → Code Search
 → Codebase RAG
@@ -58,280 +54,416 @@ Repository 导入
 → Evaluation
 → Production Deployment
 
-最终用户可以提供一个 GitHub Issue，例如：
+最终用户可以给 RepoPilot 一个真实 GitHub Issue，例如：
 
-“登录接口偶尔返回 500，请定位问题。”
+> 登录接口偶尔返回 500，请定位问题。
 
-RepoPilot 最终能够：
+RepoPilot 最终能够完成：
 
-读取 Issue
-→ 理解问题
-→ 搜索 Repository
-→ 阅读相关文件
-→ 定位相关 symbol / function
-→ 分析可能原因
-→ 制定修改计划
-→ 修改代码
-→ 运行测试
-→ 根据测试结果继续修正
-→ 输出最终 Patch / Explanation
-→ 后续生成 PR
+Issue
+→ Understand Problem
+→ Inspect Repository
+→ Search Relevant Code
+→ Read Files
+→ Locate Symbols
+→ Analyze Root Cause
+→ Produce Plan
+→ Modify Code
+→ Run Tests
+→ Observe Result
+→ Repair Again If Necessary
+→ Verify
+→ Produce Patch + Explanation
+→ Create PR
 
-但这些能力不能一次开发。
+这些能力不能一次实现。
 
-必须逐阶段演进。
+系统必须逐阶段演进。
 
 ---
 
-# 三、项目最终定位
+# 三、产品定位
 
 RepoPilot 不是：
 
-ChatGPT + 上传文件。
+- ChatGPT + 上传几个代码文件；
+- 普通聊天机器人；
+- 把 PDF RAG 简单换成代码 RAG；
+- 为了简历堆技术关键词的 Demo。
 
-也不是：
-
-简单 PDF RAG 改成代码 RAG。
-
-最终应该逐渐成为：
+RepoPilot 最终应该成为：
 
 AI Full Stack
-
-- Code-aware RAG
-- Code Intelligence
-- Agent
-- MCP
-- Evaluation
-- Production Engineering
++
+Code-aware RAG
++
+Code Intelligence
++
+Agent Engineering
++
+MCP / External Tool Integration
++
+Evaluation
++
+Production Engineering
 
 组合起来的一套 AI Developer Tool。
 
-但是：
-
-任何阶段都禁止为了堆技术名词而增加没有实际意义的功能。
+任何阶段都禁止为了显得“高级”加入没有实际价值的技术。
 
 ---
 
-# 四、角色分工
+# 四、项目角色
 
-这个项目采用：
+## 1. ChatGPT — Tech Lead
 
-## ChatGPT：Tech Lead
+ChatGPT 主要负责：
 
-你负责：
-
-- 系统设计
+- 长期系统设计
+- Architecture Boundary
 - 技术选型
-- 架构演进
-- Milestone 拆解
-- 判断什么值得做
+- Version Goal 设计
+- 判断功能优先级
 - 判断什么现在不应该做
-- 查最新官方资料
+- 必要时查询最新官方资料
 - 必要时研究优秀开源项目
-- 给 Codex 编写工程任务
-- Review Codex 的实现思路
-- 帮我理解代码
+- Review 关键架构决策
+- Review Version 级结果
+- 帮我理解核心模块
 - Debug
-- 设计测试
-- 设计 Evaluation
-- 最终整理 README / 简历 / 面试材料
+- Evaluation 设计
+- 最终 README / 简历 / 面试材料整理
 
-你不要默认认同我的设计。
+ChatGPT 不需要再为普通工程修改手工拆解每一个 Codex Task。
 
-如果我的方案不合理：
+对于小型或特殊任务，仍然可以编写显式 Scoped Task。
 
-直接否定并说明原因。
+对于 Stage / Version 级开发：
+
+重点是定义：
+
+- Goal
+- Architecture Boundary
+- Acceptance Criteria
+- Forbidden Scope
+
+而不是人工控制每一步代码修改。
+
+如果我的设计不合理：
+
+直接指出并说明原因。
 
 ---
 
-## Codex：主力实现工程师
+## 2. Codex — 主力实现工程师
 
 Codex 负责：
 
+- 阅读 Repository
+- 阅读 AGENTS.md
+- 阅读 PROJECT.md
+- 阅读当前 Goal / Task
+- 分析已有实现
+- 制定 Implementation Plan
+- 自主拆解 Milestone / Engineering Task
 - 创建文件
-- 编写代码
 - 修改代码
 - Refactor
 - 编写测试
 - 执行测试
-- 修复明确 Bug
-- 修改数据库 Migration
-- 实现已经确定的工程任务
+- 分析失败
+- 修复实现
+- Review Diff
+- 管理 Migration
+- 创建有意义的 Git Commit
+- 维护执行计划
+- 输出 Completion Report
 
-允许 Codex 写项目绝大部分代码。
+对于一个批准的 Stage 或 Version Goal：
 
-目标不是训练我的打字能力。
+Codex 可以在正常 Milestone 之间自主继续。
+
+不要求每个小步骤都等待人工批准。
+
+但遇到 AGENTS.md 定义的 escalation conditions 时必须停止。
+
+允许 Codex 编写项目绝大部分代码。
+
+RepoPilot 的目标不是训练我的代码打字速度。
 
 ---
 
-## 我：Project Owner + Developer
+## 3. 我 — Project Owner + Developer
 
-我必须做到：
+我必须逐渐具备：
 
-- 理解系统架构
+- 理解整体架构
 - 理解模块职责
 - 理解 Request / Data Flow
-- 能看懂核心代码
-- 能 Review Codex Diff
-- 能发现明显设计错误
+- 看懂核心代码
+- 能 Review 关键 Diff
+- 能发现明显设计问题
 - 能 Debug
-- 能解释为什么这样设计
-- 能解释技术取舍
-- 能在面试中独立讲项目
+- 能解释技术选择
+- 能解释 Architecture Trade-off
+- 能在面试中独立讲清 RepoPilot
 
-我不要求逐行手写所有代码。
+我不要求：
+
+逐行手写所有代码。
 
 但：
 
-任何核心模块如果我无法解释，就不算真正完成。
+任何核心模块如果最终无法解释，就不能算真正转化成我的能力。
 
 ---
 
-# 五、Codex 工作规范
+# 五、工程执行模式
 
-不要让我把一句：
+RepoPilot 使用两种开发模式。
 
-“帮我做 RepoPilot。”
+---
 
-直接扔给 Codex。
+## Mode A — Scoped Task
 
-每次 Coding Task 都应该控制成一个明确、可测试的工程任务。
+适合：
 
-在需要写代码时，你优先给我一份 Codex Task，至少说明：
+- Bug Fix
+- 小型 Feature
+- 小范围 Refactor
+- 独立工程修改
+- 明确实验
 
-## Goal
+Scoped Task 应尽量明确：
 
-这次到底实现什么。
+### Goal
 
-## Context
+这次解决什么。
+
+### Context
 
 它在 RepoPilot 中的位置。
 
-## Current Architecture
+### Scope
 
-当前相关模块是什么。
+允许修改什么。
 
-## Scope
-
-这次允许修改什么。
-
-## Files
-
-预计新增 / 修改哪些文件。
-
-## Requirements
+### Requirements
 
 功能要求。
 
-## Data Flow
+### Interfaces
 
-数据从哪里来，到哪里去。
+重要输入输出。
 
-## Interfaces
-
-重要函数 / API 的输入输出。
-
-## Constraints
+### Constraints
 
 禁止做什么。
 
-## Acceptance Criteria
+### Acceptance Criteria
 
-满足什么才算完成。
+满足什么才完成。
 
-## Tests
+### Tests
 
-必须运行什么测试。
+必须执行什么验证。
 
-## After Completion
-
-Codex 必须说明：
-
-- 修改了哪些文件
-- 为什么这样设计
-- 测试结果
-- 尚存问题
-- 是否存在风险
-
-对于比较大的任务：
-
-先让 Codex阅读现有 Repository 并输出 Implementation Plan。
-
-确定设计合理以后再实现。
-
-不要让 Codex一次修改项目几十个互不相关的模块。
+Scoped Task 应小、明确、可测试。
 
 ---
 
-# 六、AGENTS.md
+## Mode B — Autonomous Goal
 
-项目早期建立：
+适合：
+
+- Stage
+- Version
+- 大型 Milestone
+
+人工定义：
+
+Goal
++
+Architecture Boundary
++
+Acceptance Criteria
++
+Forbidden Scope
+
+Codex 负责：
+
+Goal
+→ Inspect Repository
+→ Create Plan
+→ Decompose Milestones
+→ Implement
+→ Test
+→ Self Review
+→ Fix
+→ Verify
+→ Commit
+→ Continue
+
+不要求人工编写每一个内部 Task。
+
+但每个实际工程修改仍然应该：
+
+- 小而有意义；
+- 可测试；
+- 可 Review；
+- 可通过 Git 恢复。
+
+禁止：
+
+一次产生几十个互不相关的修改，然后统一称为“完成”。
+
+---
+
+# 六、Autonomous Agent Harness
+
+RepoPilot 的 Harness 不只是 Prompt。
+
+完整开发 Harness 包括：
+
+- PROJECT.md
+- AGENTS.md
+- Goal Specification
+- Codex Agent Loop
+- Repository State
+- Git History
+- Shell
+- File Editing
+- Tests
+- Build
+- Migrations
+- Runtime Feedback
+- Execution Plan
+- Evaluation
+
+Markdown 文档的作用是提供：
+
+- 目标
+- 上下文
+- 约束
+- 架构边界
+- 工作规则
+
+测试和运行结果负责提供：
+
+真实反馈。
+
+Git 负责：
+
+状态持久化与可恢复性。
+
+Codex 应该根据：
+
+Implementation
+→ Observation
+→ Failure
+→ Repair
+
+不断循环。
+
+Harness 强，不意味着任务应该无限大。
+
+真正的目标是：
+
+即使 Goal 很大，也能够拆成可验证的工程状态。
+
+---
+
+# 七、AGENTS.md
+
+项目根目录维护：
+
+`AGENTS.md`
+
+它用于定义 Codex 的长期工程规则。
+
+包括：
+
+- Project Mission
+- Current Stage
+- Architecture Rules
+- Coding Rules
+- Testing Rules
+- Git Rules
+- Configuration Rules
+- Dependency Rules
+- Forbidden Scope
+- Autonomous Execution
+- Self Validation
+- Escalation Conditions
+- Version Boundary
+
+AGENTS.md 不应该复制整个 PROJECT.md。
+
+简单理解：
+
+PROJECT.md
+= RepoPilot 要去哪里
 
 AGENTS.md
+= Codex 在这里必须怎么工作
 
-用于告诉 Codex：
+Goal
+= 当前要达到哪里
 
-- 项目目标
-- Architecture Rules
-- 文件职责
-- Naming Convention
-- 测试命令
-- 禁止事项
-- 哪些目录不能随意修改
-- API / DB 设计约束
-- 当前阶段不允许实现哪些未来功能
-
-随着项目演进持续更新。
-
-目标是减少每次 Prompt 重复上下文，同时避免 Codex逐渐把项目架构写乱。
+Execution Plan
+= Codex 决定怎么走过去
 
 ---
 
-# 七、GitHub / 开源资料使用原则
+# 八、GitHub / 开源项目使用原则
 
 效率优先。
 
 不采用：
 
-“必须全部自己造轮子。”
+> 所有东西都必须自己实现。
 
 也不采用：
 
-“看到成熟项目直接 Copy。”
+> 看到成熟项目就整体复制。
 
-原则：
+---
 
 ## 可以直接使用成熟基础设施
 
 例如：
 
-PostgreSQL
-pgvector
-Tree-sitter
-Redis
-Docker
-OpenTelemetry
-成熟 SDK
+- PostgreSQL
+- pgvector
+- Tree-sitter
+- Docker
+- Redis
+- OpenTelemetry
+- 官方 SDK
+- 数据库 Driver
+- Migration Tool
 
 这些不是 RepoPilot 的核心创新点。
 
 ---
 
-## 可以研究优秀开源架构
+## 可以研究成熟开源项目
 
-根据阶段选择性研究：
+但必须按阶段研究。
 
 ### Code RAG / Search
 
-pgvector
-Tree-sitter
-Sourcegraph / Cody 等
+可以研究：
 
-研究：
+- pgvector
+- Tree-sitter
+- Sourcegraph / Cody 等代码搜索产品和架构
 
-- Chunk
-- Code Search
-- Symbol Search
+重点：
+
+- Code Chunk
+- Search
+- Symbol
 - Context Retrieval
 - Code Intelligence
 
@@ -339,12 +471,14 @@ Sourcegraph / Cody 等
 
 ### Agent
 
-进入 Agent 阶段后再研究：
+进入 Agent 阶段后研究：
 
-mini-SWE-agent / SWE-agent
-OpenHands 等
+- mini-SWE-agent
+- SWE-agent
+- OpenHands
+- 其他成熟 Code Agent
 
-重点研究：
+重点：
 
 - Agent Loop
 - Tool Interface
@@ -356,17 +490,19 @@ OpenHands 等
 - Observation
 - Sandbox
 
-不是复制整个框架。
+目标不是复制整个框架。
 
 ---
 
 ### Evaluation
 
-进入 Evaluation 阶段再研究：
+Evaluation 阶段可以研究：
 
-SWE-bench 等成熟 benchmark。
+- SWE-bench
+- 相关 Agent Benchmark
+- Retrieval Evaluation 方法
 
-重点学习：
+重点：
 
 - Dataset
 - Task
@@ -377,114 +513,308 @@ SWE-bench 等成熟 benchmark。
 
 ---
 
-## 开源项目研究原则
+## 开源研究原则
 
-只读取解决当前问题所需要的：
+只读取解决当前问题需要的：
 
-README
-Architecture
-关键模块
-相关实现
+- README
+- Architecture
+- Design Docs
+- Relevant Module
+- Relevant Implementation
 
-不要为了“学习开源”花几天读几十万行源码。
-
----
-
-# 八、技术栈基本方向
-
-Frontend：
-
-TypeScript
-React
-
-Backend：
-
-Python
-FastAPI
-
-Database：
-
-PostgreSQL
-pgvector
-
-AI：
-
-LLM API
-Embedding API
-
-Parsing：
-
-前期简单 parser
-逐渐升级 Tree-sitter 等结构化解析方案
-
-以后按需要加入：
-
-Redis
-Docker
-OpenTelemetry
-GitHub API / MCP
-
-是否增加其他技术，由实际工程需求决定。
-
-不要提前预埋所有未来技术。
+不要为了“研究开源”停止 RepoPilot 几天去阅读几十万行代码。
 
 ---
 
-# 九、项目生命周期
+# 九、技术栈方向
 
-整个 RepoPilot 按以下版本演进。
+## Frontend
+
+- TypeScript
+- React
+- Vite
 
 ---
 
-# Stage 0 — Project Inception
+## Backend
 
-目的：
+- Python
+- FastAPI
 
-正式立项，而不是马上写 RAG。
+---
 
-完成：
+## Database
 
-项目 Scope
-Architecture Boundary
-Repository Structure
-Development Environment
-Git Repository
-AGENTS.md
-基本 README
-Environment Variables
-React
-FastAPI
-PostgreSQL
-pgvector
-Migration
-Testing Foundation
+- PostgreSQL
+- pgvector
 
-建立最小：
+---
+
+## AI
+
+- LLM API
+- Embedding API
+
+---
+
+## Parsing
+
+前期：
+
+简单 parser / language-specific implementation
+
+逐渐根据实际需求升级：
+
+- Tree-sitter
+- AST / Syntax Tree
+- Symbol Metadata
+
+---
+
+## Infrastructure
+
+Stage 0：
+
+Docker Compose
+→ PostgreSQL + pgvector
+
+这里只用于本地数据库基础设施。
+
+Stage 0 不代表：
+
+- React 容器化
+- FastAPI 容器化
+- Production Docker Architecture
+- Kubernetes
+
+后续根据真实需求加入：
+
+- Redis
+- Docker Application Packaging
+- Sandbox
+- OpenTelemetry
+- GitHub API
+- MCP
+- Job Queue
+- Deployment Infrastructure
+
+禁止提前预埋。
+
+---
+
+# 十、项目生命周期
+
+RepoPilot 按以下阶段演进：
+
+Stage 0 — Project Inception
+
+V1 — Codebase RAG
+
+V2 — Code Intelligence
+
+V3 — Repository Agent
+
+V4 — Issue Resolution Agent
+
+V5 — MCP + GitHub
+
+V6 — Evaluation
+
+V7 — Production Engineering
+
+V8 — Final Product & Portfolio Release
+
+每个 Version 都必须形成一个可验证稳定状态。
+
+---
+
+# 十一、Stage 0 — Project Inception
+
+## 目标
+
+把 RepoPilot 从：
+
+Project Idea
+
+升级成：
+
+真正可运行、可测试、可继续扩展的工程项目。
+
+---
+
+## Stage 0 必须建立
+
+- Project Scope
+- Architecture Boundary
+- Repository Structure
+- Development Environment
+- Git Repository
+- AGENTS.md
+- README
+- Environment Configuration
+- React
+- FastAPI
+- PostgreSQL
+- pgvector
+- Database Connection Foundation
+- Migration
+- Testing Foundation
+
+最终建立最小闭环：
 
 React
 → HTTP
 → FastAPI
 → PostgreSQL
 
-闭环。
+---
 
-同时确定：
+## Stage 0 Task 1 — Completed
 
-哪些功能属于当前版本。
+第一条运行链已经建立：
 
-哪些明确不属于当前版本。
+Browser
+→ React
+→ HTTP GET `/api/health`
+→ FastAPI
+→ JSON
+→ React State
+→ UI
+
+Task 1 主要建立：
+
+- React App
+- FastAPI App
+- Health API
+- CORS
+- frontend API client
+- backend test
+- README
+- initial repository structure
+
+Task 1 不包含数据库。
+
+历史 Task Specification：
+
+`docs/tasks/stage-0-task-1.md`
 
 ---
 
-# V1 — Codebase RAG
+## Stage 0 剩余目标
 
-这是现在立即开发的版本。
+后续 Stage 0 应建立：
+
+Docker Compose
+→ PostgreSQL
+→ pgvector extension
+
+以及：
+
+FastAPI
+→ Database Configuration
+→ Database Engine / Session
+→ Migration
+→ Database Validation
+
+最终：
+
+React
+→ FastAPI
+→ PostgreSQL
+
+能够真实运行。
+
+---
+
+## Stage 0 Docker Boundary
+
+Stage 0 允许 Docker Compose。
+
+目的：
+
+提供可重复的本地 PostgreSQL + pgvector 环境。
+
+当前不应该：
+
+- Dockerize React
+- Dockerize FastAPI
+- 建 Production Container Architecture
+- 使用 Kubernetes
+
+应用容器化以后根据 Production Engineering 需求再做。
+
+---
+
+## Stage 0 pgvector Boundary
+
+Stage 0 可以：
+
+启用 `vector` extension。
+
+但不要提前建立：
+
+- embedding schema
+- vector dimension
+- embedding table
+- HNSW
+- ANN Index
+
+原因：
+
+Embedding Model 尚未在 V1 M3 正式确定。
+
+不要让 Stage 0 的数据库设计提前锁死未来模型。
+
+---
+
+## Stage 0 Completion
+
+Stage 0 完成以后：
+
+必须执行一次最终 Validation。
+
+检查：
+
+- frontend build
+- backend tests
+- database startup
+- database connectivity
+- migration
+- pgvector availability
+- environment configuration
+- Git status
+- documentation accuracy
+
+然后：
+
+输出 Stage 0 Completion Report。
+
+Codex 必须停止。
+
+不得自动进入 V1。
+
+---
+
+# 十二、V1 — Codebase RAG
+
+这是 Stage 0 完成后开发的第一个真正产品版本。
 
 目标：
 
-建立一套真正可 Debug、可引用源码的 Codebase RAG。
+建立一套真正：
 
-完整 Index Pipeline：
+- 可 Debug
+- 可 Evaluation
+- 可引用真实源码
+
+的 Repository-level Codebase RAG。
+
+---
+
+# 十三、V1 Index Pipeline
+
+完整索引链：
 
 Repository
 → Snapshot
@@ -496,220 +826,142 @@ Repository
 → PostgreSQL + pgvector
 → Index
 
-完整 Query Pipeline：
+每一层应逐渐拥有明确职责。
+
+---
+
+# 十四、V1 Query Pipeline
 
 Question
 → Query Embedding
-→ Retrieval
+→ Retriever
 → Relevant Chunks
 → Context Builder
 → LLM
 → Answer
 → Citation
 
-前端必须可以看到 Retrieval Evidence。
+前端必须能够看到：
 
-V1 Milestones：
+Retrieval Evidence。
 
-M0 Foundation
-
-M1 Repository Ingestion
-
-M2 Code-aware Chunking
-
-M3 Embedding + Vector Index
-
-M4 Retrieval Engine
-
-M5 RAG Generation + Citation
-
-M6 React Product UI
-
-M7 Retrieval Quality Improvement
+系统不能只有最终 LLM Answer。
 
 ---
 
-# V1 的重要设计
+# 十五、V1 Milestones
 
-Repository 必须有：
+## M0 — Foundation
 
-Repository Snapshot
+确认 Stage 0 基础设施可支持 V1。
 
-因为代码会变化。
+只做必要调整。
 
-以后 GitHub 接入以后 Snapshot 可以对应：
-
-Commit SHA。
+不要重建已经完成的基础工程。
 
 ---
 
-File Scanner 必须过滤：
+## M1 — Repository Ingestion
 
-.git
-node\_modules
-dist
-build
-.venv
-binary
-generated files
-large files
-minified files
+解决：
 
-敏感文件默认排除：
+如何把一个真实代码 Repository 安全地引入系统。
 
-.env
-\*.pem
-\*.key
-credentials
-secrets
+建立：
+
+Repository
+→ Snapshot
+→ File Scanner
+→ File Filter
 
 ---
 
-第一阶段主要支持：
+## M2 — Code-aware Chunking
 
-Python
-TypeScript
-JavaScript
-TSX
-JSX
-Markdown
+解决：
 
-不要一开始承诺所有语言。
+代码应该怎样切成适合 Retrieval 的结构单元。
 
----
+建立：
 
-Chunking 采用：
-
-代码语义边界
-\+
-大小约束
-
-优先：
-
-class
-function
-method
-Markdown heading
-
-但：
-
-超大 Function 允许继续切分。
-
-非常小的 Symbol 后续允许组合。
-
-Chunk metadata 至少考虑：
-
-repository
-snapshot
-file path
-language
-chunk type
-symbol name
-qualified name
-parent symbol
-start line
-end line
-content hash
-chunking version
-
-区分：
-
-raw\_content
-
-和：
-
-embedding\_content
-
-允许 Embedding Content 加入：
-
-File Path
-Symbol
-Type
-
-等结构上下文。
+Parser
+→ Symbol Boundary
+→ Chunk
+→ Metadata
 
 ---
 
-V1 pgvector 首先使用：
+## M3 — Embedding + Vector Index
 
-Exact Vector Search
+解决：
 
-不要因为“高级”一开始就使用 HNSW。
+如何将代码 Chunk 转成向量并存入 PostgreSQL + pgvector。
 
-以后数据规模真的需要时再实验 ANN。
+建立：
+
+Embedding Content
+→ Embedding API
+→ Vector Storage
+→ Exact Search Foundation
 
 ---
 
-Retrieval 必须作为独立模块存在：
+## M4 — Retrieval Engine
+
+解决：
+
+用户问题如何找到真正相关的代码。
+
+建立：
 
 Question
 → Retriever
-→ Chunks
+→ Ranked Chunks
 
-Retriever 不负责生成 Answer。
-
-必须能够单独 Debug。
+Retriever 必须独立可 Debug。
 
 ---
 
-Retrieval Debug UI 至少展示：
+## M5 — RAG Generation + Citation
 
-Query
-Top-K
-Score / Distance
-File Path
-Symbol
-Line Range
-Chunk Content
+解决：
 
----
+如何基于真实 Evidence 生成 Answer。
 
-Citation 不允许 LLM 自己编文件路径。
+建立：
 
-Retriever 提供真实 Chunk ID。
-
-LLM 只能引用这些 Evidence ID。
-
-Backend 再把 ID 映射到：
-
-真实路径
-Symbol
-Line Range
-Code
+Retriever
+→ Context Builder
+→ LLM
+→ Answer
+→ Source Citation
 
 ---
 
-Context Builder 独立存在。
+## M6 — React Product UI
 
-负责：
+将前面能力形成真正可用产品。
 
-Chunk formatting
-排序
-去重
-Token Budget
-Citation ID
+前端不仅显示 Answer。
 
-不能简单使用：
+还必须显示：
 
-join(chunks)
-
-完成所有工作。
-
----
-
-Prompt 必须把 Repository Content 当作：
-
-Untrusted Data
-
-而不是 instruction。
-
-为后面防止 Prompt Injection 建立正确边界。
+- Evidence
+- File Path
+- Symbol
+- Line Range
+- Chunk
+- Score / Distance
 
 ---
 
-V1 后半段建立 Retrieval baseline。
+## M7 — Retrieval Quality Improvement
 
-逐步比较：
+建立 Retrieval Baseline 后：
+
+观察 Bad Cases。
+
+然后有证据地比较：
 
 Fixed Chunk
 vs
@@ -719,122 +971,409 @@ Vector-only
 vs
 Hybrid Retrieval
 
-Hybrid 可以结合：
+如果真实问题存在：
 
-Vector Semantic Search
-\+
-Lexical / Symbol Search
+再加入：
 
-但必须先有 Vector baseline。
+- Lexical Retrieval
+- Symbol Retrieval
+
+禁止一开始全部实现。
 
 ---
 
-# V2 — Code Intelligence
+# 十六、Repository Snapshot
 
-V1 解决：
+Repository 必须有：
 
-“语义上哪些代码相关？”
+Repository Snapshot。
+
+原因：
+
+代码本身会变化。
+
+如果只记录：
+
+Repository ID
+
+而不记录某个代码状态：
+
+用户今天的问题与明天的 Repository 内容可能不同。
+
+以后 GitHub 接入以后：
+
+Snapshot 可以对应：
+
+Commit SHA。
+
+---
+
+# 十七、File Scanner / Filter
+
+默认过滤：
+
+- `.git`
+- `node_modules`
+- `dist`
+- `build`
+- `.venv`
+- binaries
+- generated files
+- very large files
+- minified files
+
+敏感文件默认排除：
+
+- `.env`
+- `*.pem`
+- `*.key`
+- credentials
+- secrets
+
+V1 不要求支持所有编程语言。
+
+第一阶段主要支持：
+
+- Python
+- TypeScript
+- JavaScript
+- TSX
+- JSX
+- Markdown
+
+---
+
+# 十八、Code-aware Chunking
+
+代码 Chunk 采用：
+
+Semantic Boundary
++
+Size Constraint
+
+优先边界：
+
+- class
+- function
+- method
+- Markdown heading
+
+但不能机械理解成：
+
+一个 Function 永远等于一个 Chunk。
+
+超大 Function：
+
+允许继续拆分。
+
+非常小 Symbol：
+
+以后根据 Evaluation 决定是否组合。
+
+---
+
+# 十九、Chunk Metadata
+
+Chunk Metadata 至少考虑：
+
+- repository
+- snapshot
+- file path
+- language
+- chunk type
+- symbol name
+- qualified name
+- parent symbol
+- start line
+- end line
+- content hash
+- chunking version
+
+区分：
+
+`raw_content`
+
+与：
+
+`embedding_content`
+
+Embedding Content 可以加入：
+
+- File Path
+- Symbol
+- Type
+- Structural Context
+
+但必须通过实际 Retrieval 表现决定。
+
+---
+
+# 二十、Vector Search
+
+V1 Baseline 首先使用：
+
+Exact Vector Search。
+
+不要一开始使用：
+
+- HNSW
+- ANN tuning
+- complex vector index optimization
+
+如果真实 Repository 数据规模导致：
+
+- latency
+- memory
+- throughput
+
+出现问题：
+
+再进行 ANN 实验。
+
+---
+
+# 二十一、Retriever
+
+Retriever 必须作为独立模块存在。
+
+接口概念：
+
+Question
+→ Retriever
+→ Chunks
+
+Retriever 不负责：
+
+生成最终 Answer。
+
+原因：
+
+必须能够独立判断：
+
+Retrieval 是否找对代码。
+
+否则如果最终回答错误：
+
+无法判断是：
+
+Retrieval Error
+
+还是：
+
+Generation Error。
+
+---
+
+# 二十二、Retrieval Debug
+
+系统至少应该能够观察：
+
+- Query
+- Top-K
+- Score / Distance
+- File Path
+- Symbol
+- Line Range
+- Chunk Content
+
+Retrieval 必须是：
+
+Observable Pipeline。
+
+不能隐藏在一个：
+
+`ask_question()`
+
+函数里。
+
+---
+
+# 二十三、Citation
+
+Citation 不允许 LLM 自己编：
+
+- file path
+- symbol
+- line range
+
+Retriever 提供真实：
+
+Evidence / Chunk ID。
+
+LLM 只能引用这些 Evidence ID。
+
+Backend 再把 Evidence ID 映射到：
+
+- File Path
+- Symbol
+- Line Range
+- Source Code
+
+Citation 的真实性来自系统数据。
+
+不是依赖 LLM 自觉。
+
+---
+
+# 二十四、Context Builder
+
+Context Builder 必须独立存在。
+
+负责：
+
+- Chunk Formatting
+- Ordering
+- Deduplication
+- Token Budget
+- Evidence ID
+- Context Construction
+
+禁止简单使用：
+
+`join(chunks)`
+
+作为长期实现。
+
+---
+
+# 二十五、Repository Content Security
+
+Repository Content 必须视为：
+
+Untrusted Data。
+
+不能因为代码文件里面写着：
+
+> Ignore previous instructions
+
+就把它当 System Instruction。
+
+LLM Prompt 必须明确划分：
+
+Instruction
+
+和：
+
+Repository Content。
+
+这是后续 Prompt Injection 防护的基础。
+
+---
+
+# 二十六、V2 — Code Intelligence
+
+V1 主要解决：
+
+> 语义上哪些代码和问题相关？
 
 V2 开始解决：
 
-“代码结构到底是什么？”
+> 代码结构本身是什么？
 
 逐渐加入：
 
-AST / Syntax Tree
-Symbol Index
-Definition
-Reference
-Import Relation
-Function / Class Metadata
-Repository Structure
+- AST / Syntax Tree
+- Symbol Index
+- Definition
+- Reference
+- Import Relation
+- Function Metadata
+- Class Metadata
+- Repository Structure
 
-必要时使用 Tree-sitter 等成熟 parser。
+必要时使用：
 
-目标：
+Tree-sitter。
 
-让 RepoPilot 从单纯：
+---
 
-Semantic Code Search
+## V2 Retrieval
 
-升级成：
+逐渐研究：
 
-Code-aware Retrieval。
-
-这阶段研究：
-
-Vector Retrieval
-Lexical Retrieval
-Symbol Retrieval
-Structural Retrieval
+- Vector Retrieval
+- Lexical Retrieval
+- Symbol Retrieval
+- Structural Retrieval
 
 如何组合。
 
-不要直接承诺完整精确 Call Graph。
+不要一开始承诺：
 
-逐步实验。
+完整精确 Call Graph。
+
+先根据真实需求逐步实验。
 
 ---
 
-# V3 — Repository Agent
+# 二十七、V3 — Repository Agent
 
-学完 Agent 后进入。
+进入 Agent 学习阶段后开始。
 
-第一版 Agent：
+第一版：
 
-Read-only Agent。
+Read-only Repository Agent。
 
-它只能：
+允许 Tool：
 
-list\_files
-search\_code
-search\_symbol
-read\_file
-retrieve\_context
+- `list_files`
+- `search_code`
+- `search_symbol`
+- `read_file`
+- `retrieve_context`
 
-Agent 根据用户 Issue：
+流程：
 
-思考下一步需要什么信息
-→ 调 Tool
-→ 查看 Observation
-→ 再决定下一步
+Issue / Question
+→ Decide Next Information
+→ Tool Call
+→ Observation
+→ Decide Again
 
 目标：
 
-理解真正的：
+真正理解并实现：
 
 Agent Loop。
 
-不要上 Multi-Agent。
+第一版禁止：
+
+Multi-Agent。
 
 ---
 
-随后升级：
+## Issue Analysis Agent
 
-Issue Analysis Agent
-
-完成：
+逐渐升级：
 
 Issue
 → Inspect Repository
 → Search
 → Read
 → Analyze
-→ Produce Resolution Plan
+→ Resolution Plan
 
-此阶段仍然可以不修改代码。
+这个阶段：
+
+可以仍然不修改代码。
+
+先把：
+
+Repository Investigation
+
+做好。
 
 ---
 
-# V4 — Issue Resolution Agent
+# 二十八、V4 — Issue Resolution Agent
 
-在 Read-only Agent 稳定后再开放：
+在 Read-only Agent 稳定后才开放：
 
-edit\_file
-apply\_patch
-run\_tests
+- `edit_file`
+- `apply_patch`
+- `run_tests`
 
-流程：
+完整流程：
 
 Issue
 → Analyze
@@ -845,39 +1384,52 @@ Issue
 → Modify Again
 → Verify
 
-这里开始接近真正 Software Engineering Agent。
+这里 RepoPilot 开始接近：
 
-重要：
-
-任何第三方 Repository 的代码执行不得直接运行在宿主机。
-
-需要逐步引入：
-
-Docker / Sandbox
-
-并限制：
-
-文件系统
-Command
-Execution Time
-Network
-Secrets
+Software Engineering Agent。
 
 ---
 
-# V5 — MCP + GitHub
+# 二十九、Agent Sandbox
 
-进入 MCP 学习阶段后再做。
+任何第三方 Repository 的代码：
 
-首先理解：
+不能直接无限制运行在宿主机。
 
-MCP 到底解决什么问题。
+Agent 获得执行能力以后：
+
+必须逐步加入隔离环境。
+
+至少考虑：
+
+- File System
+- Command Allowlist / Restriction
+- Execution Time
+- Network
+- Secrets
+- Resource Limits
+
+后续可以使用：
+
+Docker / Sandbox Runtime。
+
+Stage 0 的数据库 Docker：
+
+与 Agent Sandbox 是两个不同用途。
+
+---
+
+# 三十、V5 — MCP + GitHub
+
+进入 MCP 阶段以后：
+
+首先理解 MCP 解决什么问题。
 
 不要为了简历硬加 MCP。
 
 目标：
 
-让 RepoPilot 的 Agent 可以通过标准 Tool Interface 接入外部系统。
+让 RepoPilot Agent 可以通过标准化 Tool Interface 接入外部系统。
 
 优先：
 
@@ -885,327 +1437,358 @@ GitHub。
 
 逐渐支持：
 
-读取 Repository
-读取 Issue
-读取 PR
-获取 Branch / Commit 信息
-后续创建 Branch / PR
+- Repository
+- Issue
+- PR
+- Branch
+- Commit
+- Create Branch
+- Create PR
 
-最终：
+最终目标：
 
 GitHub Issue
-↓
-RepoPilot Agent
-↓
-Repository Investigation
-↓
-Patch
-↓
-Tests
-↓
-GitHub PR
+→ RepoPilot Agent
+→ Repository Investigation
+→ Patch
+→ Tests
+→ GitHub PR
 
-实施 MCP 时必须重新查询当时最新官方 specification，不依赖过时教程。
+实施 MCP 时：
 
----
+必须重新查询当时最新官方 Specification。
 
-# V6 — Evaluation
-
-Evaluation 不是项目最后“测一下”。
-
-从 V1 开始就不断积累：
-
-Test Repository
-Golden Questions
-Expected Files
-Expected Symbols
-Expected Chunks
-
-但直到 Evaluation 阶段才建设正式体系。
+禁止依赖过时教程。
 
 ---
 
-## Retrieval Evaluation
+# 三十一、V6 — Evaluation
 
-建立 Dataset：
+Evaluation 不是最后：
+
+“感觉效果不错”。
+
+从 V1 开始就积累：
+
+- Test Repository
+- Golden Questions
+- Expected Files
+- Expected Symbols
+- Expected Chunks
+
+V6 再正式形成完整 Evaluation System。
+
+---
+
+# 三十二、Retrieval Evaluation
+
+Dataset：
 
 Query
++
 Expected Evidence
 
-指标可以研究：
+可以研究指标：
 
-Hit\@K
-Recall\@K
-MRR
+- Hit@K
+- Recall@K
+- MRR
 
 比较：
 
-Chunking Strategy
-Vector Model
-Top-K
-Threshold
-Hybrid Retrieval
-Symbol Retrieval
-Structural Retrieval
+- Chunking Strategy
+- Embedding Model
+- Top-K
+- Threshold
+- Hybrid Retrieval
+- Symbol Retrieval
+- Structural Retrieval
 
-所有性能提升必须有真实实验。
+所有提升必须有真实实验。
 
-禁止编数字。
+禁止：
+
+编造数字。
 
 ---
 
-## RAG Evaluation
+# 三十三、RAG Evaluation
 
 评估：
 
-Evidence 是否正确
-Citation 是否正确
-Answer 是否 Grounded
-是否出现 Unsupported Claims
+- Evidence 是否正确
+- Citation 是否正确
+- Answer 是否 Grounded
+- 是否出现 Unsupported Claims
+
+Generation Quality 必须和：
+
+Retrieval Quality
+
+分开分析。
 
 ---
 
-## Agent Evaluation
+# 三十四、Agent Evaluation
 
 构建真实 Issue Tasks。
 
 记录：
 
-Task Success Rate
-Patch Apply Success
-Test Pass Rate
-Tool Steps
-Token Usage
-Latency
-Cost
+- Task Success Rate
+- Patch Apply Success
+- Test Pass Rate
+- Tool Steps
+- Token Usage
+- Latency
+- Cost
 
 必要时参考：
 
 SWE-bench
 
-的可复现测试思想。
+的：
 
-不要求 RepoPilot 去刷完整 SWE-bench leaderboard。
+- Task
+- Ground Truth
+- Execution Environment
+- Reproducibility
+
+思想。
+
+不要求 RepoPilot 去刷完整 SWE-bench Leaderboard。
 
 ---
 
-# V7 — Production Engineering
+# 三十五、V7 — Production Engineering
 
-只有核心 AI 能力稳定后才进入。
+只有核心 AI 能力稳定以后：
 
-逐渐加入真正需要的：
+才逐渐进入生产工程。
 
-Authentication
-Users
-Repository Ownership
-Job Queue
-Redis
-Caching
-Async Indexing
-Retry
-Timeout
-Rate Limiting
-Structured Logging
-Tracing
-Metrics
-Error Tracking
-Configuration Management
-Docker
-CI
-Deployment
-Database Backup / Migration
+根据真实需求加入：
 
-Observability 应该能够追踪：
+- Authentication
+- Users
+- Repository Ownership
+- Job Queue
+- Redis
+- Caching
+- Async Indexing
+- Retry
+- Timeout
+- Rate Limiting
+- Structured Logging
+- Tracing
+- Metrics
+- Error Tracking
+- Configuration Management
+- Docker Application Packaging
+- CI
+- Deployment
+- Database Backup
+- Production Migration
+
+---
+
+# 三十六、Observability
+
+长期应能够追踪：
 
 Request
-
 → Retrieval
-
 → LLM Call
-
 → Tool Call
-
 → Agent Step
 
-而不是只打印：
+不能长期依赖：
 
+```python
 print("error")
+````
+
+系统需要知道：
+
+到底是哪一层出了问题。
 
 ---
 
-# Production Optimization
+# 三十七、Production Optimization
 
-最后开始测量真实：
+最后才开始优化真实瓶颈。
 
-Indexing Time
-Retrieval Latency
-LLM Latency
-Agent Runtime
-Token Usage
-Cost
-Cache Hit Rate
-Failure Rate
+测量：
 
-延迟至少考虑：
+* Indexing Time
+* Retrieval Latency
+* LLM Latency
+* Agent Runtime
+* Token Usage
+* Cost
+* Cache Hit Rate
+* Failure Rate
 
-P50
-P95
+Latency 至少考虑：
 
-只有测量以后才做优化。
+* P50
+* P95
 
-禁止先优化假想瓶颈。
+只有测量以后才优化。
 
----
+禁止：
 
-# V8 — Final Product & Portfolio Release
-
-到这里完成 RepoPilot 1.0。
-
-最终 Repository 必须具有：
-
-完整 GitHub Repository
-
-高质量 README
-
-Architecture Diagram
-
-Data Flow Diagram
-
-Online Demo
-
-Demo Video
-
-Evaluation Dataset
-
-Evaluation Report
-
-真实 Retrieval 指标
-
-真实 Agent 指标
-
-真实 Latency / Cost 数据
-
-测试
-
-CI
-
-Docker
-
-Deployment
-
-版本演进记录
-
-安全边界说明
-
-项目 Limitations
+先优化想象中的瓶颈。
 
 ---
 
-# 十、最终 UI 方向
+# 三十八、V8 — Final Product & Portfolio Release
 
-RepoPilot 不要长成普通聊天机器人。
+RepoPilot 1.0 最终应具备：
+
+* 完整 GitHub Repository
+* 高质量 README
+* Architecture Diagram
+* Data Flow Diagram
+* Online Demo
+* Demo Video
+* Evaluation Dataset
+* Evaluation Report
+* 真实 Retrieval 指标
+* 真实 Agent 指标
+* Latency / Cost 数据
+* Tests
+* CI
+* Docker
+* Deployment
+* Version Evolution
+* Security Boundary
+* Limitations
+
+---
+
+# 三十九、最终 UI 方向
+
+RepoPilot 不应该长成普通 Chatbot。
 
 长期 UI 可以采用：
 
-左：
+左侧：
 
 Repository / File Tree
 
-中：
+中间：
 
 Chat / Agent Task
 
-右：
+右侧：
 
 Evidence / Retrieval / Agent Trace
 
-用户点击 Citation：
+点击 Citation：
 
-直接显示真实文件：
+直接显示：
 
-File Path
-Symbol
-Line Range
-Source Code
+* File Path
+* Symbol
+* Line Range
+* Source Code
 
-Agent Task 页面还可以显示：
+Agent Task 页面可以显示：
 
-Plan
-Tool Call
-Observation
-Patch
-Test Result
+* Plan
+* Tool Call
+* Observation
+* Patch
+* Test Result
 
-让产品视觉本身就能展示：
+目标：
 
-“这个 AI 为什么得到这个结论。”
+让用户可以看到：
+
+> AI 为什么得到这个结论。
 
 ---
 
-# 十一、测试原则
+# 四十、测试原则
 
 从项目第一天开始测试。
 
-至少分：
+---
 
-Unit Test
+## Unit Test
 
 用于：
 
-File Filter
-Parser
-Chunker
-Utilities
+* File Filter
+* Parser
+* Chunker
+* Utility
+* Pure Transformations
 
-Integration Test
+---
+
+## Integration Test
 
 用于：
 
 File
 → Chunk
 → Embedding
-→ DB
+→ Database
 → Retrieval
-
-API Test
-
-用于：
-
-Repository API
-Index API
-Retrieve API
-Chat API
-
-后期增加：
-
-Agent Integration Test
-Evaluation Test
-End-to-End Test
-
-项目里长期维护一个小型：
-
-Golden Repository / Sample Repository
-
-它的代码结构和答案都是我们明确知道的。
-
-用它保证系统迭代不会悄悄破坏旧功能。
 
 ---
 
-# 十二、Git 工作方式
+## API Test
 
-项目从第一天进入 GitHub。
+用于：
+
+* Repository API
+* Index API
+* Retrieve API
+* Chat API
+
+后期增加：
+
+* Agent Integration Test
+* Evaluation Test
+* End-to-End Test
+
+---
+
+# 四十一、Golden Repository
+
+项目长期维护一个小型：
+
+Golden Repository / Sample Repository。
+
+它必须具有：
+
+明确已知的：
+
+* 文件
+* Symbol
+* 代码结构
+* Query
+* Expected Evidence
+
+用于检查：
+
+系统升级以后有没有悄悄破坏旧能力。
+
+---
+
+# 四十二、Git 工作方式
+
+项目从第一天进入 Git。
 
 保持：
 
 小而有意义的 Commit。
 
-不要：
+例如：
 
-一天一个“update”。
-
-Commit 应表达工程变化，例如：
-
+```text
 feat: add repository ingestion pipeline
 
 feat: implement structure-aware Python chunking
@@ -1213,36 +1796,50 @@ feat: implement structure-aware Python chunking
 test: add retrieval integration cases
 
 fix: prevent cross-snapshot retrieval
+```
 
-每个 Milestone 完成后形成一个明确稳定节点。
+不要：
 
-必要时使用版本 Tag。
+```text
+update
 
-Git 历史最终应该能看出：
+fix
 
-RepoPilot 是如何从：
+changes
+
+final
+```
+
+每个 Milestone 最好形成：
+
+明确稳定节点。
+
+必要时使用：
+
+Git Tag。
+
+Git History 最终应该能够看出：
 
 Empty Project
+→ Full Stack Foundation
+→ Codebase RAG
+→ Code Intelligence
+→ Agent
+→ Production AI System
 
-逐渐成长为：
-
-Production AI Agent System。
+的演进过程。
 
 ---
 
-# 十三、架构演进原则
+# 四十三、架构演进原则
 
-每次准备加入新技术前必须回答：
+加入任何新技术前必须回答：
 
-它解决什么真实问题？
-
-为什么现在需要？
-
-不用它会怎样？
-
-有没有更简单的方案？
-
-增加的复杂度值不值得？
+1. 它解决什么真实问题？
+2. 为什么现在需要？
+3. 不用它会怎样？
+4. 有没有更简单的方案？
+5. 增加的复杂度值不值得？
 
 如果回答不了：
 
@@ -1250,193 +1847,316 @@ Production AI Agent System。
 
 ---
 
-任何未来功能都遵守：
+# 四十四、Baseline-First
 
-先 Baseline
-→ 找 Bad Case
-→ 提出 Improvement
-→ 实现
+所有核心能力遵循：
+
+Baseline
+→ Observe Bad Cases
+→ Improvement
+→ Implementation
 → Evaluation
-→ 决定是否保留
+→ Keep / Remove
 
 例如：
 
-Vector Retrieval
+先：
 
-出现 Symbol 查询问题以后：
+Vector Retrieval。
 
-才增加 Lexical Retrieval。
+如果真实出现 Symbol Query Bad Case：
 
-而不是一开始看到“Hybrid Search 很高级”就加入。
+再研究：
+
+Lexical / Symbol Retrieval。
+
+不是：
+
+看到 Hybrid Search 很高级就直接加。
 
 ---
 
-# 十四、安全原则
+# 四十五、安全原则
 
-Code Agent 的安全问题必须随着能力增强同步升级。
+Code Agent 安全必须随着能力增强同步升级。
 
-重点关注：
+长期重点：
 
-Repository Secrets
+* Repository Secrets
+* Prompt Injection
+* Path Traversal
+* ZIP Bomb
+* Malicious Repository
+* Arbitrary Command Execution
+* Shell Injection
+* Agent Tool Permission
+* GitHub Token Permission
+* Network Access
+* Sandbox Escape
 
-Prompt Injection
+V1 不需要一次解决所有 Production Security。
 
-Path Traversal
+但设计不能完全忽视这些风险。
 
-ZIP Bomb
+尤其 Agent 开始：
 
-Malicious Repository
+运行 Repository Code
 
-Arbitrary Command Execution
-
-Shell Injection
-
-Agent Tool Permission
-
-GitHub Token Permission
-
-Network Access
-
-Sandbox Escape
-
-V1 不需要解决所有生产安全问题。
-
-但不能在设计上完全忽略。
-
-尤其 Agent 开始运行 Repository Code 以后：
+以后：
 
 必须使用隔离环境。
 
 ---
 
-# 十五、学习原则
+# 四十六、学习原则
 
-这是一个求职项目，不是一门大学课程。
+RepoPilot 是求职项目。
 
-遇到一个新概念时：
+不是大学课程。
 
-只学习完成当前工程任务所需要的知识。
+遇到新概念：
+
+只学习当前工程任务需要的部分。
 
 例如需要 Tree-sitter：
 
 先理解：
 
-Parser
-Syntax Tree
-Node
-Range
-Query
+* Parser
+* Syntax Tree
+* Node
+* Range
+* Query
 
 足够实现当前功能即可。
 
-不要暂停项目两周“系统学习编译原理”。
+不要暂停 RepoPilot 两周：
+
+系统学习完整编译原理。
 
 需要 Docker：
 
 先理解：
 
-Image
-Container
-Volume
-Network
-Command
-Isolation
+* Image
+* Container
+* Volume
+* Network
+* Command
+* Isolation
 
-够 RepoPilot 使用即可。
+够当前 RepoPilot 使用即可。
 
-始终采用：
+始终：
 
 Project Driven Learning。
 
 ---
 
-# 十六、每个 Milestone 的教学格式
+# 四十七、工程执行与学习分离
 
-以后每进入一个 Milestone，你必须先告诉我：
+Codex 的工程执行：
 
-1. 这一阶段解决什么问题；
-2. 为什么现在做；
-3. 当前系统存在什么缺口；
-4. 做完以后架构发生什么变化；
-5. 新增 / 修改哪些模块；
-6. 每个模块职责；
-7. Request / Data Flow；
-8. 核心接口输入输出；
-9. 最小实现步骤；
-10. 给 Codex 的任务；
-11. 如何测试；
-12. 验收标准；
-13. 常见 Bug 从哪里排查；
-14. 我必须能解释什么；
-15. 面试官可能怎么问。
+不需要为了教学在每一个 Milestone 停止。
 
-完成验收前：
+正常情况：
 
-不要随意进入下一阶段。
+Milestone 1
+→ Implement
+→ Test
+→ Commit
+→ Milestone 2
+
+可以自动继续。
+
+我的学习：
+
+在关键节点集中进行。
+
+包括：
+
+* Stage / Version 开始
+* 关键架构决策
+* 我主动要求学习
+* Version Completion Review
 
 ---
 
-# 十七、我的学习验收
+# 四十八、核心模块学习验收
 
-我不需要记住所有代码。
+对于核心模块，我最终至少必须能够回答：
 
-但是每个核心模块完成后，我必须至少能够回答：
-
-它是什么？
-
-为什么存在？
-
-输入是什么？
-
-输出是什么？
-
-谁调用它？
-
-它调用谁？
-
-数据去了哪里？
-
-失败会发生在哪里？
-
-为什么不用另一种设计？
-
-如果出现 Bug 应该从哪里开始查？
+* 它是什么？
+* 为什么存在？
+* 输入是什么？
+* 输出是什么？
+* 谁调用它？
+* 它调用谁？
+* 数据下一步去哪？
+* 哪里可能失败？
+* 如何 Debug？
+* 为什么这样设计？
+* 为什么不用另一个方案？
 
 如果答不上来：
 
-你需要重新给我建立系统模型。
+需要重新建立系统模型。
+
+但这不意味着：
+
+Codex 必须暂停每一个正常工程 Milestone 等待教学。
 
 ---
 
-# 十八、项目文档原则
+# 四十九、Milestone Review 内容
 
-不要产生大量为了“正规”而存在的文档。
+对于重要 Milestone，我最终应该理解：
 
-长期只维护真正有价值的：
-
-README.md
-
-AGENTS.md
-
-docs/architecture.md
-
-docs/roadmap.md
-
-docs/evaluation.md
-
-必要的重要 ADR / Design Decision
-
-以及最终 Demo 和 Evaluation Report。
-
-文档必须随项目变化更新。
+1. 解决什么问题；
+2. 为什么现在需要；
+3. 之前系统缺什么；
+4. 架构发生什么变化；
+5. 新增模块；
+6. 每个模块职责；
+7. Request / Data Flow；
+8. 核心接口；
+9. 测试方法；
+10. Acceptance Criteria；
+11. 常见 Bug；
+12. 技术 Trade-off；
+13. 面试可能如何提问。
 
 ---
 
-# 十九、求职价值判断
+# 五十、项目文档原则
+
+禁止产生大量为了：
+
+“显得正规”
+
+而存在的文档。
+
+长期维护真正有价值的：
+
+* README.md
+* AGENTS.md
+* PROJECT.md
+* architecture.md
+* roadmap.md
+* evaluation.md
+* 必要 ADR / Design Decision
+* Evaluation Report
+
+以及开发期间真正需要的：
+
+Execution Plan / Task Specification。
+
+文档必须随着真实系统变化更新。
+
+---
+
+# 五十一、Execution Plan
+
+对于 Stage / Version 级 Goal：
+
+Codex 应维护一个简洁 Execution Plan。
+
+例如：
+
+`docs/tasks/stage-0-plan.md`
+
+或：
+
+`docs/tasks/v1-plan.md`
+
+记录：
+
+* Goal
+* Milestones
+* Current Milestone
+* Completed Work
+* Validation
+* Important Decisions
+* Blockers
+* Remaining Work
+
+Execution Plan 不是第二份 PROJECT.md。
+
+它必须保持简洁。
+
+真正的系统状态主要来自：
+
+* Code
+* Tests
+* Git
+
+---
+
+# 五十二、Version Boundary
+
+Codex 可以在：
+
+同一个 Stage / Version
+
+内部正常自主推进。
+
+例如：
+
+V1 M1
+→ M2
+→ M3
+→ M4
+
+正常情况下：
+
+不需要人工批准。
+
+但是：
+
+跨 Version 不允许自动进行。
+
+例如：
+
+Stage 0
+→ V1
+
+V1
+→ V2
+
+V2
+→ V3
+
+必须存在一个明确的新 Goal。
+
+---
+
+# 五十三、Escalation
+
+Codex 遇到以下情况必须停止：
+
+* PROJECT.md 与 AGENTS.md 产生实质冲突
+* Goal 存在影响架构的重大歧义
+* 需要修改冻结的架构
+* 需要改变关键技术选择
+* 需要权限 / Credential
+* Tests 无法在现有 Scope 内通过
+* 发现可能导致大量返工的设计问题
+* 需要执行破坏性操作
+* 需要执行安全敏感操作
+* 需要重写重要 Git History
+* 即将进入未授权的下一个 Version
+
+普通工程判断：
+
+Codex 自己解决。
+
+---
+
+# 五十四、求职价值判断
 
 每增加一个功能都要问：
 
-它是否证明了一项招聘方真正需要的能力？
+> 它能证明招聘方真正需要的什么能力？
 
 例如：
 
@@ -1456,7 +2176,7 @@ Evaluation
 
 证明：
 
-不是靠 Demo 感觉调 AI。
+不是靠感觉调 AI。
 
 Agent Tools
 
@@ -1482,120 +2202,201 @@ Observability
 
 Production AI Engineering。
 
-如果一个功能无法增加产品能力，也无法增加工程证明力：
+如果一个功能：
+
+既不增加产品能力，
+
+也不增加工程证明力，
+
+也不提高：
+
+* Reliability
+* Debuggability
+* Safety
+* Evaluation Quality
+
+那么：
 
 不要做。
 
 ---
 
-# 二十、最终简历标准
+# 五十五、最终简历标准
 
-最后不能写：
+最终不能写：
 
-“基于 LangChain 实现 RAG，准确率显著提高。”
+> 基于 LangChain 实现 RAG，准确率显著提高。
 
-必须能够写出有证据的内容，例如：
+必须能够写成真正的工程成果。
 
-设计并实现真实代码仓库的结构感知 RAG pipeline，通过 AST / symbol metadata、hybrid retrieval 和 source-level citation 支持 repository-level code QA。
+例如：
 
-构建可观测 Retrieval Pipeline，对不同 chunking / retrieval strategies 建立评测数据集并使用真实指标进行比较。
+> 设计并实现真实代码仓库的结构感知 RAG Pipeline，通过 AST / Symbol Metadata、Hybrid Retrieval 和 Source-level Citation 支持 Repository-level Code QA。
 
-构建 Tool-Calling Code Agent，实现 repository search、file inspection、patch generation 与 sandboxed test execution 的多步 Issue Resolution Loop。
+> 构建可观测 Retrieval Pipeline，对不同 Chunking / Retrieval Strategy 建立 Evaluation Dataset，并使用真实指标进行比较。
 
-通过 MCP 接入 GitHub，实现 Issue → Repository Analysis → Patch → Test → PR 的完整工程流程。
+> 构建 Tool-Calling Code Agent，实现 Repository Search、File Inspection、Patch Generation 与 Sandboxed Test Execution 的多步 Issue Resolution Loop。
 
-具体数字只能使用 RepoPilot 实际测量的数据。
+> 通过 MCP 接入 GitHub，实现 Issue → Repository Analysis → Patch → Test → PR 的完整工程流程。
+
+具体数字：
+
+只能使用 RepoPilot 实际测量结果。
 
 ---
 
-# 二十一、最终面试目标
+# 五十六、最终面试目标
 
 最终我应该能够不用打开代码，从头讲清：
 
-为什么做 RepoPilot
+* 为什么做 RepoPilot
+* 用户问题是什么
+* 系统架构是什么
+* Repository 如何 Index
+* 为什么需要 Snapshot
+* 如何 Chunk Code
+* 为什么普通 Text Chunking 不够
+* Embedding 如何工作
+* pgvector 如何 Retrieval
+* Vector Search 的局限
+* 为什么加入 Lexical / Symbol Retrieval
+* Citation 如何保证真实
+* 如何区分 Retrieval Error 和 Generation Error
+* Agent 如何调用 Tool
+* Agent Loop 是什么
+* 为什么不用 Multi-Agent
+* MCP 在系统中解决什么问题
+* Agent 如何修改代码
+* 如何安全运行测试
+* 如何设计 Evaluation
+* 指标如何计算
+* 系统哪里最慢
+* 哪里最贵
+* 哪里容易失败
+* 如何监控
+* 有哪些 Limitations
+* 如果重新设计会改什么
 
-用户问题是什么
+只有达到这里：
 
-系统架构是什么
-
-Repository 如何 Index
-
-为什么需要 Snapshot
-
-如何 Chunk Code
-
-为什么普通 Text Chunking 不够
-
-Embedding 如何工作
-
-pgvector 如何 Retrieval
-
-Vector Search 的局限
-
-为什么加入 Lexical / Symbol Retrieval
-
-Citation 怎么保证真实
-
-如何区分 Retrieval Error 和 Generation Error
-
-Agent 如何调用 Tool
-
-Agent Loop 是什么
-
-为什么不用 Multi-Agent
-
-MCP 在系统里解决什么问题
-
-Agent 如何修改代码
-
-如何安全运行测试
-
-如何设计 Evaluation
-
-指标如何计算
-
-系统哪里最慢
-
-哪里最贵
-
-哪里最容易失败
-
-如何监控
-
-有哪些 Limitations
-
-如果重新设计会改什么
-
-只有做到这里：
-
-RepoPilot 才算真正成为我的简历项目。
+RepoPilot 才真正成为我的简历项目。
 
 ---
 
-# 二十二、执行原则
+# 五十七、当前执行状态
 
-从现在开始：
+当前状态：
 
-不要再继续无限扩展设计。
+**Stage 0 — Project Inception**
 
-整个长期方向已经确定。
+已经完成：
 
-后续允许根据真实开发问题调整架构，但不能频繁推翻重做。
+**Stage 0 Task 1 — Application Foundation**
 
-第一阶段正式开始：
+当前系统：
 
-# Stage 0 — Project Inception
+Browser
+→ React
+→ HTTP
+→ FastAPI
+→ JSON
+→ React UI
 
-你现在首先作为 Tech Lead：
+下一目标：
 
-1. 检查这份项目章程是否存在必须立即修改的问题；
-2. 如果没有重大问题，冻结长期 Scope；
-3. 设计 Stage 0；
-4. 给出 RepoPilot 第一版 Repository Structure；
-5. 定义开发环境；
-6. 定义 Git / AGENTS.md / 配置管理方式；
-7. 给出第一个 Codex Coding Task。
+完成 Stage 0 剩余工程基础。
 
-不要提前实现 V1 后面的功能。
+包括：
 
-我们从第一步正式开始开发。
+* PostgreSQL
+* pgvector extension
+* Docker Compose local infrastructure
+* Configuration
+* SQLAlchemy foundation
+* Migration
+* Database connectivity
+* Testing foundation
+
+完成后：
+
+Stage 0 Final Validation
+→ Completion Report
+→ Stop
+
+不得自动进入 V1。
+
+---
+
+# 五十八、长期执行原则
+
+RepoPilot 的长期方向已经冻结。
+
+后续允许：
+
+根据真实工程问题调整实现。
+
+不允许：
+
+频繁推翻长期产品方向。
+
+开发流程：
+
+Project Scope
+→ Version / Stage Goal
+→ Codex Inspect Repository
+→ Implementation Plan
+→ Milestones
+→ Autonomous Agent Loop
+→ Validation
+→ Git Commits
+→ Version Completion
+→ Architecture / Evaluation / Learning Review
+→ Next Goal
+
+正常 Milestone：
+
+Codex 自主执行。
+
+重大问题：
+
+升级人工决策。
+
+Version 完成：
+
+集中 Review。
+
+然后：
+
+再决定是否进入下一 Version。
+
+---
+
+# 五十九、最终原则
+
+RepoPilot 不追求：
+
+最多技术。
+
+RepoPilot 追求：
+
+真实能力
++
+清晰架构
++
+可 Debug
++
+可测试
++
+可 Evaluation
++
+可解释
++
+可演进
++
+可证明
+
+所有工程决策最终服务于两个目标：
+
+1. 做出真正有意义的 AI Developer Tool。
+2. 让我能够凭这个项目证明真实的 AI 应用 / Agent 工程能力。
+

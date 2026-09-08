@@ -1,5 +1,12 @@
 # RepoPilot — Stage 0 Task 1
-
+> Status: Completed
+>
+> Completed as part of Stage 0 — Project Inception.
+>
+> This file is a historical specification for the completed Stage 0 Task 1.
+> It must not be treated as the active task unless explicitly instructed.
+>
+> Future Stage 0 work is driven by the active Stage 0 goal and its execution plan.
 ## Goal
 
 Initialize the RepoPilot repository and establish the first working application path:
