@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react";
 
-import { getHealth } from "./api/health";
+import { getDatabaseHealth, getHealth } from "./api/health";
 import "./App.css";
 
-type BackendStatus = "checking" | "connected" | "unavailable";
+type ConnectionStatus = "checking" | "connected" | "unavailable";
 
-const statusMessages: Record<BackendStatus, string> = {
-  checking: "Checking backend…",
-  connected: "Backend connected",
-  unavailable: "Backend unavailable",
+const statusMessages: Record<ConnectionStatus, string> = {
+  checking: "Checking…",
+  connected: "Connected",
+  unavailable: "Unavailable",
 };
 
 function App() {
-  const [backendStatus, setBackendStatus] = useState<BackendStatus>("checking");
+  const [backendStatus, setBackendStatus] =
+    useState<ConnectionStatus>("checking");
+  const [databaseStatus, setDatabaseStatus] =
+    useState<ConnectionStatus>("checking");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -29,16 +32,34 @@ function App() {
       }
     }
 
+    async function checkDatabase(): Promise<void> {
+      try {
+        await getDatabaseHealth(controller.signal);
+        setDatabaseStatus("connected");
+      } catch (error: unknown) {
+        if (error instanceof DOMException && error.name === "AbortError") {
+          return;
+        }
+        setDatabaseStatus("unavailable");
+      }
+    }
+
     void checkBackend();
+    void checkDatabase();
     return () => controller.abort();
   }, []);
 
   return (
     <main>
       <h1>RepoPilot</h1>
-      <p className={`status status--${backendStatus}`} role="status">
-        {statusMessages[backendStatus]}
-      </p>
+      <div className="connections" role="status">
+        <p className={`status status--${backendStatus}`}>
+          Backend: {statusMessages[backendStatus]}
+        </p>
+        <p className={`status status--${databaseStatus}`}>
+          Database: {statusMessages[databaseStatus]}
+        </p>
+      </div>
     </main>
   );
 }

@@ -16,7 +16,7 @@ Stage 0 establishes infrastructure, configuration, database connectivity, migrat
 | M1 | Docker Compose PostgreSQL/pgvector infrastructure and safe environment template | Complete |
 | M2 | Typed settings, SQLAlchemy engine/session foundation, database health API, and tests | Complete |
 | M3 | Alembic foundation and migration enabling the `vector` extension without application tables | Complete |
-| M4 | Frontend database status, final documentation, clean-database validation, and Stage 0 audit | Current |
+| M4 | Frontend database status, final documentation, clean-database validation, and Stage 0 audit | Current (runtime blocked) |
 
 ## Current Milestone
 
@@ -33,6 +33,9 @@ M4 — frontend database status, documentation, and final Stage 0 validation.
 - Added isolated tests for configuration, session setup, connectivity behavior, and API success/failure responses.
 - Added Alembic configuration and one migration that enables only the `vector` extension.
 - Added opt-in live database coverage for the API, migration revision, and pgvector availability.
+- Added a typed frontend database health client and separate backend/database UI states.
+- Updated the root environment template and README for the complete Stage 0 setup and validation flow.
+- Bounded unavailable-database checks with an explicit IPv4 host and three-second driver timeout.
 
 ## Validation Results
 
@@ -49,6 +52,11 @@ M4 — frontend database status, documentation, and final Stage 0 validation.
 - `uv run alembic downgrade 0001_enable_pgvector:base --sql`: passed; generated the matching extension downgrade.
 - `uv run pytest`: 9 passed and the live database test skipped while no database runtime is available.
 - `ruff check apps/api/src apps/api/tests apps/api/migrations`: passed.
+- `npm ci`: passed with 0 reported vulnerabilities.
+- `npm run build`: passed after adding the database status UI and root Vite environment configuration.
+- FastAPI/Uvicorn startup: passed with explicit test environment variables.
+- `GET /api/health`: HTTP 200 with the original contract and expected CORS origin.
+- `GET /api/health/database` without PostgreSQL: HTTP 503 in 3.44 seconds with the expected safe error response.
 - Docker/PostgreSQL runtime validation: blocked because Docker, Podman, WSL, and `psql` are not installed on this host.
 
 ## Important Decisions
@@ -66,7 +74,9 @@ M4 — frontend database status, documentation, and final Stage 0 validation.
 
 ## Remaining Work
 
-1. Update the frontend to surface database connectivity.
-2. Update README commands and configuration documentation.
-3. Run full Stage 0 validation against a clean PostgreSQL database when a compatible runtime is available.
-4. Review scope, Git history, and mark Stage 0 complete only after every runtime check passes.
+1. Make a Docker Compose-compatible runtime available and create local `.env` from the committed template.
+2. Validate Compose configuration and start a clean PostgreSQL container.
+3. Apply the migration online and verify its current revision and pgvector version.
+4. Run the live database test with `RUN_DATABASE_TESTS=1`.
+5. Verify the browser reports both backend and database as connected.
+6. Review scope and Git history, then mark Stage 0 complete only after every runtime check passes.
