@@ -16,11 +16,11 @@ Stage 0 establishes infrastructure, configuration, database connectivity, migrat
 | M1 | Docker Compose PostgreSQL/pgvector infrastructure and safe environment template | Complete |
 | M2 | Typed settings, SQLAlchemy engine/session foundation, database health API, and tests | Complete |
 | M3 | Alembic foundation and migration enabling the `vector` extension without application tables | Complete |
-| M4 | Frontend database status, final documentation, clean-database validation, and Stage 0 audit | Current (runtime blocked) |
+| M4 | Frontend database status, final documentation, clean-database validation, and Stage 0 audit | Complete |
 
 ## Current Milestone
 
-M4 — frontend database status, documentation, and final Stage 0 validation.
+Stage 0 is complete. Starting V1 requires a new explicitly active goal.
 
 ## Completed Work
 
@@ -36,28 +36,25 @@ M4 — frontend database status, documentation, and final Stage 0 validation.
 - Added a typed frontend database health client and separate backend/database UI states.
 - Updated the root environment template and README for the complete Stage 0 setup and validation flow.
 - Bounded unavailable-database checks with an explicit IPv4 host and three-second driver timeout.
+- Started PostgreSQL from a clean Compose state, applied and reversed the migration, and restored it to head.
+- Corrected the test configuration so isolated tests use explicit settings while the opt-in integration test uses the root development environment.
+- Verified the complete browser-to-database path and completed the final Stage 0 scope audit.
 
 ## Validation Results
 
+- Docker 29.7.2 and Compose 5.5.1: configuration valid; database container healthy.
+- Clean pre-migration state: PostgreSQL 17.11 ready, `vector` available but not installed, and no Alembic revision applied.
+- `uv run alembic upgrade head`: applied `0001_enable_pgvector`; `vector` 0.8.6 installed and only `alembic_version` exists in the public schema.
+- `uv run alembic downgrade base` followed by `upgrade head`: passed and restored the database to the single migration head.
 - `uv sync --locked`: passed with Python 3.13.13.
-- `uv run pytest`: 1 passed; two upstream TestClient deprecation warnings remain.
-- `npm ci`: passed with 0 reported vulnerabilities.
-- `npm run build`: passed.
-- `yamllint -d relaxed compose.yaml`: passed after resolving its only style warning.
-- `uv sync --locked`: passed after adding database dependencies.
-- `uv run pytest`: 9 passed; one upstream Starlette/AnyIO deprecation warning remains.
-- `ruff check apps/api/src apps/api/tests`: passed.
-- `uv run alembic heads` / `history`: one head at `0001_enable_pgvector`.
-- `uv run alembic upgrade head --sql`: passed; generated `CREATE EXTENSION IF NOT EXISTS vector` and no application schema.
-- `uv run alembic downgrade 0001_enable_pgvector:base --sql`: passed; generated the matching extension downgrade.
-- `uv run pytest`: 9 passed and the live database test skipped while no database runtime is available.
+- `RUN_DATABASE_TESTS=1 uv run pytest`: 10 passed; one upstream Starlette/AnyIO deprecation warning remains.
 - `ruff check apps/api/src apps/api/tests apps/api/migrations`: passed.
 - `npm ci`: passed with 0 reported vulnerabilities.
-- `npm run build`: passed after adding the database status UI and root Vite environment configuration.
-- FastAPI/Uvicorn startup: passed with explicit test environment variables.
-- `GET /api/health`: HTTP 200 with the original contract and expected CORS origin.
-- `GET /api/health/database` without PostgreSQL: HTTP 503 in 3.44 seconds with the expected safe error response.
-- Docker/PostgreSQL runtime validation: blocked because Docker, Podman, WSL, and `psql` are not installed on this host.
+- `npm run build`: passed TypeScript and Vite production builds.
+- `yamllint -d relaxed compose.yaml`: passed.
+- FastAPI/Uvicorn and Vite startup: passed.
+- `GET /api/health` and `GET /api/health/database`: HTTP 200 with the expected contracts and CORS origin.
+- Browser validation: the React UI reported both `Backend: Connected` and `Database: Connected`.
 
 ## Important Decisions
 
@@ -70,13 +67,9 @@ M4 — frontend database status, documentation, and final Stage 0 validation.
 
 ## Blockers
 
-- The current machine has no available container runtime or PostgreSQL client/server. Runtime database, pgvector, and clean-database migration validation require Docker Desktop (or an equivalent compatible runtime) to be installed and started.
+- None.
 
 ## Remaining Work
 
-1. Make a Docker Compose-compatible runtime available and create local `.env` from the committed template.
-2. Validate Compose configuration and start a clean PostgreSQL container.
-3. Apply the migration online and verify its current revision and pgvector version.
-4. Run the live database test with `RUN_DATABASE_TESTS=1`.
-5. Verify the browser reports both backend and database as connected.
-6. Review scope and Git history, then mark Stage 0 complete only after every runtime check passes.
+- None within Stage 0.
+- V1 work is intentionally excluded and requires a separately authorized goal.
