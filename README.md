@@ -1,7 +1,8 @@
 # RepoPilot
 
-RepoPilot is a long-term AI codebase intelligence and issue-resolution system. The project is currently at **Stage 0 — Project Inception**.
+RepoPilot is a long-term AI codebase intelligence and issue-resolution system.
 
+**Stage 0 — Project Inception is complete. V1 — Codebase RAG has not started yet.**
 ## Current functionality
 
 Stage 0 provides a local development foundation with this request path:

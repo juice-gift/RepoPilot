@@ -30,39 +30,30 @@ For the complete long-term product scope, architecture direction, and version ro
 
 Current stage:
 
-**Stage 0 — Project Inception**
+**V1 — Codebase RAG**
 
-Stage 0 establishes the engineering foundation required before V1.
+Stage 0 — Project Inception has been completed and serves as the stable engineering foundation.
 
-Stage 0 Task 1 has already established the first working application path:
+The current objective is to build a debuggable, testable, evidence-grounded repository-level Codebase RAG system.
 
-Browser
-→ React
-→ HTTP
-→ FastAPI
-→ JSON Response
-→ React UI
+V1 will progressively establish:
 
-Remaining Stage 0 work will progressively establish:
+- repository ingestion
+- repository snapshots
+- file scanning and filtering
+- code-aware chunking
+- embedding generation
+- PostgreSQL + pgvector indexing
+- retrieval
+- context building
+- LLM generation
+- source citation
+- retrieval evidence UI
+- retrieval evaluation
 
-- development environment
-- configuration management
-- PostgreSQL
-- pgvector extension
-- database access foundation
-- migrations
-- testing foundation
-- reproducible local infrastructure
+V1 must follow the baseline-first architecture defined in `docs/PROJECT.md`.
 
-Stage 0 must eventually establish the minimum application path:
-
-React
-→ HTTP
-→ FastAPI
-→ PostgreSQL
-
-Do not begin V1 Codebase RAG functionality until Stage 0 has been completed and validated.
-
+Do not implement V2 Code Intelligence, Agent, MCP, GitHub integration, or later-stage functionality unless explicitly authorized by a later goal.
 ---
 
 ## 3. Documentation Hierarchy

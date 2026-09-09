@@ -2287,43 +2287,48 @@ RepoPilot 才真正成为我的简历项目。
 
 当前状态：
 
-**Stage 0 — Project Inception**
+**V1 — Codebase RAG**
 
-已经完成：
+Stage 0 — Project Inception 已完成。
 
-**Stage 0 Task 1 — Application Foundation**
+当前基础架构：
 
-当前系统：
-
-Browser
-→ React
+React
 → HTTP
 → FastAPI
-→ JSON
-→ React UI
+→ SQLAlchemy / PostgreSQL
+→ pgvector
 
-下一目标：
+并已建立：
 
-完成 Stage 0 剩余工程基础。
+- Docker Compose 本地 PostgreSQL + pgvector
+- Environment Configuration
+- Database Connection
+- Alembic Migration
+- Testing Foundation
 
-包括：
+当前目标：
 
-* PostgreSQL
-* pgvector extension
-* Docker Compose local infrastructure
-* Configuration
-* SQLAlchemy foundation
-* Migration
-* Database connectivity
-* Testing foundation
+完成 V1 — Codebase RAG。
 
-完成后：
+V1 按以下 Milestone 推进：
 
-Stage 0 Final Validation
+M0 — Foundation Check  
+M1 — Repository Ingestion  
+M2 — Code-aware Chunking  
+M3 — Embedding + Vector Index  
+M4 — Retrieval Engine  
+M5 — RAG Generation + Citation  
+M6 — React Product UI  
+M7 — Retrieval Quality Improvement / Evaluation
+
+V1 完成后：
+
+Final Validation
 → Completion Report
 → Stop
 
-不得自动进入 V1。
+不得自动进入 V2。
 
 ---
 
