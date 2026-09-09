@@ -105,6 +105,7 @@ V1 Final Validation.
 - Added independently tested Hit@K, Recall@K, and MRR@K calculation plus a CLI runner that exercises ingestion, chunking, embedding, pgvector, and retrieval.
 - Measured the exact-vector baseline, identified two ranking failures, and retained a small lexical rerank only after it improved the frozen dataset without regression.
 - Exposed `RETRIEVAL_STRATEGY=vector|hybrid`; the evidence-backed hybrid strategy is the V1 default while vector remains reproducible.
+- Added a minimal live-provider verifier that embeds the Golden Repository through OpenAI, generates one grounded Responses answer, and requires at least one valid backend-resolved citation before reporting success.
 
 ## Validation Results
 
@@ -145,6 +146,7 @@ V1 Final Validation.
 - Final evaluation rerun on the clean database reproduced the recorded 8-query vector and hybrid metrics and every expected first-relevant rank.
 - Final clean-database browser pass: API/database health connected; 96 files produced 676 stored vectors; retrieval-only and answer endpoints returned HTTP 200; the answer citation focused its source card; browser console had no warnings/errors.
 - Final Git/scope audit: eight ordered V1 milestone commits follow the Stage 0 baseline, no secret file is tracked, and no V2/later implementation signal was found.
+- Live-provider verifier regression check: ordinary suite now has 52 passed / 8 live tests skipped; Ruff passes; the CLI exits before database access with a clear error when `OPENAI_API_KEY` is absent.
 
 ## Important Decisions
 
@@ -169,4 +171,4 @@ V1 Final Validation.
 
 ## Remaining Work
 
-- Configure `OPENAI_API_KEY`, run a minimal live Golden Repository embedding/index request and grounded Responses request, record the provider/model results, re-run the final acceptance audit, mark this plan complete, and issue the V1 Completion Report. Do not begin V2.
+- Configure `OPENAI_API_KEY`, run `PYTHONPATH=src uv run python -m repopilot.evaluation.live_provider` from `apps/api`, record the provider/model results, re-run the final acceptance audit, mark this plan complete, and issue the V1 Completion Report. The verifier uses the 19-chunk Golden Repository and requires a backend-resolved citation without printing the key. Do not begin V2.

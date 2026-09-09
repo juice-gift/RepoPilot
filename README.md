@@ -215,6 +215,26 @@ PYTHONPATH=src uv run python -m repopilot.evaluation.runner --strategy vector --
 PYTHONPATH=src uv run python -m repopilot.evaluation.runner --strategy hybrid --top-k 5
 ```
 
+After configuring `OPENAI_API_KEY` in the ignored root `.env`, run the final live
+provider check from `apps/api`. It embeds the 19 Golden Repository chunks with
+the configured OpenAI embedding model, asks one grounded question through the
+configured Responses model, and succeeds only when the answer contains a valid
+backend-resolved evidence citation. It never prints the key.
+
+PowerShell:
+
+```powershell
+$env:PYTHONPATH = "src"
+uv run python -m repopilot.evaluation.live_provider
+Remove-Item Env:PYTHONPATH
+```
+
+macOS or Linux:
+
+```bash
+PYTHONPATH=src uv run python -m repopilot.evaluation.live_provider
+```
+
 Stop local infrastructure from the repository root:
 
 ```bash
