@@ -2,11 +2,12 @@ from collections.abc import Iterator
 from unittest.mock import MagicMock
 
 from fastapi.testclient import TestClient
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session
+
 from repopilot.api.dependencies import get_database_session
 from repopilot.config import Settings
 from repopilot.main import create_app
-from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import Session
 
 
 def create_test_client(session: Session) -> TestClient:

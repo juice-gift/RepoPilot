@@ -1,12 +1,13 @@
 from unittest.mock import MagicMock
 
 import pytest
+from sqlalchemy.orm import Session
+
 from repopilot.db.health import check_database_connection
 from repopilot.db.session import (
     create_database_engine,
     create_database_session_factory,
 )
-from sqlalchemy.orm import Session
 
 
 def test_database_engine_and_session_factory_use_configured_url() -> None:

@@ -2,10 +2,11 @@ import os
 
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy import text
+
 from repopilot.config import Settings
 from repopilot.db.session import create_database_engine
 from repopilot.main import create_app
-from sqlalchemy import text
 
 pytestmark = pytest.mark.skipif(
     os.getenv("RUN_DATABASE_TESTS") != "1",
