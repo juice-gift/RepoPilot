@@ -9,8 +9,8 @@ Deliver a debuggable, testable, evidence-grounded repository-level Codebase RAG 
 | Milestone | Outcome | Status |
 | --- | --- | --- |
 | M0 — Foundation Check | Verify the Stage 0 application, database, migration, tests, and Git baseline; make only required reproducibility fixes | Complete |
-| M1 — Repository Ingestion | Secure local repository registration, snapshots, scanning, filtering, and inspectable ingestion API | In progress |
-| M2 — Code-aware Chunking | Structure-aware Python/TypeScript/JavaScript/TSX/JSX/Markdown chunks with bounded size and citation metadata | Not started |
+| M1 — Repository Ingestion | Secure local repository registration, snapshots, scanning, filtering, and inspectable ingestion API | Complete |
+| M2 — Code-aware Chunking | Structure-aware Python/TypeScript/JavaScript/TSX/JSX/Markdown chunks with bounded size and citation metadata | In progress |
 | M3 — Embedding + Vector Index | Configured embeddings, migration-controlled pgvector storage, idempotent snapshot indexing, and exact vector search | Not started |
 | M4 — Retrieval Engine | Independently callable, snapshot-scoped ranked evidence retrieval with explicit API contracts | Not started |
 | M5 — RAG Generation + Citation | Bounded context builder, grounded generation, evidence-ID citations, and deterministic citation resolution | Not started |
@@ -19,7 +19,7 @@ Deliver a debuggable, testable, evidence-grounded repository-level Codebase RAG 
 
 ## Current Milestone
 
-M1 — Repository Ingestion.
+M2 — Code-aware Chunking.
 
 ## Milestone Tasks
 
@@ -84,6 +84,9 @@ M1 — Repository Ingestion.
 - Ordinary backend suite and frontend production build passed.
 - Docker engine started, PostgreSQL container started, migration head confirmed, and live pgvector integration test passed.
 - Ruff declared as a reproducible backend development dependency and six pre-existing import-order findings corrected.
+- Added a configured local-filesystem boundary, deterministic supported-language scanner, safety filters, and content-addressed snapshot identity.
+- Added migration-controlled repositories, snapshots, and accepted source-file persistence with idempotent repeated ingestion.
+- Added repository ingestion/listing APIs, scan evidence, tests, and current setup/API documentation.
 
 ## Validation Results
 
@@ -93,12 +96,18 @@ M1 — Repository Ingestion.
 - `uv run alembic upgrade head` / `uv run alembic current`: passed at `0001_enable_pgvector`.
 - `RUN_DATABASE_TESTS=1 uv run pytest`: 10 passed.
 - `uv run ruff check src tests migrations`: passed.
+- M1 `uv run pytest`: 19 passed, 2 live database tests skipped.
+- M1 `RUN_DATABASE_TESTS=1 uv run pytest`: 21 passed.
+- `uv run alembic check`: no new upgrade operations detected at `0002_add_repository_ingestion`.
+- M1 `npm run build`: passed.
 
 ## Important Decisions
 
 - Preserve the Stage 0 synchronous FastAPI + SQLAlchemy architecture and database-only Compose boundary.
 - Keep each V1 pipeline component explicit and injectable; do not introduce LangChain, LlamaIndex, agent loops, or speculative V2 structures.
 - Use exact vector search as the mandatory first retrieval baseline; evaluate before retaining lexical or hybrid improvements.
+- Define a snapshot as the deterministic state of accepted, indexable source content; changes to excluded content do not create an index snapshot.
+- Store accepted source content so later chunking/indexing is reproducible even if the working repository changes.
 
 ## Blockers
 
@@ -106,4 +115,4 @@ M1 — Repository Ingestion.
 
 ## Remaining Work
 
-- Execute M1–M7 in order.
+- Execute M2–M7 in order.

@@ -1,7 +1,9 @@
+from pathlib import Path
+
 import pytest
 from pydantic import ValidationError
 
-from repopilot.config import Settings
+from repopilot.config import REPOSITORY_ROOT, Settings
 
 
 def test_settings_require_database_url(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -22,6 +24,34 @@ def test_settings_load_environment_values(monkeypatch: pytest.MonkeyPatch) -> No
 
     assert settings.database_url.endswith("/database")
     assert settings.frontend_origin == "http://localhost:4173"
+
+
+def test_settings_resolve_repository_allowed_root(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setenv(
+        "DATABASE_URL",
+        "postgresql+psycopg://user:password@localhost:5432/database",
+    )
+    monkeypatch.setenv("REPOSITORY_ALLOWED_ROOT", str(tmp_path / ".." / tmp_path.name))
+
+    settings = Settings(_env_file=None)
+
+    assert settings.repository_allowed_root == tmp_path.resolve()
+
+
+def test_settings_resolve_relative_repository_root_from_project_root(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv(
+        "DATABASE_URL",
+        "postgresql+psycopg://user:password@localhost:5432/database",
+    )
+    monkeypatch.setenv("REPOSITORY_ALLOWED_ROOT", ".")
+
+    settings = Settings(_env_file=None)
+
+    assert settings.repository_allowed_root == REPOSITORY_ROOT
 
 
 def test_settings_reject_non_psycopg_database_url(

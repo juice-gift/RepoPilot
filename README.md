@@ -2,10 +2,10 @@
 
 RepoPilot is a long-term AI codebase intelligence and issue-resolution system.
 
-**Stage 0 — Project Inception is complete. V1 — Codebase RAG has not started yet.**
+**Stage 0 — Project Inception is complete. V1 — Codebase RAG is in progress.**
 ## Current functionality
 
-Stage 0 provides a local development foundation with this request path:
+The Stage 0 foundation and V1 repository-ingestion milestone currently provide:
 
 ```text
 React UI
@@ -13,13 +13,21 @@ React UI
 -> FastAPI routes
 -> SQLAlchemy session
 -> PostgreSQL 17 with pgvector
+
+Local repository path
+-> configured filesystem boundary
+-> deterministic scan and safety filters
+-> content-addressed snapshot
+-> PostgreSQL repository, snapshot, and source-file records
 ```
 
-The UI reports backend and database connectivity separately. Alembic owns the database migration state and currently enables only the PostgreSQL `vector` extension. There are no application, embedding, or vector tables yet.
+The UI reports backend and database connectivity separately. Alembic owns the database migration state and enables pgvector plus the V1 ingestion tables. Embedding, vector, retrieval, generation, citation, and evidence UI work remain planned V1 milestones.
+
+The ingestion scanner currently supports Python, TypeScript, JavaScript, TSX, JSX, and Markdown. It excludes common dependency/build directories, unsupported and oversized files, binary/non-UTF-8 content, generated/minified files, and sensitive filenames such as `.env`, private keys, credentials, and secrets.
 
 ## Planned functionality
 
-Later versions may add repository ingestion, code-aware retrieval, RAG, issue analysis, agent workflows, GitHub/MCP integration, evaluation, and production engineering. These capabilities are planned only and are not part of Stage 0.
+Remaining V1 milestones add code-aware chunking, embedding/indexing, retrieval, grounded RAG, citations, the evidence UI, and retrieval evaluation. Agent workflows, GitHub/MCP integration, and production engineering belong to later versions.
 
 ## Repository structure
 
@@ -63,6 +71,8 @@ cp .env.example .env
 ```
 
 The example contains local-only placeholder credentials. If you change `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, or `POSTGRES_PORT`, update `DATABASE_URL` to match. Its three-second connection timeout and explicit IPv4 loopback address keep database health failures bounded. The backend fails at startup with a configuration error when `DATABASE_URL` is absent or does not use the `postgresql+psycopg://` scheme.
+
+`REPOSITORY_ALLOWED_ROOT` is the only filesystem tree the ingestion API may read. The example value `.` means the RepoPilot project root regardless of the backend process working directory. Set it to a broader absolute development directory only when you intentionally need to ingest repositories there.
 
 ## Start PostgreSQL
 
@@ -116,6 +126,17 @@ The API is available at `http://localhost:8000`:
 
 - `GET /api/health` checks the FastAPI service without querying PostgreSQL.
 - `GET /api/health/database` executes `SELECT 1` through SQLAlchemy and returns HTTP 503 when PostgreSQL is unavailable.
+- `POST /api/repositories/ingest` scans an allowed local path and creates or reuses a content-addressed snapshot.
+- `GET /api/repositories` lists registered local repositories.
+- `GET /api/repositories/{repository_id}/snapshots` lists a repository's immutable snapshots.
+
+Example ingestion request from the repository root configured by `.env.example`:
+
+```powershell
+Invoke-RestMethod -Method Post -Uri http://localhost:8000/api/repositories/ingest `
+  -ContentType application/json `
+  -Body '{"path":".","name":"RepoPilot"}'
+```
 
 Start the frontend in another terminal from `apps/web`:
 

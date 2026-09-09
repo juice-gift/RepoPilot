@@ -7,6 +7,7 @@ from sqlalchemy import Engine
 
 from repopilot.api.routes.database_health import router as database_health_router
 from repopilot.api.routes.health import router as health_router
+from repopilot.api.routes.repositories import router as repositories_router
 from repopilot.config import Settings
 from repopilot.db.session import (
     create_database_engine,
@@ -33,15 +34,17 @@ def create_app(
             resolved_engine.dispose()
 
     app = FastAPI(title="RepoPilot API", lifespan=lifespan)
+    app.state.settings = resolved_settings
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[resolved_settings.frontend_origin],
         allow_credentials=False,
-        allow_methods=["GET"],
+        allow_methods=["GET", "POST"],
         allow_headers=["*"],
     )
     app.include_router(health_router)
     app.include_router(database_health_router)
+    app.include_router(repositories_router)
     return app
 
 
