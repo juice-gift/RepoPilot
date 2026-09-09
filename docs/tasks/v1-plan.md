@@ -140,6 +140,11 @@ V1 Final Validation.
 - M7 exact-vector evaluation (8 queries, 19 chunks): Hit@1/Recall@1 0.7500, Hit@3/Recall@3 0.8750, Hit@5/Recall@5 1.0000, MRR@5 0.8375.
 - M7 retained hybrid evaluation (same frozen dataset): Hit@1, Recall@1, Hit@3, Recall@3, Hit@5, Recall@5, and MRR@5 all 1.0000.
 - M7 ordinary suite: 51 passed, 7 live database tests skipped; live suite: 59 passed; Ruff and frontend production build passed.
+- Final clean migration validation used a new `repopilot_v1_validation_20260909a` database: upgrade base→`0004`, `alembic check`, downgrade to base, and second upgrade to `0004` all passed; the temporary database was removed afterward.
+- Final clean-database checks: `uv sync --locked`, 59/59 backend tests, Ruff, Compose configuration, `npm ci` with 0 reported vulnerabilities, and the TypeScript/Vite production build all passed.
+- Final evaluation rerun on the clean database reproduced the recorded 8-query vector and hybrid metrics and every expected first-relevant rank.
+- Final clean-database browser pass: API/database health connected; 96 files produced 676 stored vectors; retrieval-only and answer endpoints returned HTTP 200; the answer citation focused its source card; browser console had no warnings/errors.
+- Final Git/scope audit: eight ordered V1 milestone commits follow the Stage 0 baseline, no secret file is tracked, and no V2/later implementation signal was found.
 
 ## Important Decisions
 
@@ -160,8 +165,8 @@ V1 Final Validation.
 
 ## Blockers
 
-- None.
+- Final external-provider validation is blocked because `OPENAI_API_KEY` is absent from both the process environment and the ignored root `.env`. The OpenAI embedding and Responses adapters are contract-tested, and the complete local deterministic pipeline passes, but a live `text-embedding-3-small` call and a live `gpt-5.6-luna` grounded answer cannot be executed. The V1 acceptance criterion that an LLM can answer from retrieved repository evidence therefore remains unverified; this plan is intentionally not marked complete.
 
 ## Remaining Work
 
-- Run final clean migration, full validation, end-to-end browser/API pipeline, acceptance-criteria audit, and Git/scope review; perform live OpenAI provider checks if credentials become available.
+- Configure `OPENAI_API_KEY`, run a minimal live Golden Repository embedding/index request and grounded Responses request, record the provider/model results, re-run the final acceptance audit, mark this plan complete, and issue the V1 Completion Report. Do not begin V2.
