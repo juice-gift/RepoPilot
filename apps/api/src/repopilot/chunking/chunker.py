@@ -398,4 +398,13 @@ def _build_embedding_content(
     ]
     if symbol_name:
         metadata.append(f"Symbol: {symbol_name}")
-    return "\n".join([*metadata, "Source:", raw_content])
+    return "\n".join([*metadata, "Source:", _redact_sensitive_values(raw_content)])
+
+
+def _redact_sensitive_values(content: str) -> str:
+    assignment_pattern = re.compile(
+        r"(?i)\b(api[_-]?key|password|secret|token)\b(\s*[:=]\s*)(['\"])"
+        r"([^'\"\r\n]{6,})(\3)"
+    )
+    redacted = assignment_pattern.sub(r"\1\2\3[REDACTED]\5", content)
+    return re.sub(r"\bsk-[A-Za-z0-9_-]{20,}\b", "[REDACTED_API_KEY]", redacted)

@@ -21,7 +21,7 @@ Local repository path
 -> PostgreSQL repository, snapshot, and source-file records
 ```
 
-The UI reports backend and database connectivity separately. Alembic owns the database migration state and enables pgvector plus the V1 ingestion tables. Embedding, vector, retrieval, generation, citation, and evidence UI work remain planned V1 milestones.
+The UI reports backend and database connectivity separately. Alembic owns the database migration state and enables pgvector plus the V1 ingestion, chunk, and 512-dimensional vector fields. Repository snapshots can now be deterministically chunked, embedded, and exact-searched. Retrieval API, generation, citation, and evidence UI work remain planned V1 milestones.
 
 The ingestion scanner currently supports Python, TypeScript, JavaScript, TSX, JSX, and Markdown. It excludes common dependency/build directories, unsupported and oversized files, binary/non-UTF-8 content, generated/minified files, and sensitive filenames such as `.env`, private keys, credentials, and secrets.
 
@@ -73,6 +73,8 @@ cp .env.example .env
 The example contains local-only placeholder credentials. If you change `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, or `POSTGRES_PORT`, update `DATABASE_URL` to match. Its three-second connection timeout and explicit IPv4 loopback address keep database health failures bounded. The backend fails at startup with a configuration error when `DATABASE_URL` is absent or does not use the `postgresql+psycopg://` scheme.
 
 `REPOSITORY_ALLOWED_ROOT` is the only filesystem tree the ingestion API may read. The example value `.` means the RepoPilot project root regardless of the backend process working directory. Set it to a broader absolute development directory only when you intentionally need to ingest repositories there.
+
+The zero-cost local setup uses `EMBEDDING_PROVIDER=deterministic`. It produces normalized token-hash vectors for repeatable tests and evaluation, not production semantic quality. To use the external provider, set `EMBEDDING_PROVIDER=openai` and provide `OPENAI_API_KEY`. V1 selects [`text-embedding-3-small`](https://developers.openai.com/api/docs/models/text-embedding-3-small) with an explicit 512-dimensional output supported by the official [embeddings API](https://developers.openai.com/api/reference/python/resources/embeddings/methods/create). Likely secret assignments are redacted from embedding text while raw citation content remains unchanged.
 
 ## Start PostgreSQL
 
@@ -131,6 +133,7 @@ The API is available at `http://localhost:8000`:
 - `GET /api/repositories/{repository_id}/snapshots` lists a repository's immutable snapshots.
 - `POST /api/repositories/{repository_id}/snapshots/{snapshot_id}/chunks` creates or reuses the current code-aware chunks.
 - `GET /api/repositories/{repository_id}/snapshots/{snapshot_id}/chunks` lists inspectable chunk metadata and content.
+- `POST /api/repositories/{repository_id}/snapshots/{snapshot_id}/index` creates or reuses all snapshot embeddings and records model, dimensions, count, and duration.
 
 Example ingestion request from the repository root configured by `.env.example`:
 

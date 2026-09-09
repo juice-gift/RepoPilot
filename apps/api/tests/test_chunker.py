@@ -105,3 +105,13 @@ def test_oversized_single_line_is_split_without_losing_line_metadata() -> None:
 
     assert [len(chunk.raw_content) for chunk in chunks] == [MAX_CHUNK_CHARACTERS, 10]
     assert all((chunk.start_line, chunk.end_line) == (1, 1) for chunk in chunks)
+
+
+def test_embedding_content_redacts_likely_secret_values_without_changing_raw() -> None:
+    content = 'api_key = "sk-example-secret-value-123456"\n'
+
+    chunk = chunk_source("config.py", "python", content)[0]
+
+    assert "sk-example-secret-value-123456" in chunk.raw_content
+    assert "sk-example-secret-value-123456" not in chunk.embedding_content
+    assert "[REDACTED]" in chunk.embedding_content

@@ -40,6 +40,11 @@ class SnapshotResponse(BaseModel):
     total_bytes: int
     chunk_count: int
     chunking_version: str | None
+    embedding_provider: str | None
+    embedding_model: str | None
+    embedding_dimensions: int | None
+    indexed_chunk_count: int
+    indexed_at: datetime | None
     created_at: datetime
 
 
@@ -76,6 +81,11 @@ def _snapshot_response(snapshot: RepositorySnapshot) -> SnapshotResponse:
         total_bytes=snapshot.total_bytes,
         chunk_count=snapshot.chunk_count,
         chunking_version=snapshot.chunking_version,
+        embedding_provider=snapshot.embedding_provider,
+        embedding_model=snapshot.embedding_model,
+        embedding_dimensions=snapshot.embedding_dimensions,
+        indexed_chunk_count=snapshot.indexed_chunk_count,
+        indexed_at=snapshot.indexed_at,
         created_at=snapshot.created_at,
     )
 

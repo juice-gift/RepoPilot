@@ -48,6 +48,11 @@ def test_ingest_repository_api_returns_scan_evidence(
         total_bytes=10,
         chunk_count=0,
         chunking_version=None,
+        embedding_provider=None,
+        embedding_model=None,
+        embedding_dimensions=None,
+        indexed_chunk_count=0,
+        indexed_at=None,
         created_at=now,
     )
     scan = ScanResult(

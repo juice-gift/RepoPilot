@@ -8,6 +8,7 @@ from sqlalchemy import Engine
 from repopilot.api.routes.chunks import router as chunks_router
 from repopilot.api.routes.database_health import router as database_health_router
 from repopilot.api.routes.health import router as health_router
+from repopilot.api.routes.indexing import router as indexing_router
 from repopilot.api.routes.repositories import router as repositories_router
 from repopilot.config import Settings
 from repopilot.db.session import (
@@ -47,6 +48,7 @@ def create_app(
     app.include_router(database_health_router)
     app.include_router(repositories_router)
     app.include_router(chunks_router)
+    app.include_router(indexing_router)
     return app
 
 

@@ -11,15 +11,15 @@ Deliver a debuggable, testable, evidence-grounded repository-level Codebase RAG 
 | M0 — Foundation Check | Verify the Stage 0 application, database, migration, tests, and Git baseline; make only required reproducibility fixes | Complete |
 | M1 — Repository Ingestion | Secure local repository registration, snapshots, scanning, filtering, and inspectable ingestion API | Complete |
 | M2 — Code-aware Chunking | Structure-aware Python/TypeScript/JavaScript/TSX/JSX/Markdown chunks with bounded size and citation metadata | Complete |
-| M3 — Embedding + Vector Index | Configured embeddings, migration-controlled pgvector storage, idempotent snapshot indexing, and exact vector search | In progress |
-| M4 — Retrieval Engine | Independently callable, snapshot-scoped ranked evidence retrieval with explicit API contracts | Not started |
+| M3 — Embedding + Vector Index | Configured embeddings, migration-controlled pgvector storage, idempotent snapshot indexing, and exact vector search | Complete |
+| M4 — Retrieval Engine | Independently callable, snapshot-scoped ranked evidence retrieval with explicit API contracts | In progress |
 | M5 — RAG Generation + Citation | Bounded context builder, grounded generation, evidence-ID citations, and deterministic citation resolution | Not started |
 | M6 — React Product UI | Local repository indexing and question workflow with answer, evidence, citations, and failure/loading states | Not started |
 | M7 — Retrieval Quality Improvement / Evaluation | Golden repository, evaluation dataset, vector baseline metrics, evidence-based improvement decision, and recorded results | Not started |
 
 ## Current Milestone
 
-M3 — Embedding + Vector Index.
+M4 — Retrieval Engine.
 
 ## Milestone Tasks
 
@@ -90,6 +90,9 @@ M3 — Embedding + Vector Index.
 - Added independently testable semantic chunking using Python AST functions/classes/methods, Markdown headings, and brace-aware JS/TS family functions/classes.
 - Added deterministic size-bounded fallback splitting, versioned chunk metadata, and distinct raw/embedding content.
 - Added migration-controlled code-chunk persistence and idempotent chunk creation/listing APIs.
+- Added an official OpenAI `text-embedding-3-small` adapter with explicit 512-dimensional output and typed secret-backed configuration.
+- Added deterministic normalized token-hash embeddings for reproducible local tests/evaluation, including identifier-aware tokens.
+- Added migration-controlled pgvector columns, idempotent snapshot indexing metadata/API, secret redaction for embedding text, and exact cosine search storage primitives.
 
 ## Validation Results
 
@@ -107,6 +110,11 @@ M3 — Embedding + Vector Index.
 - M2 `RUN_DATABASE_TESTS=1 uv run pytest`: 28 passed.
 - M2 `uv run ruff check src tests migrations`: passed.
 - M2 `uv run alembic check`: no new upgrade operations detected at `0003_add_code_chunks`.
+- M3 `uv run pytest`: 33 passed, 4 live database tests skipped.
+- M3 `RUN_DATABASE_TESTS=1 uv run pytest`: 37 passed, including real pgvector storage and exact cosine search.
+- M3 `uv run ruff check src tests migrations`: passed.
+- M3 migration upgraded to `0004_add_vector_index`; `uv run alembic check` reported no missing operations.
+- Live OpenAI embedding call: not run because no `OPENAI_API_KEY` is configured; adapter request/response contract is covered with a deterministic client fake.
 
 ## Important Decisions
 
@@ -117,6 +125,8 @@ M3 — Embedding + Vector Index.
 - Store accepted source content so later chunking/indexing is reproducible even if the working repository changes.
 - Use standard-library structure parsing for the V1 baseline; syntax failures fall back to bounded file chunks instead of blocking ingestion.
 - Keep chunking idempotent for a snapshot and chunking version so stable chunks retain their database evidence IDs.
+- Select `text-embedding-3-small` at 512 dimensions based on current official OpenAI model/API documentation; exact pgvector columns deliberately lock this V1 choice.
+- Keep deterministic embeddings explicit and labeled as a local evaluation/test provider, not as evidence of external-model quality.
 
 ## Blockers
 
@@ -124,4 +134,4 @@ M3 — Embedding + Vector Index.
 
 ## Remaining Work
 
-- Execute M3–M7 in order.
+- Execute M4–M7 in order; perform a live OpenAI provider check if credentials become available before final validation.

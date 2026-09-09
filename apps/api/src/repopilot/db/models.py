@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from pgvector.sqlalchemy import Vector
 from sqlalchemy import (
     BigInteger,
     DateTime,
@@ -52,6 +53,13 @@ class RepositorySnapshot(Base):
     total_bytes: Mapped[int] = mapped_column(BigInteger)
     chunk_count: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
     chunking_version: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    embedding_provider: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    embedding_model: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    embedding_dimensions: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    indexed_chunk_count: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+    indexed_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
@@ -114,5 +122,11 @@ class CodeChunk(Base):
     chunking_version: Mapped[str] = mapped_column(String(64))
     raw_content: Mapped[str] = mapped_column(Text)
     embedding_content: Mapped[str] = mapped_column(Text)
+    embedding: Mapped[list[float] | None] = mapped_column(Vector(512), nullable=True)
+    embedding_provider: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    embedding_model: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    embedded_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
 
     snapshot_file: Mapped[SnapshotFile] = relationship(back_populates="chunks")
