@@ -46,6 +46,8 @@ def test_ingest_repository_api_returns_scan_evidence(
         accepted_file_count=1,
         skipped_file_count=1,
         total_bytes=10,
+        chunk_count=0,
+        chunking_version=None,
         created_at=now,
     )
     scan = ScanResult(

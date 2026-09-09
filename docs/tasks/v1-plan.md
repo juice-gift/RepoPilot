@@ -10,8 +10,8 @@ Deliver a debuggable, testable, evidence-grounded repository-level Codebase RAG 
 | --- | --- | --- |
 | M0 — Foundation Check | Verify the Stage 0 application, database, migration, tests, and Git baseline; make only required reproducibility fixes | Complete |
 | M1 — Repository Ingestion | Secure local repository registration, snapshots, scanning, filtering, and inspectable ingestion API | Complete |
-| M2 — Code-aware Chunking | Structure-aware Python/TypeScript/JavaScript/TSX/JSX/Markdown chunks with bounded size and citation metadata | In progress |
-| M3 — Embedding + Vector Index | Configured embeddings, migration-controlled pgvector storage, idempotent snapshot indexing, and exact vector search | Not started |
+| M2 — Code-aware Chunking | Structure-aware Python/TypeScript/JavaScript/TSX/JSX/Markdown chunks with bounded size and citation metadata | Complete |
+| M3 — Embedding + Vector Index | Configured embeddings, migration-controlled pgvector storage, idempotent snapshot indexing, and exact vector search | In progress |
 | M4 — Retrieval Engine | Independently callable, snapshot-scoped ranked evidence retrieval with explicit API contracts | Not started |
 | M5 — RAG Generation + Citation | Bounded context builder, grounded generation, evidence-ID citations, and deterministic citation resolution | Not started |
 | M6 — React Product UI | Local repository indexing and question workflow with answer, evidence, citations, and failure/loading states | Not started |
@@ -19,7 +19,7 @@ Deliver a debuggable, testable, evidence-grounded repository-level Codebase RAG 
 
 ## Current Milestone
 
-M2 — Code-aware Chunking.
+M3 — Embedding + Vector Index.
 
 ## Milestone Tasks
 
@@ -87,6 +87,9 @@ M2 — Code-aware Chunking.
 - Added a configured local-filesystem boundary, deterministic supported-language scanner, safety filters, and content-addressed snapshot identity.
 - Added migration-controlled repositories, snapshots, and accepted source-file persistence with idempotent repeated ingestion.
 - Added repository ingestion/listing APIs, scan evidence, tests, and current setup/API documentation.
+- Added independently testable semantic chunking using Python AST functions/classes/methods, Markdown headings, and brace-aware JS/TS family functions/classes.
+- Added deterministic size-bounded fallback splitting, versioned chunk metadata, and distinct raw/embedding content.
+- Added migration-controlled code-chunk persistence and idempotent chunk creation/listing APIs.
 
 ## Validation Results
 
@@ -100,6 +103,10 @@ M2 — Code-aware Chunking.
 - M1 `RUN_DATABASE_TESTS=1 uv run pytest`: 21 passed.
 - `uv run alembic check`: no new upgrade operations detected at `0002_add_repository_ingestion`.
 - M1 `npm run build`: passed.
+- M2 `uv run pytest`: 25 passed, 3 live database tests skipped.
+- M2 `RUN_DATABASE_TESTS=1 uv run pytest`: 28 passed.
+- M2 `uv run ruff check src tests migrations`: passed.
+- M2 `uv run alembic check`: no new upgrade operations detected at `0003_add_code_chunks`.
 
 ## Important Decisions
 
@@ -108,6 +115,8 @@ M2 — Code-aware Chunking.
 - Use exact vector search as the mandatory first retrieval baseline; evaluate before retaining lexical or hybrid improvements.
 - Define a snapshot as the deterministic state of accepted, indexable source content; changes to excluded content do not create an index snapshot.
 - Store accepted source content so later chunking/indexing is reproducible even if the working repository changes.
+- Use standard-library structure parsing for the V1 baseline; syntax failures fall back to bounded file chunks instead of blocking ingestion.
+- Keep chunking idempotent for a snapshot and chunking version so stable chunks retain their database evidence IDs.
 
 ## Blockers
 
@@ -115,4 +124,4 @@ M2 — Code-aware Chunking.
 
 ## Remaining Work
 
-- Execute M2–M7 in order.
+- Execute M3–M7 in order.

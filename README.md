@@ -129,6 +129,8 @@ The API is available at `http://localhost:8000`:
 - `POST /api/repositories/ingest` scans an allowed local path and creates or reuses a content-addressed snapshot.
 - `GET /api/repositories` lists registered local repositories.
 - `GET /api/repositories/{repository_id}/snapshots` lists a repository's immutable snapshots.
+- `POST /api/repositories/{repository_id}/snapshots/{snapshot_id}/chunks` creates or reuses the current code-aware chunks.
+- `GET /api/repositories/{repository_id}/snapshots/{snapshot_id}/chunks` lists inspectable chunk metadata and content.
 
 Example ingestion request from the repository root configured by `.env.example`:
 
@@ -137,6 +139,8 @@ Invoke-RestMethod -Method Post -Uri http://localhost:8000/api/repositories/inges
   -ContentType application/json `
   -Body '{"path":".","name":"RepoPilot"}'
 ```
+
+Chunking uses Python AST declarations, Markdown heading sections, and lightweight brace-aware JavaScript/TypeScript family declarations. It prefers functions, Python methods/classes, and headings, falls back safely for invalid syntax, and caps every chunk at 4,000 characters and 160 lines. Raw source remains separate from the metadata-enriched embedding text.
 
 Start the frontend in another terminal from `apps/web`:
 

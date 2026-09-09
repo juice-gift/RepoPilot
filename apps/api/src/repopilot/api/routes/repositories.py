@@ -38,6 +38,8 @@ class SnapshotResponse(BaseModel):
     accepted_file_count: int
     skipped_file_count: int
     total_bytes: int
+    chunk_count: int
+    chunking_version: str | None
     created_at: datetime
 
 
@@ -72,6 +74,8 @@ def _snapshot_response(snapshot: RepositorySnapshot) -> SnapshotResponse:
         accepted_file_count=snapshot.accepted_file_count,
         skipped_file_count=snapshot.skipped_file_count,
         total_bytes=snapshot.total_bytes,
+        chunk_count=snapshot.chunk_count,
+        chunking_version=snapshot.chunking_version,
         created_at=snapshot.created_at,
     )
 

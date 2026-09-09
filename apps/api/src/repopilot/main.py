@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import Engine
 
+from repopilot.api.routes.chunks import router as chunks_router
 from repopilot.api.routes.database_health import router as database_health_router
 from repopilot.api.routes.health import router as health_router
 from repopilot.api.routes.repositories import router as repositories_router
@@ -45,6 +46,7 @@ def create_app(
     app.include_router(health_router)
     app.include_router(database_health_router)
     app.include_router(repositories_router)
+    app.include_router(chunks_router)
     return app
 
 
