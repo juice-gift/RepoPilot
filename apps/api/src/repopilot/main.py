@@ -10,6 +10,7 @@ from repopilot.api.routes.database_health import router as database_health_route
 from repopilot.api.routes.health import router as health_router
 from repopilot.api.routes.indexing import router as indexing_router
 from repopilot.api.routes.repositories import router as repositories_router
+from repopilot.api.routes.retrieval import router as retrieval_router
 from repopilot.config import Settings
 from repopilot.db.session import (
     create_database_engine,
@@ -49,6 +50,7 @@ def create_app(
     app.include_router(repositories_router)
     app.include_router(chunks_router)
     app.include_router(indexing_router)
+    app.include_router(retrieval_router)
     return app
 
 

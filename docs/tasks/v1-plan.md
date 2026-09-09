@@ -12,14 +12,14 @@ Deliver a debuggable, testable, evidence-grounded repository-level Codebase RAG 
 | M1 — Repository Ingestion | Secure local repository registration, snapshots, scanning, filtering, and inspectable ingestion API | Complete |
 | M2 — Code-aware Chunking | Structure-aware Python/TypeScript/JavaScript/TSX/JSX/Markdown chunks with bounded size and citation metadata | Complete |
 | M3 — Embedding + Vector Index | Configured embeddings, migration-controlled pgvector storage, idempotent snapshot indexing, and exact vector search | Complete |
-| M4 — Retrieval Engine | Independently callable, snapshot-scoped ranked evidence retrieval with explicit API contracts | In progress |
-| M5 — RAG Generation + Citation | Bounded context builder, grounded generation, evidence-ID citations, and deterministic citation resolution | Not started |
+| M4 — Retrieval Engine | Independently callable, snapshot-scoped ranked evidence retrieval with explicit API contracts | Complete |
+| M5 — RAG Generation + Citation | Bounded context builder, grounded generation, evidence-ID citations, and deterministic citation resolution | In progress |
 | M6 — React Product UI | Local repository indexing and question workflow with answer, evidence, citations, and failure/loading states | Not started |
 | M7 — Retrieval Quality Improvement / Evaluation | Golden repository, evaluation dataset, vector baseline metrics, evidence-based improvement decision, and recorded results | Not started |
 
 ## Current Milestone
 
-M4 — Retrieval Engine.
+M5 — RAG Generation + Citation.
 
 ## Milestone Tasks
 
@@ -93,6 +93,8 @@ M4 — Retrieval Engine.
 - Added an official OpenAI `text-embedding-3-small` adapter with explicit 512-dimensional output and typed secret-backed configuration.
 - Added deterministic normalized token-hash embeddings for reproducible local tests/evaluation, including identifier-aware tokens.
 - Added migration-controlled pgvector columns, idempotent snapshot indexing metadata/API, secret redaction for embedding text, and exact cosine search storage primitives.
+- Added an independent retriever that validates index/provider identity, embeds questions, and returns ranked evidence with real chunk/source metadata plus cosine score and distance.
+- Added the typed `/api/retrieve` contract and live PostgreSQL isolation coverage proving one repository/snapshot cannot return another's chunks.
 
 ## Validation Results
 
@@ -115,6 +117,9 @@ M4 — Retrieval Engine.
 - M3 `uv run ruff check src tests migrations`: passed.
 - M3 migration upgraded to `0004_add_vector_index`; `uv run alembic check` reported no missing operations.
 - Live OpenAI embedding call: not run because no `OPENAI_API_KEY` is configured; adapter request/response contract is covered with a deterministic client fake.
+- M4 `uv run pytest`: 36 passed, 5 live database tests skipped (before the final whitespace-contract regression case).
+- M4 `RUN_DATABASE_TESTS=1 uv run pytest`: 41 passed, including cross-repository/snapshot retrieval isolation.
+- M4 focused retriever/API regression suite: 4 passed; Ruff passed.
 
 ## Important Decisions
 
@@ -127,6 +132,7 @@ M4 — Retrieval Engine.
 - Keep chunking idempotent for a snapshot and chunking version so stable chunks retain their database evidence IDs.
 - Select `text-embedding-3-small` at 512 dimensions based on current official OpenAI model/API documentation; exact pgvector columns deliberately lock this V1 choice.
 - Keep deterministic embeddings explicit and labeled as a local evaluation/test provider, not as evidence of external-model quality.
+- Keep retrieval entirely independent of generation so ranked source evidence can be inspected and evaluated on its own.
 
 ## Blockers
 
@@ -134,4 +140,4 @@ M4 — Retrieval Engine.
 
 ## Remaining Work
 
-- Execute M4–M7 in order; perform a live OpenAI provider check if credentials become available before final validation.
+- Execute M5–M7 in order; perform live OpenAI provider checks if credentials become available before final validation.

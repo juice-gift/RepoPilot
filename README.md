@@ -134,6 +134,7 @@ The API is available at `http://localhost:8000`:
 - `POST /api/repositories/{repository_id}/snapshots/{snapshot_id}/chunks` creates or reuses the current code-aware chunks.
 - `GET /api/repositories/{repository_id}/snapshots/{snapshot_id}/chunks` lists inspectable chunk metadata and content.
 - `POST /api/repositories/{repository_id}/snapshots/{snapshot_id}/index` creates or reuses all snapshot embeddings and records model, dimensions, count, and duration.
+- `POST /api/retrieve` independently returns ranked, snapshot-scoped evidence with chunk IDs, source locations, cosine score/distance, and raw content; it never invokes answer generation.
 
 Example ingestion request from the repository root configured by `.env.example`:
 
