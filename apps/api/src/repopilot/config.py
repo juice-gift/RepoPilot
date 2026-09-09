@@ -15,6 +15,11 @@ class Settings(BaseSettings):
     embedding_model: str = Field(default="text-embedding-3-small", min_length=1)
     embedding_dimensions: int = Field(default=512, ge=1)
     openai_api_key: SecretStr | None = None
+    generation_provider: Literal["openai", "deterministic"] = "openai"
+    generation_model: str = Field(default="gpt-5.6-luna", min_length=1)
+    generation_max_output_tokens: int = Field(default=1_200, ge=64, le=16_000)
+    context_character_limit: int = Field(default=24_000, ge=1_000, le=200_000)
+    context_max_evidence: int = Field(default=8, ge=1, le=20)
 
     model_config = SettingsConfigDict(
         env_file=REPOSITORY_ROOT / ".env",

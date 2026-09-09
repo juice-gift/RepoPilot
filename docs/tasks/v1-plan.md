@@ -13,13 +13,13 @@ Deliver a debuggable, testable, evidence-grounded repository-level Codebase RAG 
 | M2 — Code-aware Chunking | Structure-aware Python/TypeScript/JavaScript/TSX/JSX/Markdown chunks with bounded size and citation metadata | Complete |
 | M3 — Embedding + Vector Index | Configured embeddings, migration-controlled pgvector storage, idempotent snapshot indexing, and exact vector search | Complete |
 | M4 — Retrieval Engine | Independently callable, snapshot-scoped ranked evidence retrieval with explicit API contracts | Complete |
-| M5 — RAG Generation + Citation | Bounded context builder, grounded generation, evidence-ID citations, and deterministic citation resolution | In progress |
-| M6 — React Product UI | Local repository indexing and question workflow with answer, evidence, citations, and failure/loading states | Not started |
+| M5 — RAG Generation + Citation | Bounded context builder, grounded generation, evidence-ID citations, and deterministic citation resolution | Complete |
+| M6 — React Product UI | Local repository indexing and question workflow with answer, evidence, citations, and failure/loading states | In progress |
 | M7 — Retrieval Quality Improvement / Evaluation | Golden repository, evaluation dataset, vector baseline metrics, evidence-based improvement decision, and recorded results | Not started |
 
 ## Current Milestone
 
-M5 — RAG Generation + Citation.
+M6 — React Product UI.
 
 ## Milestone Tasks
 
@@ -95,6 +95,9 @@ M5 — RAG Generation + Citation.
 - Added migration-controlled pgvector columns, idempotent snapshot indexing metadata/API, secret redaction for embedding text, and exact cosine search storage primitives.
 - Added an independent retriever that validates index/provider identity, embeds questions, and returns ranked evidence with real chunk/source metadata plus cosine score and distance.
 - Added the typed `/api/retrieve` contract and live PostgreSQL isolation coverage proving one repository/snapshot cannot return another's chunks.
+- Added an explicit ordered/deduplicated context builder with request-scoped evidence IDs, evidence-count limit, and conservative character budget/truncation.
+- Added a grounded OpenAI Responses adapter using `gpt-5.6-luna`, `store=false`, no tools, bounded output, and separated untrusted repository input.
+- Added deterministic extractive generation for local end-to-end validation, authentic backend citation resolution, invalid-ID removal, and `/api/ask` answer/evidence diagnostics.
 
 ## Validation Results
 
@@ -120,6 +123,10 @@ M5 — RAG Generation + Citation.
 - M4 `uv run pytest`: 36 passed, 5 live database tests skipped (before the final whitespace-contract regression case).
 - M4 `RUN_DATABASE_TESTS=1 uv run pytest`: 41 passed, including cross-repository/snapshot retrieval isolation.
 - M4 focused retriever/API regression suite: 4 passed; Ruff passed.
+- M5 `uv run pytest`: 43 passed, 6 live database tests skipped.
+- M5 `RUN_DATABASE_TESTS=1 uv run pytest`: 49 passed, including repository-to-answer-to-real-citation and `/api/ask` coverage.
+- M5 `uv run ruff check src tests migrations`: passed.
+- Live OpenAI Responses call: not run because no `OPENAI_API_KEY` is configured; the official SDK contract is covered with a client fake.
 
 ## Important Decisions
 
@@ -133,6 +140,8 @@ M5 — RAG Generation + Citation.
 - Select `text-embedding-3-small` at 512 dimensions based on current official OpenAI model/API documentation; exact pgvector columns deliberately lock this V1 choice.
 - Keep deterministic embeddings explicit and labeled as a local evaluation/test provider, not as evidence of external-model quality.
 - Keep retrieval entirely independent of generation so ranked source evidence can be inspected and evaluated on its own.
+- Select `gpt-5.6-luna` through the Responses API for cost-conscious external generation based on current official OpenAI documentation.
+- Treat repository text only as delimited untrusted input; resolve model `[E#]` references against request context and never accept model-authored source metadata.
 
 ## Blockers
 
@@ -140,4 +149,4 @@ M5 — RAG Generation + Citation.
 
 ## Remaining Work
 
-- Execute M5–M7 in order; perform live OpenAI provider checks if credentials become available before final validation.
+- Execute M6–M7 in order; perform live OpenAI provider checks if credentials become available before final validation.

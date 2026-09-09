@@ -135,6 +135,9 @@ The API is available at `http://localhost:8000`:
 - `GET /api/repositories/{repository_id}/snapshots/{snapshot_id}/chunks` lists inspectable chunk metadata and content.
 - `POST /api/repositories/{repository_id}/snapshots/{snapshot_id}/index` creates or reuses all snapshot embeddings and records model, dimensions, count, and duration.
 - `POST /api/retrieve` independently returns ranked, snapshot-scoped evidence with chunk IDs, source locations, cosine score/distance, and raw content; it never invokes answer generation.
+- `POST /api/ask` retrieves evidence, builds bounded untrusted-data context, generates a grounded answer, and resolves `[E#]` references into backend-derived citations.
+
+V1 selects [`gpt-5.6-luna`](https://developers.openai.com/api/docs/models/gpt-5.6-luna) for cost-conscious external generation through the official [Responses API](https://developers.openai.com/api/reference/python/resources/responses/methods/create). Requests use `store=false`, an explicit output bound, and grounding instructions separated from untrusted repository content. The deterministic local provider is an extractive pipeline test aid, not an LLM-quality substitute.
 
 Example ingestion request from the repository root configured by `.env.example`:
 
