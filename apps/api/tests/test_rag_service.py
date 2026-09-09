@@ -50,6 +50,7 @@ def test_rag_separates_untrusted_evidence_and_resolves_citations(
         top_k=5,
         embedding_provider="deterministic",
         embedding_model="deterministic-token-hash-v1",
+        retrieval_strategy="hybrid",
         duration_ms=1.0,
         evidence=(evidence,),
     )
@@ -89,6 +90,7 @@ def test_rag_returns_uncertainty_without_calling_generation(
         top_k=5,
         embedding_provider="deterministic",
         embedding_model="deterministic-token-hash-v1",
+        retrieval_strategy="hybrid",
         duration_ms=1.0,
         evidence=(),
     )

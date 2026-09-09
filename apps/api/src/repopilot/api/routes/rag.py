@@ -76,6 +76,7 @@ class AskResponse(BaseModel):
     answer: str
     embedding_provider: str
     embedding_model: str
+    retrieval_strategy: Literal["vector", "hybrid"]
     generation_provider: str
     generation_model: str
     retrieval_duration_ms: float
@@ -111,6 +112,7 @@ def ask_repository_question(
             context_max_evidence=settings.context_max_evidence,
             embedding_provider=embedding_provider,
             generation_provider=generation_provider,
+            retrieval_strategy=settings.retrieval_strategy,
         )
     except (EmbeddingConfigurationError, GenerationConfigurationError) as exc:
         raise HTTPException(
@@ -147,6 +149,7 @@ def ask_repository_question(
         answer=result.answer,
         embedding_provider=result.retrieval.embedding_provider,
         embedding_model=result.retrieval.embedding_model,
+        retrieval_strategy=result.retrieval.retrieval_strategy,
         generation_provider=result.generation_provider,
         generation_model=result.generation_model,
         retrieval_duration_ms=result.retrieval.duration_ms,

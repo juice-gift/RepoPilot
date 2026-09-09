@@ -24,6 +24,7 @@ def test_retrieval_api_exposes_evidence_contract(
         top_k=5,
         embedding_provider=provider.provider_name,
         embedding_model=provider.model_name,
+        retrieval_strategy="hybrid",
         duration_ms=1.25,
         evidence=(
             RetrievalEvidence(
@@ -79,6 +80,7 @@ def test_retrieval_api_exposes_evidence_contract(
     assert response.json()["evidence"][0]["file_path"] == "app.py"
     assert response.json()["evidence"][0]["start_line"] == 1
     assert response.json()["evidence"][0]["score"] == 0.9
+    assert response.json()["retrieval_strategy"] == "hybrid"
 
 
 def test_retrieval_api_rejects_whitespace_question(tmp_path: Path) -> None:

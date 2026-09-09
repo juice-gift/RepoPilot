@@ -27,6 +27,7 @@ export interface RetrieveResponse {
   top_k: number;
   embedding_provider: string;
   embedding_model: string;
+  retrieval_strategy: "vector" | "hybrid";
   duration_ms: number;
   evidence: Evidence[];
 }
@@ -51,6 +52,7 @@ export interface AskResponse {
   answer: string;
   embedding_provider: string;
   embedding_model: string;
+  retrieval_strategy: "vector" | "hybrid";
   generation_provider: string;
   generation_model: string;
   retrieval_duration_ms: number;
@@ -85,6 +87,7 @@ function isRetrieveResponse(value: unknown): value is RetrieveResponse {
     && typeof value.top_k === "number"
     && typeof value.embedding_provider === "string"
     && typeof value.embedding_model === "string"
+    && (value.retrieval_strategy === "vector" || value.retrieval_strategy === "hybrid")
     && typeof value.duration_ms === "number"
     && Array.isArray(value.evidence)
     && value.evidence.every(isEvidence);
@@ -107,6 +110,7 @@ function isAskResponse(value: unknown): value is AskResponse {
     && typeof value.answer === "string"
     && typeof value.embedding_provider === "string"
     && typeof value.embedding_model === "string"
+    && (value.retrieval_strategy === "vector" || value.retrieval_strategy === "hybrid")
     && typeof value.generation_provider === "string"
     && typeof value.generation_model === "string"
     && typeof value.retrieval_duration_ms === "number"

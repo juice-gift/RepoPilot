@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     embedding_provider: Literal["openai", "deterministic"] = "openai"
     embedding_model: str = Field(default="text-embedding-3-small", min_length=1)
     embedding_dimensions: int = Field(default=512, ge=1)
+    retrieval_strategy: Literal["vector", "hybrid"] = "hybrid"
     openai_api_key: SecretStr | None = None
     generation_provider: Literal["openai", "deterministic"] = "openai"
     generation_model: str = Field(default="gpt-5.6-luna", min_length=1)

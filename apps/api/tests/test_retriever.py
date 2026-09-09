@@ -50,6 +50,7 @@ def test_retriever_returns_ranked_source_evidence(
         question="  where is the answer?  ",
         top_k=3,
         provider=provider,
+        strategy="vector",
     )
 
     assert result.question == "where is the answer?"

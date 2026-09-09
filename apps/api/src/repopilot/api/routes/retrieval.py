@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel, Field, field_validator
@@ -56,6 +56,7 @@ class RetrieveResponse(BaseModel):
     top_k: int
     embedding_provider: str
     embedding_model: str
+    retrieval_strategy: Literal["vector", "hybrid"]
     duration_ms: float
     evidence: list[RetrievalEvidenceResponse]
 
@@ -79,6 +80,7 @@ def retrieve_repository_evidence(
             question=payload.question,
             top_k=payload.top_k,
             provider=provider,
+            strategy=settings.retrieval_strategy,
         )
     except EmbeddingConfigurationError as exc:
         raise HTTPException(
@@ -98,6 +100,7 @@ def retrieve_repository_evidence(
         top_k=result.top_k,
         embedding_provider=result.embedding_provider,
         embedding_model=result.embedding_model,
+        retrieval_strategy=result.retrieval_strategy,
         duration_ms=result.duration_ms,
         evidence=[RetrievalEvidenceResponse(**item.__dict__) for item in result.evidence],
     )

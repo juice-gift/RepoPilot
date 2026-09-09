@@ -321,7 +321,7 @@ function App() {
               <h3>{retrieval.evidence.length} ranked source chunks</h3>
               <p>No generation model was called. Use the evidence panel to judge relevance directly.</p>
               <div className="diagnostics">
-                <span>{retrieval.embedding_model}</span><span>{retrieval.duration_ms.toFixed(1)} ms</span><span>Top {retrieval.top_k}</span>
+                <span>{retrieval.retrieval_strategy}</span><span>{retrieval.embedding_model}</span><span>{retrieval.duration_ms.toFixed(1)} ms</span><span>Top {retrieval.top_k}</span>
               </div>
             </div>
           )}
@@ -346,6 +346,7 @@ function App() {
                 <span>Generate {answer.generation_duration_ms.toFixed(1)} ms</span>
                 <span>{answer.context_character_count}/{answer.context_character_limit} chars</span>
                 <span>{answer.generation_model}</span>
+                <span>{answer.retrieval_strategy} retrieval</span>
               </div>
               {answer.invalid_evidence_ids.length > 0 && <p className="warning">Removed invalid model citations: {answer.invalid_evidence_ids.join(", ")}</p>}
             </div>

@@ -33,7 +33,7 @@ The ingestion scanner currently supports Python, TypeScript, JavaScript, TSX, JS
 
 ## Planned functionality
 
-The remaining V1 milestone adds a controlled Golden Repository, retrieval metrics, and a measured quality decision. Agent workflows, GitHub/MCP integration, and production engineering belong to later versions.
+V1 validation is tracked in `docs/tasks/v1-plan.md`. Agent workflows, GitHub/MCP integration, and production engineering belong to later versions.
 
 ## Repository structure
 
@@ -81,6 +81,8 @@ The example contains local-only placeholder credentials. If you change `POSTGRES
 `REPOSITORY_ALLOWED_ROOT` is the only filesystem tree the ingestion API may read. The example value `.` means the RepoPilot project root regardless of the backend process working directory. Set it to a broader absolute development directory only when you intentionally need to ingest repositories there.
 
 The zero-cost local setup uses `EMBEDDING_PROVIDER=deterministic`. It produces normalized token-hash vectors for repeatable tests and evaluation, not production semantic quality. To use the external provider, set `EMBEDDING_PROVIDER=openai` and provide `OPENAI_API_KEY`. V1 selects [`text-embedding-3-small`](https://developers.openai.com/api/docs/models/text-embedding-3-small) with an explicit 512-dimensional output supported by the official [embeddings API](https://developers.openai.com/api/reference/python/resources/embeddings/methods/create). Likely secret assignments are redacted from embedding text while raw citation content remains unchanged.
+
+`RETRIEVAL_STRATEGY=hybrid` is the measured V1 default. It reranks exact-vector results using a small lexical score over the same metadata-enriched chunk content. Set it to `vector` to reproduce the mandatory vector-only baseline. The measured comparison and limitations are recorded in `docs/evaluation/v1-retrieval-results.md`.
 
 ## Start PostgreSQL
 
@@ -193,6 +195,24 @@ Frontend TypeScript validation and production build, from `apps/web`:
 
 ```bash
 npm run build
+```
+
+Run the checked-in retrieval evaluation against the live migrated database from `apps/api`.
+
+PowerShell:
+
+```powershell
+$env:PYTHONPATH = "src"
+uv run python -m repopilot.evaluation.runner --strategy vector --top-k 5
+uv run python -m repopilot.evaluation.runner --strategy hybrid --top-k 5
+Remove-Item Env:PYTHONPATH
+```
+
+macOS or Linux:
+
+```bash
+PYTHONPATH=src uv run python -m repopilot.evaluation.runner --strategy vector --top-k 5
+PYTHONPATH=src uv run python -m repopilot.evaluation.runner --strategy hybrid --top-k 5
 ```
 
 Stop local infrastructure from the repository root:

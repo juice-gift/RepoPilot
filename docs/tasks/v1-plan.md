@@ -15,11 +15,11 @@ Deliver a debuggable, testable, evidence-grounded repository-level Codebase RAG 
 | M4 — Retrieval Engine | Independently callable, snapshot-scoped ranked evidence retrieval with explicit API contracts | Complete |
 | M5 — RAG Generation + Citation | Bounded context builder, grounded generation, evidence-ID citations, and deterministic citation resolution | Complete |
 | M6 — React Product UI | Local repository indexing and question workflow with answer, evidence, citations, and failure/loading states | Complete |
-| M7 — Retrieval Quality Improvement / Evaluation | Golden repository, evaluation dataset, vector baseline metrics, evidence-based improvement decision, and recorded results | In progress |
+| M7 — Retrieval Quality Improvement / Evaluation | Golden repository, evaluation dataset, vector baseline metrics, evidence-based improvement decision, and recorded results | Complete |
 
 ## Current Milestone
 
-M7 — Retrieval Quality Improvement / Evaluation.
+V1 Final Validation.
 
 ## Milestone Tasks
 
@@ -101,6 +101,10 @@ M7 — Retrieval Quality Improvement / Evaluation.
 - Added typed frontend clients for repository/snapshot/index, independent retrieval, and grounded-answer API contracts with shared structured error handling.
 - Replaced the Stage 0 status page with an evidence-first workflow for ingestion/indexing, snapshot selection, retrieval-only inspection, grounded answers, focused citations, and source cards.
 - Added explicit connection, empty, loading, configuration, and request-failure states plus responsive three-, two-, and one-column layouts.
+- Added an 8-file Golden Repository and frozen 8-question dataset with file-and-symbol relevance judgments.
+- Added independently tested Hit@K, Recall@K, and MRR@K calculation plus a CLI runner that exercises ingestion, chunking, embedding, pgvector, and retrieval.
+- Measured the exact-vector baseline, identified two ranking failures, and retained a small lexical rerank only after it improved the frozen dataset without regression.
+- Exposed `RETRIEVAL_STRATEGY=vector|hybrid`; the evidence-backed hybrid strategy is the V1 default while vector remains reproducible.
 
 ## Validation Results
 
@@ -133,6 +137,9 @@ M7 — Retrieval Quality Improvement / Evaluation.
 - M6 `npm run build`: passed TypeScript project references and Vite production build (33 modules).
 - M6 live browser/API/PostgreSQL workflow: ingested 78 accepted files, created 615 chunks, stored 615 vectors, ran independent retrieval, generated an answer, and resolved its citation.
 - M6 responsive browser validation: desktop and 700px layouts rendered without horizontal overflow; browser console contained no warnings or errors.
+- M7 exact-vector evaluation (8 queries, 19 chunks): Hit@1/Recall@1 0.7500, Hit@3/Recall@3 0.8750, Hit@5/Recall@5 1.0000, MRR@5 0.8375.
+- M7 retained hybrid evaluation (same frozen dataset): Hit@1, Recall@1, Hit@3, Recall@3, Hit@5, Recall@5, and MRR@5 all 1.0000.
+- M7 ordinary suite: 51 passed, 7 live database tests skipped; live suite: 59 passed; Ruff and frontend production build passed.
 
 ## Important Decisions
 
@@ -149,6 +156,7 @@ M7 — Retrieval Quality Improvement / Evaluation.
 - Select `gpt-5.6-luna` through the Responses API for cost-conscious external generation based on current official OpenAI documentation.
 - Treat repository text only as delimited untrusted input; resolve model `[E#]` references against request context and never accept model-authored source metadata.
 - Keep the UI evidence-first: retrieval remains callable without generation, and answer citations navigate to backend-derived evidence instead of hiding source selection.
+- Retain the 70% exact-vector / 30% lexical rerank because it moved both observed bad cases to rank 1; keep the vector-only mode as the reproducible baseline.
 
 ## Blockers
 
@@ -156,4 +164,4 @@ M7 — Retrieval Quality Improvement / Evaluation.
 
 ## Remaining Work
 
-- Execute M7; perform live OpenAI provider checks if credentials become available before final validation.
+- Run final clean migration, full validation, end-to-end browser/API pipeline, acceptance-criteria audit, and Git/scope review; perform live OpenAI provider checks if credentials become available.

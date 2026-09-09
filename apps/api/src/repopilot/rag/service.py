@@ -8,7 +8,11 @@ from repopilot.embeddings.providers import EmbeddingProvider
 from repopilot.rag.citations import CitationResolution, resolve_citations
 from repopilot.rag.context import ContextBuildResult, build_context
 from repopilot.rag.generation import GROUNDING_INSTRUCTIONS, GenerationProvider
-from repopilot.retrieval.retriever import RetrievalResult, retrieve_evidence
+from repopilot.retrieval.retriever import (
+    RetrievalResult,
+    RetrievalStrategy,
+    retrieve_evidence,
+)
 
 
 class GenerationFailedError(RuntimeError):
@@ -38,6 +42,7 @@ def answer_repository_question(
     context_max_evidence: int,
     embedding_provider: EmbeddingProvider,
     generation_provider: GenerationProvider,
+    retrieval_strategy: RetrievalStrategy = "hybrid",
 ) -> RagResult:
     retrieval = retrieve_evidence(
         session,
@@ -46,6 +51,7 @@ def answer_repository_question(
         question=question,
         top_k=top_k,
         provider=embedding_provider,
+        strategy=retrieval_strategy,
     )
     context = build_context(
         retrieval.evidence,

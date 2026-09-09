@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "name": "RepoPilot V1 Golden Repository",
+  "cases": [
+    {
+      "id": "missing-database-url",
+      "query": "Where does startup reject a missing database connection URL?",
+      "expected_evidence": [
+        {"file_path": "src/settings.py", "symbol_name": "require_database_url"}
+      ]
+    },
+    {
+      "id": "late-fee-cap",
+      "query": "How is the overdue invoice fee calculated and capped?",
+      "expected_evidence": [
+        {"file_path": "src/invoices.py", "symbol_name": "calculate_late_fee"}
+      ]
+    },
+    {
+      "id": "webhook-authentication",
+      "query": "Which function authenticates webhook payload signatures with HMAC?",
+      "expected_evidence": [
+        {"file_path": "src/delivery.py", "symbol_name": "verify_webhook_signature"}
+      ]
+    },
+    {
+      "id": "duplicate-delivery",
+      "query": "What prevents the same event from being delivered twice?",
+      "expected_evidence": [
+        {"file_path": "src/delivery.py", "symbol_name": "create_delivery_key"}
+      ]
+    },
+    {
+      "id": "tenant-cache-isolation",
+      "query": "How are cached reports isolated for each tenant?",
+      "expected_evidence": [
+        {"file_path": "src/cache.ts", "symbol_name": "buildCacheKey"}
+      ]
+    },
+    {
+      "id": "report-progress",
+      "query": "Which UI component displays report loading progress?",
+      "expected_evidence": [
+        {"file_path": "src/report-status.tsx", "symbol_name": "ReportStatus"}
+      ]
+    },
+    {
+      "id": "audit-redaction",
+      "query": "Where are passwords and access tokens removed before audit logging?",
+      "expected_evidence": [
+        {"file_path": "src/audit.js", "symbol_name": "redactAuditFields"}
+      ]
+    },
+    {
+      "id": "delivery-backoff",
+      "query": "What is the retry delay policy for failed outbound deliveries?",
+      "expected_evidence": [
+        {"file_path": "docs/operations.md", "symbol_name": "Retry Policy"}
+      ]
+    }
+  ]
+}
