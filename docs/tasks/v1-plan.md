@@ -14,12 +14,12 @@ Deliver a debuggable, testable, evidence-grounded repository-level Codebase RAG 
 | M3 — Embedding + Vector Index | Configured embeddings, migration-controlled pgvector storage, idempotent snapshot indexing, and exact vector search | Complete |
 | M4 — Retrieval Engine | Independently callable, snapshot-scoped ranked evidence retrieval with explicit API contracts | Complete |
 | M5 — RAG Generation + Citation | Bounded context builder, grounded generation, evidence-ID citations, and deterministic citation resolution | Complete |
-| M6 — React Product UI | Local repository indexing and question workflow with answer, evidence, citations, and failure/loading states | In progress |
-| M7 — Retrieval Quality Improvement / Evaluation | Golden repository, evaluation dataset, vector baseline metrics, evidence-based improvement decision, and recorded results | Not started |
+| M6 — React Product UI | Local repository indexing and question workflow with answer, evidence, citations, and failure/loading states | Complete |
+| M7 — Retrieval Quality Improvement / Evaluation | Golden repository, evaluation dataset, vector baseline metrics, evidence-based improvement decision, and recorded results | In progress |
 
 ## Current Milestone
 
-M6 — React Product UI.
+M7 — Retrieval Quality Improvement / Evaluation.
 
 ## Milestone Tasks
 
@@ -98,6 +98,9 @@ M6 — React Product UI.
 - Added an explicit ordered/deduplicated context builder with request-scoped evidence IDs, evidence-count limit, and conservative character budget/truncation.
 - Added a grounded OpenAI Responses adapter using `gpt-5.6-luna`, `store=false`, no tools, bounded output, and separated untrusted repository input.
 - Added deterministic extractive generation for local end-to-end validation, authentic backend citation resolution, invalid-ID removal, and `/api/ask` answer/evidence diagnostics.
+- Added typed frontend clients for repository/snapshot/index, independent retrieval, and grounded-answer API contracts with shared structured error handling.
+- Replaced the Stage 0 status page with an evidence-first workflow for ingestion/indexing, snapshot selection, retrieval-only inspection, grounded answers, focused citations, and source cards.
+- Added explicit connection, empty, loading, configuration, and request-failure states plus responsive three-, two-, and one-column layouts.
 
 ## Validation Results
 
@@ -127,6 +130,9 @@ M6 — React Product UI.
 - M5 `RUN_DATABASE_TESTS=1 uv run pytest`: 49 passed, including repository-to-answer-to-real-citation and `/api/ask` coverage.
 - M5 `uv run ruff check src tests migrations`: passed.
 - Live OpenAI Responses call: not run because no `OPENAI_API_KEY` is configured; the official SDK contract is covered with a client fake.
+- M6 `npm run build`: passed TypeScript project references and Vite production build (33 modules).
+- M6 live browser/API/PostgreSQL workflow: ingested 78 accepted files, created 615 chunks, stored 615 vectors, ran independent retrieval, generated an answer, and resolved its citation.
+- M6 responsive browser validation: desktop and 700px layouts rendered without horizontal overflow; browser console contained no warnings or errors.
 
 ## Important Decisions
 
@@ -142,6 +148,7 @@ M6 — React Product UI.
 - Keep retrieval entirely independent of generation so ranked source evidence can be inspected and evaluated on its own.
 - Select `gpt-5.6-luna` through the Responses API for cost-conscious external generation based on current official OpenAI documentation.
 - Treat repository text only as delimited untrusted input; resolve model `[E#]` references against request context and never accept model-authored source metadata.
+- Keep the UI evidence-first: retrieval remains callable without generation, and answer citations navigate to backend-derived evidence instead of hiding source selection.
 
 ## Blockers
 
@@ -149,4 +156,4 @@ M6 — React Product UI.
 
 ## Remaining Work
 
-- Execute M6–M7 in order; perform live OpenAI provider checks if credentials become available before final validation.
+- Execute M7; perform live OpenAI provider checks if credentials become available before final validation.

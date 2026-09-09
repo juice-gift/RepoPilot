@@ -5,7 +5,7 @@ RepoPilot is a long-term AI codebase intelligence and issue-resolution system.
 **Stage 0 — Project Inception is complete. V1 — Codebase RAG is in progress.**
 ## Current functionality
 
-The Stage 0 foundation and V1 repository-ingestion milestone currently provide:
+The Stage 0 foundation and the V1 application pipeline currently provide:
 
 ```text
 React UI
@@ -19,15 +19,21 @@ Local repository path
 -> deterministic scan and safety filters
 -> content-addressed snapshot
 -> PostgreSQL repository, snapshot, and source-file records
+-> code-aware chunks
+-> configured embeddings and exact pgvector search
+-> ranked retrieval evidence
+-> bounded grounded generation
+-> backend-resolved source citations
+-> evidence-first React workflow
 ```
 
-The UI reports backend and database connectivity separately. Alembic owns the database migration state and enables pgvector plus the V1 ingestion, chunk, and 512-dimensional vector fields. Repository snapshots can now be deterministically chunked, embedded, and exact-searched. Retrieval API, generation, citation, and evidence UI work remain planned V1 milestones.
+The UI reports backend and database connectivity separately, ingests and indexes an allowed local repository, and keeps ranked evidence visible alongside retrieval-only diagnostics or a grounded answer. Citation controls focus the exact evidence card used by the answer. Alembic owns the database migration state and enables pgvector plus the V1 ingestion, chunk, and 512-dimensional vector fields.
 
 The ingestion scanner currently supports Python, TypeScript, JavaScript, TSX, JSX, and Markdown. It excludes common dependency/build directories, unsupported and oversized files, binary/non-UTF-8 content, generated/minified files, and sensitive filenames such as `.env`, private keys, credentials, and secrets.
 
 ## Planned functionality
 
-Remaining V1 milestones add code-aware chunking, embedding/indexing, retrieval, grounded RAG, citations, the evidence UI, and retrieval evaluation. Agent workflows, GitHub/MCP integration, and production engineering belong to later versions.
+The remaining V1 milestone adds a controlled Golden Repository, retrieval metrics, and a measured quality decision. Agent workflows, GitHub/MCP integration, and production engineering belong to later versions.
 
 ## Repository structure
 
@@ -155,7 +161,7 @@ Start the frontend in another terminal from `apps/web`:
 npm run dev
 ```
 
-Open `http://localhost:5173`. Vite reads `VITE_API_BASE_URL` from the root `.env` file; FastAPI reads `DATABASE_URL` and `FRONTEND_ORIGIN` from the same file.
+Open `http://localhost:5173`. Vite reads `VITE_API_BASE_URL` from the root `.env` file; FastAPI reads `DATABASE_URL` and `FRONTEND_ORIGIN` from the same file. The three-column workspace becomes a single-column flow on narrow screens and exposes explicit loading, empty, configuration, request-failure, answer, citation, and retrieval-evidence states.
 
 ## Run validation
 

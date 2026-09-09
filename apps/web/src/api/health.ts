@@ -1,3 +1,5 @@
+import { apiBaseUrl } from "./client";
+
 export interface HealthResponse {
   status: "ok";
   service: "repopilot-api";
@@ -7,10 +9,6 @@ export interface DatabaseHealthResponse {
   status: "ok";
   database: "postgresql";
 }
-
-const apiBaseUrl = (
-  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000"
-).replace(/\/$/, "");
 
 function isHealthResponse(value: unknown): value is HealthResponse {
   if (typeof value !== "object" || value === null) {
