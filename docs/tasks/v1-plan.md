@@ -153,7 +153,7 @@ V1 Final Validation — Qwen Provider Stage A is complete. Work is stopped befor
 - Live-provider verifier regression check: ordinary suite now has 52 passed / 8 live tests skipped; Ruff passes; the CLI exits before database access with a clear error when `OPENAI_API_KEY` is absent.
 - Qwen Stage A focused provider/configuration suite: 27 passed using only fake clients; no external request or token usage occurred.
 - Qwen Stage A ordinary suite: 66 passed, 8 database-only tests skipped; `uv run ruff check src tests migrations` passed.
-- Qwen Stage A database suite and `alembic current/check` were attempted but could not run: Docker Desktop crashed before starting its Linux engine because its local `sailor-ingest.sock` could not be accessed, so PostgreSQL timed out. Offline `alembic heads/history` confirmed the unchanged migration graph at `0004_add_vector_index`.
+- Qwen Stage A live-database suite: 74 passed after a clean Docker Desktop restart; `alembic current` confirmed `0004_add_vector_index (head)` and `alembic check` reported no new upgrade operations.
 - Qwen Stage A Git/secret audit: `.env` remains ignored and untracked; `.env.example` contains an empty key placeholder; no real credential, authorization header, or secret logging was added; no migration, database schema, retrieval, evaluation dataset, Golden Repository, or frontend file changed.
 
 ## Important Decisions
