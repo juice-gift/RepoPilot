@@ -109,6 +109,7 @@ V1 Final Validation — Qwen Provider Stage A is complete. Work is stopped befor
 - Added Qwen embedding and Responses generation adapters inside the existing provider boundaries, retaining deterministic and OpenAI providers.
 - Configured `qwen3.7-text-embedding` at 512 dimensions and selected `qwen3.7-flash` for grounded generation through the Beijing workspace endpoint.
 - Adapted the live-provider verifier for explicit Qwen/OpenAI selection while keeping all Stage A validation offline.
+- Committed Qwen Provider Stage A as `700dfee` (`feat: add offline Qwen provider support`).
 
 ## Validation Results
 
