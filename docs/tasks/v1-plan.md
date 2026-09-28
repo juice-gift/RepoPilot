@@ -19,7 +19,7 @@ Deliver a debuggable, testable, evidence-grounded repository-level Codebase RAG 
 
 ## Current Milestone
 
-V1 Final Validation.
+V1 Final Validation — Qwen Provider Stage A is complete. Work is stopped before Stage B until the Project Owner configures `DASHSCOPE_API_KEY` locally.
 
 ## Milestone Tasks
 
@@ -106,6 +106,9 @@ V1 Final Validation.
 - Measured the exact-vector baseline, identified two ranking failures, and retained a small lexical rerank only after it improved the frozen dataset without regression.
 - Exposed `RETRIEVAL_STRATEGY=vector|hybrid`; the evidence-backed hybrid strategy is the V1 default while vector remains reproducible.
 - Added a minimal live-provider verifier that embeds the Golden Repository through OpenAI, generates one grounded Responses answer, and requires at least one valid backend-resolved citation before reporting success.
+- Added Qwen embedding and Responses generation adapters inside the existing provider boundaries, retaining deterministic and OpenAI providers.
+- Configured `qwen3.7-text-embedding` at 512 dimensions and selected `qwen3.7-flash` for grounded generation through the Beijing workspace endpoint.
+- Adapted the live-provider verifier for explicit Qwen/OpenAI selection while keeping all Stage A validation offline.
 
 ## Validation Results
 
@@ -147,6 +150,10 @@ V1 Final Validation.
 - Final clean-database browser pass: API/database health connected; 96 files produced 676 stored vectors; retrieval-only and answer endpoints returned HTTP 200; the answer citation focused its source card; browser console had no warnings/errors.
 - Final Git/scope audit: eight ordered V1 milestone commits follow the Stage 0 baseline, no secret file is tracked, and no V2/later implementation signal was found.
 - Live-provider verifier regression check: ordinary suite now has 52 passed / 8 live tests skipped; Ruff passes; the CLI exits before database access with a clear error when `OPENAI_API_KEY` is absent.
+- Qwen Stage A focused provider/configuration suite: 27 passed using only fake clients; no external request or token usage occurred.
+- Qwen Stage A ordinary suite: 66 passed, 8 database-only tests skipped; `uv run ruff check src tests migrations` passed.
+- Qwen Stage A database suite and `alembic current/check` were attempted but could not run: Docker Desktop crashed before starting its Linux engine because its local `sailor-ingest.sock` could not be accessed, so PostgreSQL timed out. Offline `alembic heads/history` confirmed the unchanged migration graph at `0004_add_vector_index`.
+- Qwen Stage A Git/secret audit: `.env` remains ignored and untracked; `.env.example` contains an empty key placeholder; no real credential, authorization header, or secret logging was added; no migration, database schema, retrieval, evaluation dataset, Golden Repository, or frontend file changed.
 
 ## Important Decisions
 
@@ -167,8 +174,9 @@ V1 Final Validation.
 
 ## Blockers
 
-- Final external-provider validation is blocked because `OPENAI_API_KEY` is absent from both the process environment and the ignored root `.env`. The OpenAI embedding and Responses adapters are contract-tested, and the complete local deterministic pipeline passes, but a live `text-embedding-3-small` call and a live `gpt-5.6-luna` grounded answer cannot be executed. The V1 acceptance criterion that an LLM can answer from retrieved repository evidence therefore remains unverified; this plan is intentionally not marked complete.
+- Stage B external-provider validation requires the Project Owner to configure `DASHSCOPE_API_KEY` in the ignored local `.env`. Stage A explicitly forbids a real Qwen call, so V1 remains incomplete even though the Qwen request/response contracts are covered offline.
 
 ## Remaining Work
 
-- Configure `OPENAI_API_KEY`, run `PYTHONPATH=src uv run python -m repopilot.evaluation.live_provider` from `apps/api`, record the provider/model results, re-run the final acceptance audit, mark this plan complete, and issue the V1 Completion Report. The verifier uses the 19-chunk Golden Repository and requires a backend-resolved citation without printing the key. Do not begin V2.
+- Stage B remaining: Real Qwen Embedding → pgvector indexing → Query Embedding → Retrieval → Context Builder → Real Qwen Generation → Citation Resolution → V1 Final Validation.
+- After the Project Owner configures `DASHSCOPE_API_KEY`, run `PYTHONPATH=src uv run python -m repopilot.evaluation.live_provider --provider qwen` from `apps/api`, record real results, complete the final acceptance audit, and only then mark V1 complete. Do not begin V2.

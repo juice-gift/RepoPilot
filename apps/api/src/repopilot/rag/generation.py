@@ -44,10 +44,49 @@ class OpenAIResponsesGenerationProvider:
             reasoning={"effort": "none"},
             store=False,
         )
-        output = response.output_text.strip()
-        if not output:
+        output_text = getattr(response, "output_text", None)
+        if not isinstance(output_text, str) or not output_text.strip():
             raise ValueError("Generation provider returned an empty answer")
-        return output
+        return output_text.strip()
+
+
+class QwenResponsesGenerationProvider:
+    provider_name = "qwen"
+
+    def __init__(
+        self,
+        *,
+        api_key: str,
+        base_url: str,
+        model_name: str = "qwen3.7-flash",
+        max_output_tokens: int,
+        client: OpenAI | None = None,
+    ) -> None:
+        if not api_key:
+            raise GenerationConfigurationError(
+                "DASHSCOPE_API_KEY is required when GENERATION_PROVIDER=qwen"
+            )
+        if not base_url:
+            raise GenerationConfigurationError(
+                "DASHSCOPE_BASE_URL is required when GENERATION_PROVIDER=qwen"
+            )
+        self.model_name = model_name
+        self.max_output_tokens = max_output_tokens
+        self._client = client or OpenAI(api_key=api_key, base_url=base_url)
+
+    def generate(self, *, instructions: str, input_text: str) -> str:
+        response = self._client.responses.create(
+            model=self.model_name,
+            instructions=instructions,
+            input=input_text,
+            max_output_tokens=self.max_output_tokens,
+            reasoning={"effort": "none"},
+            store=False,
+        )
+        output_text = getattr(response, "output_text", None)
+        if not isinstance(output_text, str) or not output_text.strip():
+            raise ValueError("Generation provider returned an empty answer")
+        return output_text.strip()
 
 
 class DeterministicGenerationProvider:
@@ -68,8 +107,22 @@ class DeterministicGenerationProvider:
 def create_generation_provider(settings: Settings) -> GenerationProvider:
     if settings.generation_provider == "deterministic":
         return DeterministicGenerationProvider()
+    if settings.generation_provider == "qwen":
+        api_key = (
+            settings.dashscope_api_key.get_secret_value().strip()
+            if settings.dashscope_api_key
+            else ""
+        )
+        return QwenResponsesGenerationProvider(
+            api_key=api_key,
+            base_url=settings.dashscope_base_url.strip(),
+            model_name=settings.qwen_generation_model,
+            max_output_tokens=settings.generation_max_output_tokens,
+        )
     api_key = (
-        settings.openai_api_key.get_secret_value() if settings.openai_api_key else ""
+        settings.openai_api_key.get_secret_value().strip()
+        if settings.openai_api_key
+        else ""
     )
     return OpenAIResponsesGenerationProvider(
         api_key=api_key,

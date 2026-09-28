@@ -80,7 +80,9 @@ The example contains local-only placeholder credentials. If you change `POSTGRES
 
 `REPOSITORY_ALLOWED_ROOT` is the only filesystem tree the ingestion API may read. The example value `.` means the RepoPilot project root regardless of the backend process working directory. Set it to a broader absolute development directory only when you intentionally need to ingest repositories there.
 
-The zero-cost local setup uses `EMBEDDING_PROVIDER=deterministic`. It produces normalized token-hash vectors for repeatable tests and evaluation, not production semantic quality. To use the external provider, set `EMBEDDING_PROVIDER=openai` and provide `OPENAI_API_KEY`. V1 selects [`text-embedding-3-small`](https://developers.openai.com/api/docs/models/text-embedding-3-small) with an explicit 512-dimensional output supported by the official [embeddings API](https://developers.openai.com/api/reference/python/resources/embeddings/methods/create). Likely secret assignments are redacted from embedding text while raw citation content remains unchanged.
+The zero-cost local setup uses `EMBEDDING_PROVIDER=deterministic`. It produces normalized token-hash vectors for repeatable tests and evaluation, not production semantic quality. External choices are `qwen` and `openai`; their credentials stay in the ignored local `.env`. Qwen uses Alibaba Cloud Model Studio's OpenAI-compatible endpoint, `qwen3.7-text-embedding`, and an explicit 512-dimensional output matching the existing pgvector schema. The adapter observes the model's 20-input request limit without changing the indexing pipeline. OpenAI support retains `text-embedding-3-small` at 512 dimensions. Likely secret assignments are redacted from embedding text while raw citation content remains unchanged.
+
+For grounded Qwen generation, set `GENERATION_PROVIDER=qwen`. V1 selects `qwen3.7-flash`, which Alibaba Cloud lists for the OpenAI-compatible Responses API and the Beijing region. Both external providers preserve the same grounding instructions, untrusted-repository-data boundary, and backend citation resolution.
 
 `RETRIEVAL_STRATEGY=hybrid` is the measured V1 default. It reranks exact-vector results using a small lexical score over the same metadata-enriched chunk content. Set it to `vector` to reproduce the mandatory vector-only baseline. The measured comparison and limitations are recorded in `docs/evaluation/v1-retrieval-results.md`.
 
@@ -215,24 +217,25 @@ PYTHONPATH=src uv run python -m repopilot.evaluation.runner --strategy vector --
 PYTHONPATH=src uv run python -m repopilot.evaluation.runner --strategy hybrid --top-k 5
 ```
 
-After configuring `OPENAI_API_KEY` in the ignored root `.env`, run the final live
-provider check from `apps/api`. It embeds the 19 Golden Repository chunks with
-the configured OpenAI embedding model, asks one grounded question through the
-configured Responses model, and succeeds only when the answer contains a valid
-backend-resolved evidence citation. It never prints the key.
+After configuring `DASHSCOPE_API_KEY` in the ignored root `.env`, the Stage B
+Qwen live-provider check can be run from `apps/api`. It embeds the 19 Golden
+Repository chunks with `qwen3.7-text-embedding`, asks one grounded question
+through `qwen3.7-flash`, and succeeds only when the answer contains a valid
+backend-resolved evidence citation. It never prints the key. Stage A must not
+run this command.
 
 PowerShell:
 
 ```powershell
 $env:PYTHONPATH = "src"
-uv run python -m repopilot.evaluation.live_provider
+uv run python -m repopilot.evaluation.live_provider --provider qwen
 Remove-Item Env:PYTHONPATH
 ```
 
 macOS or Linux:
 
 ```bash
-PYTHONPATH=src uv run python -m repopilot.evaluation.live_provider
+PYTHONPATH=src uv run python -m repopilot.evaluation.live_provider --provider qwen
 ```
 
 Stop local infrastructure from the repository root:

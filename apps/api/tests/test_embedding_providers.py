@@ -9,6 +9,7 @@ from repopilot.embeddings.providers import (
     DeterministicEmbeddingProvider,
     EmbeddingConfigurationError,
     OpenAIEmbeddingProvider,
+    QwenEmbeddingProvider,
     create_embedding_provider,
 )
 
@@ -68,6 +69,92 @@ def test_openai_provider_rejects_wrong_vector_dimensions() -> None:
         provider.embed(["text"])
 
 
+def test_qwen_provider_uses_model_dimensions_and_input_contract() -> None:
+    client = MagicMock()
+    client.embeddings.create.return_value = SimpleNamespace(
+        data=[
+            SimpleNamespace(index=1, embedding=[2.0] * EMBEDDING_DIMENSIONS),
+            SimpleNamespace(index=0, embedding=[1.0] * EMBEDDING_DIMENSIONS),
+        ]
+    )
+    provider = QwenEmbeddingProvider(
+        api_key="test",
+        base_url="https://example.invalid/compatible-mode/v1",
+        client=client,
+    )
+
+    vectors = provider.embed(["first", "second"])
+
+    assert len(vectors) == 2
+    assert len(vectors[0]) == EMBEDDING_DIMENSIONS
+    assert vectors[0][0] == 1.0
+    assert vectors[1][0] == 2.0
+    client.embeddings.create.assert_called_once_with(
+        model="qwen3.7-text-embedding",
+        input=["first", "second"],
+        dimensions=512,
+        encoding_format="float",
+    )
+
+
+def test_qwen_provider_observes_twenty_input_batch_limit() -> None:
+    client = MagicMock()
+    client.embeddings.create.side_effect = [
+        SimpleNamespace(
+            data=[
+                SimpleNamespace(index=index, embedding=[float(index)] * 512)
+                for index in range(20)
+            ]
+        ),
+        SimpleNamespace(data=[SimpleNamespace(index=0, embedding=[20.0] * 512)]),
+    ]
+    provider = QwenEmbeddingProvider(
+        api_key="test",
+        base_url="https://example.invalid/compatible-mode/v1",
+        client=client,
+    )
+
+    vectors = provider.embed([f"text-{index}" for index in range(21)])
+
+    assert len(vectors) == 21
+    assert client.embeddings.create.call_count == 2
+    assert len(client.embeddings.create.call_args_list[0].kwargs["input"]) == 20
+    assert client.embeddings.create.call_args_list[1].kwargs["input"] == ["text-20"]
+
+
+def test_qwen_provider_rejects_wrong_vector_dimensions() -> None:
+    client = MagicMock()
+    client.embeddings.create.return_value = SimpleNamespace(
+        data=[SimpleNamespace(index=0, embedding=[1.0])]
+    )
+    provider = QwenEmbeddingProvider(
+        api_key="test",
+        base_url="https://example.invalid/compatible-mode/v1",
+        client=client,
+    )
+
+    with pytest.raises(ValueError, match="512-dimensional"):
+        provider.embed(["text"])
+
+
+def test_qwen_provider_propagates_api_errors() -> None:
+    client = MagicMock()
+    client.embeddings.create.side_effect = RuntimeError("provider unavailable")
+    provider = QwenEmbeddingProvider(
+        api_key="test",
+        base_url="https://example.invalid/compatible-mode/v1",
+        client=client,
+    )
+
+    with pytest.raises(RuntimeError, match="provider unavailable"):
+        provider.embed(["text"])
+
+
+def test_qwen_provider_requires_base_url() -> None:
+    with pytest.raises(EmbeddingConfigurationError, match="DASHSCOPE_BASE_URL"):
+        QwenEmbeddingProvider(api_key="test", base_url="")
+
+
 def test_provider_factory_requires_openai_key() -> None:
     settings = Settings(
         database_url="postgresql+psycopg://user:password@localhost/database",
@@ -77,6 +164,18 @@ def test_provider_factory_requires_openai_key() -> None:
     )
 
     with pytest.raises(EmbeddingConfigurationError, match="OPENAI_API_KEY"):
+        create_embedding_provider(settings)
+
+
+def test_provider_factory_requires_qwen_key() -> None:
+    settings = Settings(
+        database_url="postgresql+psycopg://user:password@localhost/database",
+        embedding_provider="qwen",
+        dashscope_api_key=None,
+        _env_file=None,
+    )
+
+    with pytest.raises(EmbeddingConfigurationError, match="DASHSCOPE_API_KEY"):
         create_embedding_provider(settings)
 
 

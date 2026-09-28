@@ -10,6 +10,7 @@ from repopilot.config import Settings
 
 EMBEDDING_DIMENSIONS = 512
 DETERMINISTIC_EMBEDDING_MODEL = "deterministic-token-hash-v1"
+QWEN_EMBEDDING_BATCH_SIZE = 20
 
 
 class EmbeddingConfigurationError(ValueError):
@@ -54,6 +55,46 @@ class OpenAIEmbeddingProvider:
         )
         ordered = sorted(response.data, key=lambda item: item.index)
         vectors = [list(item.embedding) for item in ordered]
+        _validate_vectors(vectors, expected_count=len(texts), dimensions=self.dimensions)
+        return vectors
+
+
+class QwenEmbeddingProvider:
+    provider_name = "qwen"
+
+    def __init__(
+        self,
+        *,
+        api_key: str,
+        base_url: str,
+        model_name: str = "qwen3.7-text-embedding",
+        dimensions: int = EMBEDDING_DIMENSIONS,
+        client: OpenAI | None = None,
+    ) -> None:
+        if not api_key:
+            raise EmbeddingConfigurationError(
+                "DASHSCOPE_API_KEY is required when EMBEDDING_PROVIDER=qwen"
+            )
+        if not base_url:
+            raise EmbeddingConfigurationError(
+                "DASHSCOPE_BASE_URL is required when EMBEDDING_PROVIDER=qwen"
+            )
+        self.model_name = model_name
+        self.dimensions = dimensions
+        self._client = client or OpenAI(api_key=api_key, base_url=base_url)
+
+    def embed(self, texts: Sequence[str]) -> list[list[float]]:
+        vectors: list[list[float]] = []
+        for start in range(0, len(texts), QWEN_EMBEDDING_BATCH_SIZE):
+            batch = list(texts[start : start + QWEN_EMBEDDING_BATCH_SIZE])
+            response = self._client.embeddings.create(
+                model=self.model_name,
+                input=batch,
+                dimensions=self.dimensions,
+                encoding_format="float",
+            )
+            ordered = sorted(response.data, key=lambda item: item.index)
+            vectors.extend(list(item.embedding) for item in ordered)
         _validate_vectors(vectors, expected_count=len(texts), dimensions=self.dimensions)
         return vectors
 
@@ -103,8 +144,22 @@ def create_embedding_provider(settings: Settings) -> EmbeddingProvider:
         )
     if settings.embedding_provider == "deterministic":
         return DeterministicEmbeddingProvider(settings.embedding_dimensions)
+    if settings.embedding_provider == "qwen":
+        api_key = (
+            settings.dashscope_api_key.get_secret_value().strip()
+            if settings.dashscope_api_key
+            else ""
+        )
+        return QwenEmbeddingProvider(
+            api_key=api_key,
+            base_url=settings.dashscope_base_url.strip(),
+            model_name=settings.qwen_embedding_model,
+            dimensions=settings.embedding_dimensions,
+        )
     api_key = (
-        settings.openai_api_key.get_secret_value() if settings.openai_api_key else ""
+        settings.openai_api_key.get_secret_value().strip()
+        if settings.openai_api_key
+        else ""
     )
     return OpenAIEmbeddingProvider(
         api_key=api_key,

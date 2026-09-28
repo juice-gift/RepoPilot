@@ -26,6 +26,21 @@ def test_settings_load_environment_values(monkeypatch: pytest.MonkeyPatch) -> No
     assert settings.frontend_origin == "http://localhost:4173"
 
 
+def test_settings_include_safe_qwen_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv(
+        "DATABASE_URL",
+        "postgresql+psycopg://user:password@localhost:5432/database",
+    )
+
+    settings = Settings(_env_file=None)
+
+    assert settings.qwen_embedding_model == "qwen3.7-text-embedding"
+    assert settings.qwen_generation_model == "qwen3.7-flash"
+    assert settings.embedding_dimensions == 512
+    assert settings.dashscope_base_url.endswith("/compatible-mode/v1")
+    assert settings.dashscope_api_key is None
+
+
 def test_settings_resolve_repository_allowed_root(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:

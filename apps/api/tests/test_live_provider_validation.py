@@ -9,7 +9,25 @@ from repopilot.evaluation.live_provider import (
 )
 
 
-def test_live_provider_validation_requires_key_before_database_access(
+def test_qwen_live_provider_validation_requires_key_before_database_access(
+    tmp_path: Path,
+) -> None:
+    settings = Settings(
+        database_url="postgresql+psycopg://user:password@localhost/database",
+        openai_api_key=None,
+        _env_file=None,
+    )
+
+    with pytest.raises(LiveProviderValidationError, match="DASHSCOPE_API_KEY"):
+        run_live_provider_validation(
+            settings=settings,
+            repository_path=tmp_path / "repository",
+            dataset_path=tmp_path / "dataset.json",
+            case_id="case",
+        )
+
+
+def test_openai_live_provider_validation_still_requires_openai_key(
     tmp_path: Path,
 ) -> None:
     settings = Settings(
@@ -24,4 +42,5 @@ def test_live_provider_validation_requires_key_before_database_access(
             repository_path=tmp_path / "repository",
             dataset_path=tmp_path / "dataset.json",
             case_id="case",
+            provider_name="openai",
         )

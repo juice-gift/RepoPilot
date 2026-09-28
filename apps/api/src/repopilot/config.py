@@ -11,13 +11,25 @@ class Settings(BaseSettings):
     database_url: str = Field(min_length=1)
     frontend_origin: str = Field(default="http://localhost:5173", min_length=1)
     repository_allowed_root: Path = REPOSITORY_ROOT
-    embedding_provider: Literal["openai", "deterministic"] = "openai"
+    embedding_provider: Literal["openai", "qwen", "deterministic"] = "openai"
     embedding_model: str = Field(default="text-embedding-3-small", min_length=1)
+    qwen_embedding_model: str = Field(
+        default="qwen3.7-text-embedding", min_length=1
+    )
     embedding_dimensions: int = Field(default=512, ge=1)
     retrieval_strategy: Literal["vector", "hybrid"] = "hybrid"
     openai_api_key: SecretStr | None = None
-    generation_provider: Literal["openai", "deterministic"] = "openai"
+    dashscope_api_key: SecretStr | None = None
+    dashscope_base_url: str = Field(
+        default=(
+            "https://ws-0qeb5e7r8oa2y0s1.cn-beijing.maas.aliyuncs.com/"
+            "compatible-mode/v1"
+        ),
+        min_length=1,
+    )
+    generation_provider: Literal["openai", "qwen", "deterministic"] = "openai"
     generation_model: str = Field(default="gpt-5.6-luna", min_length=1)
+    qwen_generation_model: str = Field(default="qwen3.7-flash", min_length=1)
     generation_max_output_tokens: int = Field(default=1_200, ge=64, le=16_000)
     context_character_limit: int = Field(default=24_000, ge=1_000, le=200_000)
     context_max_evidence: int = Field(default=8, ge=1, le=20)
