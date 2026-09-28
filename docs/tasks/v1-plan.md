@@ -19,7 +19,7 @@ Deliver a debuggable, testable, evidence-grounded repository-level Codebase RAG 
 
 ## Current Milestone
 
-V1 Final Validation — Qwen Provider Stage A is complete. Work is stopped before Stage B until the Project Owner configures `DASHSCOPE_API_KEY` locally.
+V1 complete. Final Qwen external-provider validation, regression validation, retrieval evaluation, frontend build, security audit, and scope audit passed. Stop before V2.
 
 ## Milestone Tasks
 
@@ -110,6 +110,7 @@ V1 Final Validation — Qwen Provider Stage A is complete. Work is stopped befor
 - Configured `qwen3.7-text-embedding` at 512 dimensions and selected `qwen3.7-flash` for grounded generation through the Beijing workspace endpoint.
 - Adapted the live-provider verifier for explicit Qwen/OpenAI selection while keeping all Stage A validation offline.
 - Committed Qwen Provider Stage A as `700dfee` (`feat: add offline Qwen provider support`).
+- Completed the real Qwen pipeline over the Golden Repository: 19 real embeddings were stored through the existing pgvector index, a real query embedding retrieved the expected evidence at rank 1, `qwen3.7-flash` generated a grounded answer with two valid evidence references, and the backend resolved both citations.
 
 ## Validation Results
 
@@ -155,6 +156,9 @@ V1 Final Validation — Qwen Provider Stage A is complete. Work is stopped befor
 - Qwen Stage A ordinary suite: 66 passed, 8 database-only tests skipped; `uv run ruff check src tests migrations` passed.
 - Qwen Stage A live-database suite: 74 passed after a clean Docker Desktop restart; `alembic current` confirmed `0004_add_vector_index (head)` and `alembic check` reported no new upgrade operations.
 - Qwen Stage A Git/secret audit: `.env` remains ignored and untracked; `.env.example` contains an empty key placeholder; no real credential, authorization header, or secret logging was added; no migration, database schema, retrieval, evaluation dataset, Golden Repository, or frontend file changed.
+- Qwen Stage B live verifier: `qwen3.7-text-embedding`, 8 accepted files, 19 chunks, 19 stored vectors, 512 dimensions for every vector, expected evidence at rank 1, `qwen3.7-flash`, 2 valid backend-resolved citations to `src/settings.py`.
+- V1 final regression: ordinary backend suite 66 passed / 8 database tests skipped; live database suite 74 passed; Ruff passed; Alembic remained at `0004_add_vector_index` with no pending operations; frontend production build passed.
+- V1 final evaluation rerun (8 queries, 19 chunks): vector Hit@1/Recall@1 0.7500, Hit@3/Recall@3 0.8750, Hit@5/Recall@5 1.0000, MRR@5 0.8375; hybrid returned 1.0000 for every reported metric.
 
 ## Important Decisions
 
@@ -172,12 +176,28 @@ V1 Final Validation — Qwen Provider Stage A is complete. Work is stopped befor
 - Treat repository text only as delimited untrusted input; resolve model `[E#]` references against request context and never accept model-authored source metadata.
 - Keep the UI evidence-first: retrieval remains callable without generation, and answer citations navigate to backend-derived evidence instead of hiding source selection.
 - Retain the 70% exact-vector / 30% lexical rerank because it moved both observed bad cases to rank 1; keep the vector-only mode as the reproducible baseline.
+- Use Alibaba Cloud Model Studio / Qwen as the actual V1 external provider: `qwen3.7-text-embedding` at 512 dimensions and `qwen3.7-flash` for grounded generation. OpenAI remains implemented and contract-tested, not live-tested.
+
+## Actual Live Provider
+
+- Provider: Alibaba Cloud Model Studio / Qwen, Beijing workspace.
+- Embedding: `qwen3.7-text-embedding`, 512 dimensions.
+- Generation: `qwen3.7-flash` through the OpenAI-compatible Responses API.
+
+## Final Live Validation
+
+- Real Embedding: PASS.
+- Vector Dimension and pgvector Indexing: PASS (19/19 stored vectors at 512 dimensions).
+- Real Query Embedding and Existing Retrieval: PASS (expected evidence rank 1).
+- Existing Context Builder and untrusted-data boundary: PASS.
+- Real Generation: PASS.
+- Evidence Reference: PASS (2 valid references).
+- Backend-resolved Citation: PASS (2 citations derived from request evidence).
 
 ## Blockers
 
-- Stage B external-provider validation requires the Project Owner to configure `DASHSCOPE_API_KEY` in the ignored local `.env`. Stage A explicitly forbids a real Qwen call, so V1 remains incomplete even though the Qwen request/response contracts are covered offline.
+- None.
 
 ## Remaining Work
 
-- Stage B remaining: Real Qwen Embedding → pgvector indexing → Query Embedding → Retrieval → Context Builder → Real Qwen Generation → Citation Resolution → V1 Final Validation.
-- After the Project Owner configures `DASHSCOPE_API_KEY`, run `PYTHONPATH=src uv run python -m repopilot.evaluation.live_provider --provider qwen` from `apps/api`, record real results, complete the final acceptance audit, and only then mark V1 complete. Do not begin V2.
+- None within V1. Do not begin V2 without a separately authorized Version Goal.

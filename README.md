@@ -82,7 +82,7 @@ The example contains local-only placeholder credentials. If you change `POSTGRES
 
 The zero-cost local setup uses `EMBEDDING_PROVIDER=deterministic`. It produces normalized token-hash vectors for repeatable tests and evaluation, not production semantic quality. External choices are `qwen` and `openai`; their credentials stay in the ignored local `.env`. Qwen uses Alibaba Cloud Model Studio's OpenAI-compatible endpoint, `qwen3.7-text-embedding`, and an explicit 512-dimensional output matching the existing pgvector schema. The adapter observes the model's 20-input request limit without changing the indexing pipeline. OpenAI support retains `text-embedding-3-small` at 512 dimensions. Likely secret assignments are redacted from embedding text while raw citation content remains unchanged.
 
-For grounded Qwen generation, set `GENERATION_PROVIDER=qwen`. V1 selects `qwen3.7-flash`, which Alibaba Cloud lists for the OpenAI-compatible Responses API and the Beijing region. Both external providers preserve the same grounding instructions, untrusted-repository-data boundary, and backend citation resolution.
+For grounded Qwen generation, set `GENERATION_PROVIDER=qwen`. V1 selects `qwen3.7-flash`, which Alibaba Cloud lists for the OpenAI-compatible Responses API and the Beijing region. Both external providers preserve the same grounding instructions, untrusted-repository-data boundary, and backend citation resolution. Deterministic providers support reproducible offline tests and evaluation; OpenAI providers are implemented and contract-tested but have not been live-tested; Qwen is the V1 live-validated external provider.
 
 `RETRIEVAL_STRATEGY=hybrid` is the measured V1 default. It reranks exact-vector results using a small lexical score over the same metadata-enriched chunk content. Set it to `vector` to reproduce the mandatory vector-only baseline. The measured comparison and limitations are recorded in `docs/evaluation/v1-retrieval-results.md`.
 
@@ -217,12 +217,12 @@ PYTHONPATH=src uv run python -m repopilot.evaluation.runner --strategy vector --
 PYTHONPATH=src uv run python -m repopilot.evaluation.runner --strategy hybrid --top-k 5
 ```
 
-After configuring `DASHSCOPE_API_KEY` in the ignored root `.env`, the Stage B
-Qwen live-provider check can be run from `apps/api`. It embeds the 19 Golden
+After configuring `DASHSCOPE_API_KEY` in the ignored root `.env`, the Qwen
+live-provider check can be reproduced from `apps/api`. It embeds the 19 Golden
 Repository chunks with `qwen3.7-text-embedding`, asks one grounded question
 through `qwen3.7-flash`, and succeeds only when the answer contains a valid
-backend-resolved evidence citation. It never prints the key. Stage A must not
-run this command.
+backend-resolved evidence citation. It never prints the key. This command was
+used for the completed V1 external-provider validation.
 
 PowerShell:
 
