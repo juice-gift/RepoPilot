@@ -2,7 +2,8 @@
 
 RepoPilot is a long-term AI codebase intelligence and issue-resolution system.
 
-**Stage 0 — Project Inception is complete. V1 — complete.**
+**Stage 0 — Project Inception is complete. V1 — Codebase RAG is complete.**
+
 ## Current functionality
 
 The Stage 0 foundation and the V1 application pipeline currently provide:
@@ -33,7 +34,7 @@ The ingestion scanner currently supports Python, TypeScript, JavaScript, TSX, JS
 
 ## Planned functionality
 
-V1 has been completed and the result is recorded in this`docs/tasks/v1-plan.md`. Agent workflows, GitHub/MCP integration, and production engineering belong to later versions.
+V1 has been completed, and the results are recorded in `docs/tasks/v1-plan.md`. Agent workflows, GitHub/MCP integration, and production engineering belong to later versions.
 
 ## Repository structure
 
@@ -80,9 +81,9 @@ The example contains local-only placeholder credentials. If you change `POSTGRES
 
 `REPOSITORY_ALLOWED_ROOT` is the only filesystem tree the ingestion API may read. The example value `.` means the RepoPilot project root regardless of the backend process working directory. Set it to a broader absolute development directory only when you intentionally need to ingest repositories there.
 
-The zero-cost local setup uses `EMBEDDING_PROVIDER=deterministic`. It produces normalized token-hash vectors for repeatable tests and evaluation, not production semantic quality. External choices are `qwen` and `openai`; their credentials stay in the ignored local `.env`. Qwen uses Alibaba Cloud Model Studio's OpenAI-compatible endpoint, `qwen3.7-text-embedding`, and an explicit 512-dimensional output matching the existing pgvector schema. The adapter observes the model's 20-input request limit without changing the indexing pipeline. OpenAI support retains `text-embedding-3-small` at 512 dimensions. Likely secret assignments are redacted from embedding text while raw citation content remains unchanged.
+The zero-cost local setup uses `EMBEDDING_PROVIDER=deterministic`. It produces normalized token-hash vectors for repeatable tests and evaluation, not production semantic quality. External choices are `qwen` and `openai`; their credentials stay in the ignored local `.env`. The V1 live-validated provider is Alibaba Cloud Model Studio / Qwen, using `qwen3.7-text-embedding` with an explicit 512-dimensional output matching the existing pgvector schema. The adapter observes the model's 20-input request limit without changing the indexing pipeline. OpenAI support retains `text-embedding-3-small` at 512 dimensions. Likely secret assignments are redacted from embedding text while raw citation content remains unchanged.
 
-For grounded Qwen generation, set `GENERATION_PROVIDER=qwen`. V1 selects `qwen3.7-flash`, which Alibaba Cloud lists for the OpenAI-compatible Responses API and the Beijing region. Both external providers preserve the same grounding instructions, untrusted-repository-data boundary, and backend citation resolution. Deterministic providers support reproducible offline tests and evaluation; OpenAI providers are implemented and contract-tested but have not been live-tested; Qwen is the V1 live-validated external provider.
+For grounded generation with the V1 live-validated provider, set `GENERATION_PROVIDER=qwen`. Alibaba Cloud Model Studio / Qwen uses `qwen3.7-flash` through the OpenAI-compatible Responses API in the Beijing region. Both external providers preserve the same grounding instructions, untrusted-repository-data boundary, and backend citation resolution. Deterministic providers support reproducible offline tests and evaluation; OpenAI providers are implemented and contract-tested but were not live-tested for V1.
 
 `RETRIEVAL_STRATEGY=hybrid` is the measured V1 default. It reranks exact-vector results using a small lexical score over the same metadata-enriched chunk content. Set it to `vector` to reproduce the mandatory vector-only baseline. The measured comparison and limitations are recorded in `docs/evaluation/v1-retrieval-results.md`.
 
@@ -147,7 +148,7 @@ The API is available at `http://localhost:8000`:
 - `POST /api/retrieve` independently returns ranked, snapshot-scoped evidence with chunk IDs, source locations, cosine score/distance, and raw content; it never invokes answer generation.
 - `POST /api/ask` retrieves evidence, builds bounded untrusted-data context, generates a grounded answer, and resolves `[E#]` references into backend-derived citations.
 
-V1 selects [`Qwen`]for cost-conscious external generation through the official [Responses API]. Requests use `store=false`, an explicit output bound, and grounding instructions separated from untrusted repository content. The deterministic local provider is an extractive pipeline test aid, not an LLM-quality substitute.
+The V1 live-validated external provider is Alibaba Cloud Model Studio / Qwen: `qwen3.7-text-embedding` produces 512-dimensional embeddings, and `qwen3.7-flash` performs grounded generation through the OpenAI-compatible Responses API. Requests use `store=false`, an explicit output bound, and grounding instructions separated from untrusted repository content. The deterministic local provider is an extractive pipeline test aid, not an LLM-quality substitute.
 
 Example ingestion request from the repository root configured by `.env.example`:
 

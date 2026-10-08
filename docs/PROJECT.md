@@ -2287,9 +2287,10 @@ RepoPilot 才真正成为我的简历项目。
 
 当前状态：
 
-**V1 — complete**
-
-Stage 0 — Project Inception 已完成。
+- Stage 0 — Project Inception 已完成
+- V1 — Codebase RAG 已完成
+- 当前停在 V1 / V2 Version Boundary
+- V2 尚未授权开始
 
 当前基础架构：
 
@@ -2307,28 +2308,24 @@ React
 - Alembic Migration
 - Testing Foundation
 
-当前目标：
+V1 已完成以下 Milestone：
 
-完成 V1 — Codebase RAG。(V1已竣工)
+- M0 — Foundation Check：已完成
+- M1 — Repository Ingestion：已完成
+- M2 — Code-aware Chunking：已完成
+- M3 — Embedding + Vector Index：已完成
+- M4 — Retrieval Engine：已完成
+- M5 — RAG Generation + Citation：已完成
+- M6 — React Product UI：已完成
+- M7 — Retrieval Quality Improvement / Evaluation：已完成
 
-V1 按以下 Milestone 推进：
-
-M0 — Foundation Check  
-M1 — Repository Ingestion  
-M2 — Code-aware Chunking  
-M3 — Embedding + Vector Index  
-M4 — Retrieval Engine  
-M5 — RAG Generation + Citation  
-M6 — React Product UI  
-M7 — Retrieval Quality Improvement / Evaluation
-
-V1 完成后：
+V1 的完成流程已执行：
 
 Final Validation
 → Completion Report
 → Stop
-（目前已完成）
-完成后不得自动进入 V2。
+
+RepoPilot 当前保持在此边界；没有单独授权的 Version Goal，不得自动进入 V2。
 
 ---
 

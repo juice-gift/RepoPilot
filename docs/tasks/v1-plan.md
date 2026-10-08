@@ -169,10 +169,10 @@ V1 complete. Final Qwen external-provider validation, regression validation, ret
 - Store accepted source content so later chunking/indexing is reproducible even if the working repository changes.
 - Use standard-library structure parsing for the V1 baseline; syntax failures fall back to bounded file chunks instead of blocking ingestion.
 - Keep chunking idempotent for a snapshot and chunking version so stable chunks retain their database evidence IDs.
-- Select `text-embedding-3-small` at 512 dimensions based on current official OpenAI model/API documentation; exact pgvector columns deliberately lock this V1 choice.
+- Use `text-embedding-3-small` at 512 dimensions for the implemented OpenAI adapter; the shared exact pgvector schema fixes the V1 embedding dimension at 512.
 - Keep deterministic embeddings explicit and labeled as a local evaluation/test provider, not as evidence of external-model quality.
 - Keep retrieval entirely independent of generation so ranked source evidence can be inspected and evaluated on its own.
-- Select `gpt-5.6-luna` through the Responses API for cost-conscious external generation based on current official OpenAI documentation.
+- Use `gpt-5.6-luna` through the Responses API for the implemented OpenAI generation adapter; this adapter was contract-tested but was not the live-validated V1 provider.
 - Treat repository text only as delimited untrusted input; resolve model `[E#]` references against request context and never accept model-authored source metadata.
 - Keep the UI evidence-first: retrieval remains callable without generation, and answer citations navigate to backend-derived evidence instead of hiding source selection.
 - Retain the 70% exact-vector / 30% lexical rerank because it moved both observed bad cases to rank 1; keep the vector-only mode as the reproducible baseline.

@@ -30,11 +30,11 @@ For the complete long-term product scope, architecture direction, and version ro
 
 Current stage:
 
-**V1 — completed**
+**V1 — Codebase RAG is complete.**
 
 Stage 0 — Project Inception has been completed and serves as the stable engineering foundation.
 
-V1 has been establish:
+V1 has completed the following capabilities:
 
 - repository ingestion
 - repository snapshots
@@ -49,9 +49,10 @@ V1 has been establish:
 - retrieval evidence UI
 - retrieval evaluation
 
-V1 must follow the baseline-first architecture defined in `docs/PROJECT.md`.
+V1 followed the baseline-first architecture defined in `docs/PROJECT.md`.
 
-Do not implement V2 Code Intelligence, Agent, MCP, GitHub integration, or later-stage functionality unless explicitly authorized by a later goal.
+The repository is currently stopped at the V1 / V2 version boundary. Do not implement V2 Code Intelligence, Agent, MCP, GitHub integration, or later-stage functionality unless explicitly authorized by a new goal.
+
 ---
 
 ## 3. Documentation Hierarchy
