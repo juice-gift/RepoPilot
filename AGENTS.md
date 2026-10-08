@@ -30,13 +30,11 @@ For the complete long-term product scope, architecture direction, and version ro
 
 Current stage:
 
-**V1 — Codebase RAG**
+**V1 — completed**
 
 Stage 0 — Project Inception has been completed and serves as the stable engineering foundation.
 
-The current objective is to build a debuggable, testable, evidence-grounded repository-level Codebase RAG system.
-
-V1 will progressively establish:
+V1 has been establish:
 
 - repository ingestion
 - repository snapshots

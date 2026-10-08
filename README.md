@@ -2,7 +2,7 @@
 
 RepoPilot is a long-term AI codebase intelligence and issue-resolution system.
 
-**Stage 0 — Project Inception is complete. V1 — Codebase RAG is in progress.**
+**Stage 0 — Project Inception is complete. V1 — complete.**
 ## Current functionality
 
 The Stage 0 foundation and the V1 application pipeline currently provide:
@@ -33,7 +33,7 @@ The ingestion scanner currently supports Python, TypeScript, JavaScript, TSX, JS
 
 ## Planned functionality
 
-V1 validation is tracked in `docs/tasks/v1-plan.md`. Agent workflows, GitHub/MCP integration, and production engineering belong to later versions.
+V1 has been completed and the result is recorded in this`docs/tasks/v1-plan.md`. Agent workflows, GitHub/MCP integration, and production engineering belong to later versions.
 
 ## Repository structure
 
@@ -147,7 +147,7 @@ The API is available at `http://localhost:8000`:
 - `POST /api/retrieve` independently returns ranked, snapshot-scoped evidence with chunk IDs, source locations, cosine score/distance, and raw content; it never invokes answer generation.
 - `POST /api/ask` retrieves evidence, builds bounded untrusted-data context, generates a grounded answer, and resolves `[E#]` references into backend-derived citations.
 
-V1 selects [`gpt-5.6-luna`](https://developers.openai.com/api/docs/models/gpt-5.6-luna) for cost-conscious external generation through the official [Responses API](https://developers.openai.com/api/reference/python/resources/responses/methods/create). Requests use `store=false`, an explicit output bound, and grounding instructions separated from untrusted repository content. The deterministic local provider is an extractive pipeline test aid, not an LLM-quality substitute.
+V1 selects [`Qwen`]for cost-conscious external generation through the official [Responses API]. Requests use `store=false`, an explicit output bound, and grounding instructions separated from untrusted repository content. The deterministic local provider is an extractive pipeline test aid, not an LLM-quality substitute.
 
 Example ingestion request from the repository root configured by `.env.example`:
 

@@ -2287,7 +2287,7 @@ RepoPilot 才真正成为我的简历项目。
 
 当前状态：
 
-**V1 — Codebase RAG**
+**V1 — complete**
 
 Stage 0 — Project Inception 已完成。
 
@@ -2309,7 +2309,7 @@ React
 
 当前目标：
 
-完成 V1 — Codebase RAG。
+完成 V1 — Codebase RAG。(V1已竣工)
 
 V1 按以下 Milestone 推进：
 
@@ -2327,8 +2327,8 @@ V1 完成后：
 Final Validation
 → Completion Report
 → Stop
-
-不得自动进入 V2。
+（目前已完成）
+完成后不得自动进入 V2。
 
 ---
 
