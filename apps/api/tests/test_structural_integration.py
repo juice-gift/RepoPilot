@@ -4,6 +4,7 @@ from pathlib import Path
 import pytest
 from sqlalchemy import delete, func, select
 from sqlalchemy.exc import IntegrityError
+from test_structure_api import client_for
 
 from repopilot.config import Settings
 from repopilot.db.models import (
@@ -15,6 +16,7 @@ from repopilot.db.models import (
 )
 from repopilot.db.session import create_database_engine, create_database_session_factory
 from repopilot.ingestion.service import ingest_repository
+from repopilot.intelligence import navigation
 from repopilot.intelligence.analysis import AnalysisError
 from repopilot.intelligence.service import SnapshotNotFoundError, index_structure
 
@@ -117,6 +119,116 @@ def test_symbol_persistence_idempotency_snapshot_content_and_cleanup(
                 ).all()
                 == []
             )
+    finally:
+        engine.dispose()
+
+
+def test_live_structural_navigation_contract_and_scoping(tmp_path: Path) -> None:
+    (tmp_path / "lib.py").write_text(
+        "def verify_token():\n    return 1\nclass Auth:\n    def verify_token(self): return 2\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "app.py").write_text(
+        "from lib import verify_token\nverify_token()\nunknown()\n", encoding="utf-8"
+    )
+    engine = create_database_engine(Settings().database_url)
+    try:
+        with create_database_session_factory(engine)() as session:
+            data = ingest_repository(
+                session, requested_path=str(tmp_path), allowed_root=tmp_path
+            )
+            prefix = f"/api/repositories/{data.repository.id}/snapshots/{data.snapshot.id}/structure"
+            with client_for(session, tmp_path) as client:
+                assert client.get(prefix + "/files").status_code == 200
+                assert client.get(prefix + "/symbols").status_code == 409
+                first = client.post(prefix + "/index")
+                assert first.status_code == 200 and first.json()["created"]
+                assert not client.post(prefix + "/index").json()["created"]
+                symbols = client.get(prefix + "/symbols?q=verify_token").json()
+                assert len(symbols) == 2  # Return both definitions; do not guess.
+                qualified = client.get(
+                    prefix + "/symbols",
+                    params={"q": "Auth.verify_token", "match": "qualified"},
+                ).json()
+                assert (
+                    len(qualified) == 1 and qualified[0]["parent_symbol_id"] is not None
+                )
+                assert (
+                    len(
+                        client.get(
+                            prefix + "/symbols?q=VerifyToken&match=normalized"
+                        ).json()
+                    )
+                    == 2
+                )
+                assert len(client.get(prefix + "/symbols?file_path=lib.py").json()) == 3
+                assert (
+                    client.get(prefix + "/symbols?file_path=absent.py").status_code
+                    == 404
+                )
+                assert client.get(prefix + "/symbols?q=absent").json() == []
+                sid = symbols[0]["id"]
+                definition = client.get(prefix + f"/symbols/{sid}").json()
+                assert definition["content"] == "def verify_token():\n    return 1"
+                refs = client.get(prefix + f"/symbols/{sid}/references").json()
+                assert (
+                    len(refs) == 1
+                    and refs[0]["file_path"] == "app.py"
+                    and refs[0]["line"] == 2
+                )
+                assert (
+                    client.get(prefix + "/references?status=unresolved").json()[0][
+                        "name"
+                    ]
+                    == "unknown"
+                )
+                imports = client.get(prefix + "/imports?file_path=app.py").json()
+                assert imports[0]["target_file_path"] == "lib.py"
+                assert (
+                    client.get(prefix + "/importers?file_path=lib.py").json()[0][
+                        "file_path"
+                    ]
+                    == "app.py"
+                )
+                assert client.get(prefix + "/imports?file_path=lib.py").json() == []
+                assert len(client.get(prefix + "/files?limit=1&offset=1").json()) == 1
+                assert client.get(prefix + "/symbols/99999999").status_code == 404
+                assert (
+                    client.get(
+                        prefix.replace(
+                            f"repositories/{data.repository.id}",
+                            "repositories/99999999",
+                        )
+                        + "/symbols"
+                    ).status_code
+                    == 404
+                )
+                (tmp_path / "app.py").write_text("unknown()\n", encoding="utf-8")
+                other = ingest_repository(
+                    session, requested_path=str(tmp_path), allowed_root=tmp_path
+                )
+                index_structure(
+                    session,
+                    repository_id=data.repository.id,
+                    snapshot_id=other.snapshot.id,
+                )
+                other_prefix = prefix.replace(
+                    f"snapshots/{data.snapshot.id}", f"snapshots/{other.snapshot.id}"
+                )
+                assert client.get(other_prefix + f"/symbols/{sid}").status_code == 404
+                assert (
+                    navigation.find_references(
+                        session,
+                        data.repository.id,
+                        other.snapshot.id,
+                        status="resolved",
+                    )
+                    == []
+                )
+            session.execute(
+                delete(Repository).where(Repository.id == data.repository.id)
+            )
+            session.commit()
     finally:
         engine.dispose()
 

@@ -12,7 +12,7 @@ Implement the authorized [V2 goal](../goals/v2-code-intelligence.md): determinis
 | M1 | Python AST and JS/TS syntax analyzers with explicit failure behavior | Complete |
 | M2 | Versioned snapshot structural schema, migration and symbol persistence | Complete |
 | M3 | Static imports and conservative references | Complete |
-| M4 | Typed structural navigation APIs | Pending |
+| M4 | Typed structural navigation APIs | Complete |
 | M5 | Frozen structural golden dataset and measured evaluation | Pending |
 | Final | Live migration, regression, build, acceptance and scope audit | Pending |
 
@@ -34,8 +34,8 @@ Implement the authorized [V2 goal](../goals/v2-code-intelligence.md): determinis
 
 ## Current work
 
-M4 structural navigation API. No V2 implementation existed at initial HEAD 6f7f3d0.
+M5 frozen structural evaluation. No V2 implementation existed at initial HEAD 6f7f3d0.
 
 ## Dependencies / evaluation / blockers
 
-Dependencies: tree-sitter 0.26.0, tree-sitter-javascript 0.25.0, tree-sitter-typescript 0.23.2; required for syntax-based JS/TS extraction. M1: 10 analyzer tests passed; focused Ruff passed. M2: 11 focused/live tests passed, 0004 → 0005 migration applied, alembic check clean. Symbol ID stability, persisted-content rebuild, isolation, failure atomicity and cascading cleanup verified. M3: 27 focused tests passed, including two live persistence tests; cross-snapshot foreign-key rejection, cross-file Python/TS references, all resolution statuses and stable reference IDs verified. No measured V2 evaluation results yet. No blockers identified.
+Dependencies: tree-sitter 0.26.0, tree-sitter-javascript 0.25.0, tree-sitter-typescript 0.23.2; required for syntax-based JS/TS extraction. M1: 10 analyzer tests passed; focused Ruff passed. M2: 11 focused/live tests passed, 0004 → 0005 migration applied, alembic check clean. Symbol ID stability, persisted-content rebuild, isolation, failure atomicity and cascading cleanup verified. M3: 27 focused tests passed, including two live persistence tests; cross-snapshot foreign-key rejection, cross-file Python/TS references, all resolution statuses and stable reference IDs verified. M4: 16 API/live tests passed; exact/qualified/normalized lookup, definition source, references, imports/importers, pagination, missing resources, invalid requests and cross-snapshot symbol rejection verified. No measured V2 evaluation results yet. No blockers identified.
