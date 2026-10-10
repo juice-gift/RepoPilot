@@ -1,0 +1,10 @@
+{
+  "structural_dataset.json": "ac7b677d55206f840b23f3a7aaea7f14be28813c55b4c3b98fb8e6e3742d5bf2",
+  "structural_golden/app/main.ts": "dd948c8e0dbc5c91e40454e42ced2f021bb4ee4524e3bdbb5cbfe32d57951e0e",
+  "structural_golden/app/shared.ts": "434ebd26694f946493b2498af4a6ff578d51943dfa48604cf2e2a733b976740e",
+  "structural_golden/pkg/__init__.py": "3302e42de96dd04f96a228ee125ead8b0dc5d8ed4f961aaac625c88465e7f747",
+  "structural_golden/pkg/alternate.py": "198b0338920ab14b47ea41b1b873b9e395181374539f5a1c94aaee2e8798df1e",
+  "structural_golden/pkg/routes.py": "575e723c39b0c97fcd5e5a797541d800e6672ad2b29d865822764fdd023a52d3",
+  "structural_golden/pkg/service.py": "3d9dc3b7245aa792743e9daf09ec01adde61f12cde3fb64b7ad40e6b367c8b57",
+  "structural_golden/README.md": "5ad40c6e3414d7b477c97c23680917b8bc5e3c5a27ebc5ac0fca60a8fd12725c"
+}

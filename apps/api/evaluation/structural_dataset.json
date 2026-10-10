@@ -1,0 +1,60 @@
+{
+  "version": "v2-structural-1",
+  "symbols": [
+    ["pkg/service.py", "MAX_ATTEMPTS", 1, 1],
+    ["pkg/service.py", "verify_token", 3, 4],
+    ["pkg/service.py", "Auth", 6, 8],
+    ["pkg/service.py", "Auth.check", 7, 8],
+    ["pkg/alternate.py", "verify_token", 1, 2],
+    ["pkg/routes.py", "check", 4, 5],
+    ["pkg/routes.py", "duplicate", 7, 8],
+    ["pkg/routes.py", "duplicate", 10, 11],
+    ["pkg/routes.py", "shadow", 18, 19],
+    ["app/shared.ts", "User", 1, 1],
+    ["app/shared.ts", "UserId", 2, 2],
+    ["app/shared.ts", "State", 3, 3],
+    ["app/shared.ts", "formatName", 4, 4],
+    ["app/shared.ts", "Presenter", 5, 7],
+    ["app/shared.ts", "Presenter.show", 6, 6],
+    ["app/main.ts", "show", 4, 4]
+  ],
+  "queries": [
+    {"query": "verify_token", "match": "exact", "expected": [["pkg/alternate.py", "verify_token", 1, 2], ["pkg/service.py", "verify_token", 3, 4]]},
+    {"query": "Auth.check", "match": "qualified", "expected": [["pkg/service.py", "Auth.check", 7, 8]]},
+    {"query": "VerifyToken", "match": "normalized", "expected": [["pkg/alternate.py", "verify_token", 1, 2], ["pkg/service.py", "verify_token", 3, 4]]},
+    {"query": "duplicate", "match": "exact", "expected": [["pkg/routes.py", "duplicate", 7, 8], ["pkg/routes.py", "duplicate", 10, 11]]},
+    {"query": "Presenter.show", "match": "qualified", "expected": [["app/shared.ts", "Presenter.show", 6, 6]]},
+    {"query": "Format_Name", "match": "normalized", "expected": [["app/shared.ts", "formatName", 4, 4]]},
+    {"query": "UserId", "match": "exact", "expected": [["app/shared.ts", "UserId", 2, 2]]}
+  ],
+  "imports": [
+    ["pkg/routes.py", ".service", "verify_token", "verify", 1, "pkg/service.py"],
+    ["pkg/routes.py", "pkg.service", null, "service", 2, "pkg/service.py"],
+    ["app/main.ts", "./shared", "formatName", "format", 1, "app/shared.ts"],
+    ["app/main.ts", "./shared", "User", "User", 1, "app/shared.ts"],
+    ["app/main.ts", "./shared", null, "shared", 2, "app/shared.ts"]
+  ],
+  "references": [
+    ["pkg/service.py", "token", 4, "unresolved", null],
+    ["pkg/service.py", "verify_token", 8, "resolved", ["pkg/service.py", "verify_token", 3, 4]],
+    ["pkg/service.py", "token", 8, "unresolved", null],
+    ["pkg/routes.py", "verify", 5, "resolved", ["pkg/service.py", "verify_token", 3, 4]],
+    ["pkg/routes.py", "token", 5, "unresolved", null],
+    ["pkg/routes.py", "check", 13, "resolved", ["pkg/routes.py", "check", 4, 5]],
+    ["pkg/routes.py", "verify_token", 14, "resolved", ["pkg/service.py", "verify_token", 3, 4]],
+    ["pkg/routes.py", "service", 14, "unresolved", null],
+    ["pkg/routes.py", "duplicate", 15, "ambiguous", null],
+    ["pkg/routes.py", "missing", 16, "unresolved", null],
+    ["pkg/routes.py", "verify", 19, "unresolved", null],
+    ["app/shared.ts", "value", 4, "unresolved", null],
+    ["app/shared.ts", "formatName", 6, "resolved", ["app/shared.ts", "formatName", 4, 4]],
+    ["app/shared.ts", "value", 6, "unresolved", null],
+    ["app/main.ts", "format", 4, "resolved", ["app/shared.ts", "formatName", 4, 4]],
+    ["app/main.ts", "name", 4, "unresolved", null],
+    ["app/main.ts", "user", 4, "unresolved", null],
+    ["app/main.ts", "show", 5, "resolved", ["app/main.ts", "show", 4, 4]],
+    ["app/main.ts", "formatName", 6, "resolved", ["app/shared.ts", "formatName", 4, 4]],
+    ["app/main.ts", "shared", 6, "unresolved", null],
+    ["app/main.ts", "missing", 7, "unresolved", null]
+  ]
+}
