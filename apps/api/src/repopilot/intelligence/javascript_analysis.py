@@ -39,6 +39,7 @@ class _JavaScriptAnalyzer:
         self.parent: int | None = None
         self.exported = False
         self.default_export = False
+        self.class_scopes: set[int] = set()
 
     @staticmethod
     def text(node: Node) -> str:
@@ -92,7 +93,12 @@ class _JavaScriptAnalyzer:
 
     def function(self, node: Node, symbol_index: int | None = None) -> None:
         old_scope, old_parent = self.scope, self.parent
-        self.scope = self.result.new_scope(old_scope)
+        lexical_parent = (
+            self.result.scopes[old_scope].parent
+            if old_scope in self.class_scopes
+            else old_scope
+        )
+        self.scope = self.result.new_scope(lexical_parent)
         if symbol_index is not None:
             self.parent = symbol_index
         # A named function expression's name exists only inside the function.
@@ -131,7 +137,11 @@ class _JavaScriptAnalyzer:
             "method_definition",
         }:
             name = node.child_by_field_name("name")
-            if name and name.type in {"identifier", "property_identifier"}:
+            if (
+                name
+                and name.type in {"identifier", "property_identifier"}
+                and (kind != "method_definition" or self.scope in self.class_scopes)
+            ):
                 index = self.symbol(
                     node,
                     self.text(name),
@@ -162,12 +172,15 @@ class _JavaScriptAnalyzer:
                         "enum_declaration": "enum",
                     }[kind],
                 )
-                old_parent = self.parent
+                old_parent, old_scope = self.parent, self.scope
                 self.parent = index
+                if kind == "class_declaration":
+                    self.scope = self.result.new_scope(old_scope)
+                    self.class_scopes.add(self.scope)
                 for child in node.named_children:
                     if child.id != name.id:
                         self.visit(child)
-                self.parent = old_parent
+                self.parent, self.scope = old_parent, old_scope
             return
         if kind == "variable_declarator":
             name = node.child_by_field_name("name")
@@ -187,6 +200,16 @@ class _JavaScriptAnalyzer:
                     self.visit(value)
             else:
                 self.bind_pattern(name)
+                if node.parent and node.parent.type == "variable_declaration":
+                    # var is function-scoped, not block-scoped. Conservatively
+                    # block outer candidates too rather than invent a target.
+                    scope = self.result.scopes[self.scope].parent
+                    while scope is not None:
+                        old_scope = self.scope
+                        self.scope = scope
+                        self.bind_pattern(name)
+                        self.scope = old_scope
+                        scope = self.result.scopes[scope].parent
                 if value:
                     self.visit(value)
             return

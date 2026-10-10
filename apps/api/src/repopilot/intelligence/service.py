@@ -16,6 +16,7 @@ from repopilot.intelligence.analysis import (
     analyze_source,
     normalize_name,
 )
+from repopilot.intelligence.resolution import resolve_structure
 
 
 class SnapshotNotFoundError(ValueError):
@@ -61,7 +62,9 @@ def index_structure(
     if snapshot is None:
         raise SnapshotNotFoundError("Repository snapshot not found")
     if snapshot.structural_index_version == INDEX_VERSION:
-        return _result(session, snapshot_id, False)
+        result = _result(session, snapshot_id, False)
+        session.commit()
+        return result
     files = session.scalars(
         select(SnapshotFile)
         .where(
@@ -75,12 +78,15 @@ def index_structure(
             analyses[file.path] = analyze_source(file.content, file.language)
         except AnalysisError as exc:
             raise AnalysisError(f"{file.path}: {exc}") from exc
+    resolved_imports, resolved_references = resolve_structure(analyses)
 
     # Parse everything before touching a previous index. Savepoint also keeps a
     # persistence failure from exposing a partial replacement to the caller.
     with session.begin_nested():
         for model in (CodeReference, ImportRelation, CodeSymbol):
             session.execute(delete(model).where(model.snapshot_id == snapshot_id))
+        stored_symbols: dict[tuple[str, int], CodeSymbol] = {}
+        files_by_path = {file.path: file for file in files}
         for file in files:
             symbols: list[CodeSymbol] = []
             for item in analyses[file.path].symbols:
@@ -102,6 +108,47 @@ def index_structure(
                 session.add(symbol)
                 session.flush()
                 symbols.append(symbol)
+                stored_symbols[(file.path, len(symbols) - 1)] = symbol
+        for file in files:
+            analysis = analyses[file.path]
+            for i, item in enumerate(analysis.imports):
+                resolution = resolved_imports[(file.path, i)]
+                session.add(
+                    ImportRelation(
+                        snapshot_id=snapshot_id,
+                        snapshot_file_id=file.id,
+                        index_version=INDEX_VERSION,
+                        module=item.module,
+                        imported_name=item.name,
+                        alias=item.alias,
+                        level=item.level,
+                        line=item.line,
+                        column_number=item.column,
+                        status=resolution.status,
+                        reason=resolution.reason,
+                        target_file_id=files_by_path[resolution.target].id
+                        if resolution.target
+                        else None,
+                    )
+                )
+            for i, item in enumerate(analysis.references):
+                resolution = resolved_references[(file.path, i)]
+                session.add(
+                    CodeReference(
+                        snapshot_id=snapshot_id,
+                        snapshot_file_id=file.id,
+                        index_version=INDEX_VERSION,
+                        name=item.name,
+                        qualifier=item.qualifier,
+                        line=item.line,
+                        column_number=item.column,
+                        status=resolution.status,
+                        reason=resolution.reason,
+                        target_symbol_id=stored_symbols[resolution.target].id
+                        if resolution.target
+                        else None,
+                    )
+                )
         snapshot.structural_index_version = INDEX_VERSION
     session.commit()
     return _result(session, snapshot_id, True)

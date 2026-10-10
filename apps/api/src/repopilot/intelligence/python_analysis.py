@@ -132,11 +132,15 @@ class _PythonAnalyzer(ast.NodeVisitor):
                 Reference(
                     node.attr,
                     self.scope,
-                    node.lineno,
-                    node.col_offset + 1,
+                    node.end_lineno or node.lineno,
+                    (node.end_col_offset or node.col_offset)
+                    - len(node.attr.encode("utf-8"))
+                    + 1,
                     qualifier,
                 )
             )
+        elif isinstance(node.value, ast.Name):
+            self.result.bind(self.scope, node.value.id, Binding("unknown"))
         self.visit(node.value)
 
     def visit_Assign(self, node: ast.Assign) -> None:
@@ -200,6 +204,18 @@ class _PythonAnalyzer(ast.NodeVisitor):
             self.result.bind(0, name, Binding("unknown"))
 
     visit_Nonlocal = visit_Global
+
+    def visit_MatchAs(self, node: ast.MatchAs) -> None:
+        if node.name:
+            self.result.bind(self.scope, node.name, Binding("unknown"))
+        self.generic_visit(node)
+
+    visit_MatchStar = visit_MatchAs
+
+    def visit_MatchMapping(self, node: ast.MatchMapping) -> None:
+        if node.rest:
+            self.result.bind(self.scope, node.rest, Binding("unknown"))
+        self.generic_visit(node)
 
     def visit_Lambda(self, node: ast.Lambda) -> None:
         old_scope = self.scope
