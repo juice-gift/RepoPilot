@@ -159,3 +159,14 @@ def test_ts_generic_parameter_does_not_resolve_to_module_type() -> None:
         for i, item in enumerate(analyses["a.ts"].references)
         if item.name == "T"
     )
+
+
+def test_imported_js_duplicate_export_does_not_choose_exported_candidate() -> None:
+    _, _, refs = resolve(
+        {
+            "service.js": ("javascript", "export function run() {}\nfunction run() {}"),
+            "app.js": ("javascript", "import { run } from './service'; run();"),
+        }
+    )
+    assert refs[("app.js", 0)].status == "ambiguous"
+    assert refs[("app.js", 0)].target is None

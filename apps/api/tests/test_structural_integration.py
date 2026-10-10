@@ -29,6 +29,7 @@ pytestmark = pytest.mark.skipif(
 
 def test_symbol_persistence_idempotency_snapshot_content_and_cleanup(
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     source = tmp_path / "app.py"
     source.write_text(
@@ -69,6 +70,34 @@ def test_symbol_persistence_idempotency_snapshot_content_and_cleanup(
                 .where(CodeSymbol.snapshot_id == first.snapshot.id)
                 .order_by(CodeSymbol.id)
             ).all() == [s.id for s in symbols]
+            first.snapshot.structural_index_version = "legacy-test-version"
+            session.commit()
+            with monkeypatch.context() as patch:
+
+                def fail_analysis(*args, **kwargs):
+                    raise AnalysisError("simulated parser failure")
+
+                patch.setattr(
+                    "repopilot.intelligence.service.analyze_source", fail_analysis
+                )
+                with pytest.raises(AnalysisError):
+                    index_structure(
+                        session,
+                        repository_id=first.repository.id,
+                        snapshot_id=first.snapshot.id,
+                    )
+            assert first.snapshot.structural_index_version == "legacy-test-version"
+            assert session.scalars(
+                select(CodeSymbol.id)
+                .where(CodeSymbol.snapshot_id == first.snapshot.id)
+                .order_by(CodeSymbol.id)
+            ).all() == [s.id for s in symbols]
+            rebuilt = index_structure(
+                session,
+                repository_id=first.repository.id,
+                snapshot_id=first.snapshot.id,
+            )
+            assert rebuilt.created and rebuilt.symbol_count == 2
             second = ingest_repository(
                 session, requested_path=str(tmp_path), allowed_root=tmp_path
             )

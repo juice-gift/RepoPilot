@@ -4,7 +4,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Literal
 
-INDEX_VERSION = "structural-v1"
+INDEX_VERSION = "structural-v2"
 ResolutionStatus = Literal["resolved", "unresolved", "ambiguous"]
 
 

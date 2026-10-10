@@ -91,3 +91,19 @@ def test_real_react_tsx_does_not_crash_native_parser() -> None:
         timeout=30,
     )
     assert result.returncode == 0, result.stdout + result.stderr
+
+
+@pytest.mark.parametrize(
+    "language, source",
+    [
+        ("python", 'label = "中文"; service.run()'),
+        ("typescript", 'const label = "中文"; service.run();'),
+    ],
+)
+def test_reference_locations_use_one_based_utf8_byte_columns(
+    language: str, source: str
+) -> None:
+    result = analyze_source(source, language)
+    reference = next(ref for ref in result.references if ref.name == "run")
+    assert reference.line == 1
+    assert reference.column == len(source[: source.index("run")].encode("utf-8")) + 1

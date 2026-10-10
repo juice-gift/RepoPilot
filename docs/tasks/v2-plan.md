@@ -42,3 +42,5 @@ Dependencies: tree-sitter 0.25.2, tree-sitter-javascript 0.25.0, tree-sitter-typ
 
 - Real RepoPilot App.tsx exposed a native Windows access violation with tree-sitter 0.26.0. Retaining source/tree lifetimes alone did not fix it. The same file parsed repeatedly with 0.25.2; dependency constrained below 0.26 and subprocess regression coverage added. No technology change.
 - Disposable-database test passed empty → V1 → V2, V2 → V1 → V2 and alembic check while preserving a V1 sentinel.
+
+- Final review added explicit UTF-8 byte-column checks and rejected duplicate imported JS bindings instead of selecting an exported candidate. Final analyzer version is structural-v2; prior development indexes rebuild from persisted content. Failed rebuild preserves the previous index; concurrent requests serialize on the snapshot lock.

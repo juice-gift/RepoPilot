@@ -137,12 +137,22 @@ def _definition(
             i for i, symbol in enumerate(analysis.symbols) if symbol.default_export
         ]
         bindings = [Binding("symbol", i) for i in indexes]
+        if any(
+            binding.kind != "symbol"
+            for i in indexes
+            for binding in analysis.scopes[0].bindings.get(analysis.symbols[i].name, [])
+        ):
+            return ReferenceResolution(
+                "unresolved", None, "default export binding is reassigned"
+            )
     else:
         bindings = analysis.scopes[0].bindings.get(name, [])
     if "*" in analysis.scopes[0].bindings or any(b.kind != "symbol" for b in bindings):
         return ReferenceResolution(
             "unresolved", None, "target binding is unsupported or reassigned"
         )
+    if len(bindings) > 1:
+        return ReferenceResolution("ambiguous", None, "multiple imported definitions")
     candidates = [
         b.index
         for b in bindings
