@@ -22,28 +22,34 @@ def analyze_javascript(content: str, language: str) -> Analysis:
         if language == "typescript"
         else tree_sitter_javascript.language()
     )
-    root = Parser(Language(grammar)).parse(content.encode("utf-8")).root_node
+    source_bytes = content.encode("utf-8")
+    parser = Parser(Language(grammar))
+    tree = parser.parse(source_bytes)
+    root = tree.root_node
     if root.has_error:
         raise AnalysisError(
             "JavaScript/TypeScript syntax tree contains errors or missing nodes"
         )
-    analyzer = _JavaScriptAnalyzer(language)
-    analyzer.visit(root)
+    analyzer = _JavaScriptAnalyzer(language, source_bytes)
+    try:
+        analyzer.visit(root)
+    except RecursionError as exc:
+        raise AnalysisError("JS/TS structure exceeds analyzer recursion limit") from exc
     return analyzer.result
 
 
 class _JavaScriptAnalyzer:
-    def __init__(self, language: str) -> None:
+    def __init__(self, language: str, source_bytes: bytes) -> None:
         self.result = Analysis(language)
+        self.source_bytes = source_bytes
         self.scope = 0
         self.parent: int | None = None
         self.exported = False
         self.default_export = False
         self.class_scopes: set[int] = set()
 
-    @staticmethod
-    def text(node: Node) -> str:
-        return (node.text or b"").decode("utf-8")
+    def text(self, node: Node) -> str:
+        return self.source_bytes[node.start_byte : node.end_byte].decode("utf-8")
 
     def symbol(self, node: Node, name: str, kind: str) -> int:
         index = len(self.result.symbols)
@@ -109,6 +115,9 @@ class _JavaScriptAnalyzer:
             node.child_by_field_name("parameters")
             or node.child_by_field_name("parameter")
         )
+        type_parameters = node.child_by_field_name("type_parameters")
+        if type_parameters:
+            self.visit(type_parameters)
         body = node.child_by_field_name("body")
         if body:
             self.visit(body)
@@ -116,6 +125,14 @@ class _JavaScriptAnalyzer:
 
     def visit(self, node: Node) -> None:
         kind = node.type
+        if kind == "type_parameter":
+            name = node.child_by_field_name("name")
+            if name:
+                self.result.bind(self.scope, self.text(name), Binding("unknown"))
+            return
+        if kind == "method_signature":
+            # Interface signature parameter names are declarations, not uses.
+            return
         if kind == "export_statement":
             old = self.exported, self.default_export
             self.exported = True

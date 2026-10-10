@@ -1,3 +1,8 @@
+import os
+import subprocess
+import sys
+from pathlib import Path
+
 import pytest
 
 from repopilot.intelligence.analysis import AnalysisError, analyze_source
@@ -69,3 +74,20 @@ def test_syntax_failures_are_explicit(language: str, source: str) -> None:
 
 def test_markdown_has_no_structural_index() -> None:
     assert analyze_source("# hello", "markdown").symbols == []
+
+
+def test_real_react_tsx_does_not_crash_native_parser() -> None:
+    # 0.26.0 crashed the Windows process while traversing this actual TSX file.
+    # A subprocess makes native failure reviewable instead of killing pytest.
+    api_root = Path(__file__).resolve().parents[1]
+    script = "from pathlib import Path; from repopilot.intelligence.analysis import analyze_source; a = analyze_source(Path('../web/src/App.tsx').read_text(encoding='utf-8'), 'tsx'); assert any(s.name == 'App' for s in a.symbols)"
+    result = subprocess.run(
+        [sys.executable, "-c", script],
+        cwd=api_root,
+        env=dict(os.environ, PYTHONPATH=str(api_root / "src")),
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=30,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr

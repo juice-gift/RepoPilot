@@ -1,5 +1,7 @@
 import os
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from threading import Barrier
 
 import pytest
 from sqlalchemy import delete, func, select
@@ -119,6 +121,40 @@ def test_symbol_persistence_idempotency_snapshot_content_and_cleanup(
                 ).all()
                 == []
             )
+    finally:
+        engine.dispose()
+
+
+def test_concurrent_index_requests_serialize_on_snapshot(tmp_path: Path) -> None:
+    (tmp_path / "app.py").write_text("def run(): return 1\nrun()\n", encoding="utf-8")
+    engine = create_database_engine(Settings().database_url)
+    factory = create_database_session_factory(engine)
+    try:
+        with factory() as session:
+            data = ingest_repository(
+                session, requested_path=str(tmp_path), allowed_root=tmp_path
+            )
+            repository_id, snapshot_id = data.repository.id, data.snapshot.id
+        barrier = Barrier(2)
+
+        def index():
+            with factory() as session:
+                barrier.wait(timeout=10)
+                return index_structure(
+                    session, repository_id=repository_id, snapshot_id=snapshot_id
+                )
+
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            futures = [executor.submit(index) for _ in range(2)]
+            results = [future.result(timeout=30) for future in futures]
+        assert sorted(result.created for result in results) == [False, True]
+        assert all(
+            result.symbol_count == 1 and result.reference_count == 1
+            for result in results
+        )
+        with factory() as session:
+            session.execute(delete(Repository).where(Repository.id == repository_id))
+            session.commit()
     finally:
         engine.dispose()
 

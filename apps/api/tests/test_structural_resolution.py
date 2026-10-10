@@ -123,3 +123,39 @@ def test_duplicate_source_roots_and_missing_local_modules() -> None:
     )
     assert imports[("app.py", 0)].status == "ambiguous"
     assert imports[("app.py", 1)].status == "unresolved"
+
+
+def test_relative_python_submodule_import_and_lexical_nested_function() -> None:
+    analyses, imports, refs = resolve(
+        {
+            "pkg/__init__.py": ("python", ""),
+            "pkg/service.py": ("python", "def run(): return 1"),
+            "pkg/app.py": (
+                "python",
+                "from . import service\ndef outer():\n    def inner(): return 1\n    return inner()\nservice.run()\n",
+            ),
+        }
+    )
+    assert imports[("pkg/app.py", 0)].target == "pkg/service.py"
+    by_name = {
+        item.name: refs[("pkg/app.py", i)]
+        for i, item in enumerate(analyses["pkg/app.py"].references)
+    }
+    assert by_name["inner"].target == ("pkg/app.py", 1)
+    assert by_name["run"].target == ("pkg/service.py", 0)
+
+
+def test_ts_generic_parameter_does_not_resolve_to_module_type() -> None:
+    analyses, _, refs = resolve(
+        {
+            "a.ts": (
+                "typescript",
+                "export type T = string;\nfunction f<T>() { let value: T; return value; }\n",
+            )
+        }
+    )
+    assert all(
+        refs[("a.ts", i)].status == "unresolved"
+        for i, item in enumerate(analyses["a.ts"].references)
+        if item.name == "T"
+    )

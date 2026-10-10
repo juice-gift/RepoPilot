@@ -16,7 +16,10 @@ def analyze_python(content: str) -> Analysis:
     except (SyntaxError, ValueError, RecursionError) as exc:
         raise AnalysisError(f"Python syntax analysis failed: {exc}") from exc
     analyzer = _PythonAnalyzer()
-    analyzer.visit(root)
+    try:
+        analyzer.visit(root)
+    except RecursionError as exc:
+        raise AnalysisError("Python structure exceeds analyzer recursion limit") from exc
     return analyzer.result
 
 

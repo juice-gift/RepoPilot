@@ -13,7 +13,7 @@ Implement the authorized [V2 goal](../goals/v2-code-intelligence.md): determinis
 | M2 | Versioned snapshot structural schema, migration and symbol persistence | Complete |
 | M3 | Static imports and conservative references | Complete |
 | M4 | Typed structural navigation APIs | Complete |
-| M5 | Frozen structural golden dataset and measured evaluation | Pending |
+| M5 | Frozen structural golden dataset and measured evaluation | Complete |
 | Final | Live migration, regression, build, acceptance and scope audit | Pending |
 
 ## Decisions
@@ -34,8 +34,11 @@ Implement the authorized [V2 goal](../goals/v2-code-intelligence.md): determinis
 
 ## Current work
 
-M5 frozen structural evaluation. No V2 implementation existed at initial HEAD 6f7f3d0.
+Final validation and acceptance audit. No V2 implementation existed at initial HEAD 6f7f3d0.
 
 ## Dependencies / evaluation / blockers
 
-Dependencies: tree-sitter 0.26.0, tree-sitter-javascript 0.25.0, tree-sitter-typescript 0.23.2; required for syntax-based JS/TS extraction. M1: 10 analyzer tests passed; focused Ruff passed. M2: 11 focused/live tests passed, 0004 → 0005 migration applied, alembic check clean. Symbol ID stability, persisted-content rebuild, isolation, failure atomicity and cascading cleanup verified. M3: 27 focused tests passed, including two live persistence tests; cross-snapshot foreign-key rejection, cross-file Python/TS references, all resolution statuses and stable reference IDs verified. M4: 16 API/live tests passed; exact/qualified/normalized lookup, definition source, references, imports/importers, pagination, missing resources, invalid requests and cross-snapshot symbol rejection verified. No measured V2 evaluation results yet. No blockers identified.
+Dependencies: tree-sitter 0.25.2, tree-sitter-javascript 0.25.0, tree-sitter-typescript 0.23.2; required for syntax-based JS/TS extraction. M1: 10 analyzer tests passed; focused Ruff passed. M2: 11 focused/live tests passed, 0004 → 0005 migration applied, alembic check clean. Symbol ID stability, persisted-content rebuild, isolation, failure atomicity and cascading cleanup verified. M3: 27 focused tests passed, including two live persistence tests; cross-snapshot foreign-key rejection, cross-file Python/TS references, all resolution statuses and stable reference IDs verified. M4: 16 API/live tests passed; exact/qualified/normalized lookup, definition source, references, imports/importers, pagination, missing resources, invalid requests and cross-snapshot symbol rejection verified. Frozen structural evaluation: 16/16 definitions, 5/5 import relations, 8/8 resolved references, all 21 occurrence statuses correct; seven symbol queries Hit@1/3/5 and MRR@1/3/5 = 1.0. Independent V1 vector/hybrid reports reproduce baseline metrics. Full suite before final fixes: 121 passed. No blockers identified.
+
+- Real RepoPilot App.tsx exposed a native Windows access violation with tree-sitter 0.26.0. Retaining source/tree lifetimes alone did not fix it. The same file parsed repeatedly with 0.25.2; dependency constrained below 0.26 and subprocess regression coverage added. No technology change.
+- Disposable-database test passed empty → V1 → V2, V2 → V1 → V2 and alembic check while preserving a V1 sentinel.
