@@ -1,0 +1,31 @@
+{
+  "note": "Observation only; this repository has no manually labeled structural ground truth. Snapshot includes tests, fixtures and documentation at observation time.",
+  "snapshot_hash": "003186d9f22575b51f63d35052d770ff355c919ca5afc10ca7b7427001418d7b",
+  "index_version": "structural-v2",
+  "files": 123,
+  "symbols": 513,
+  "references": 11012,
+  "reference_status": {
+    "unresolved": 9840,
+    "resolved": 1171,
+    "ambiguous": 1
+  },
+  "import_status": {
+    "unresolved": 368,
+    "resolved": 355
+  },
+  "unresolved_reference_reasons": {
+    "no snapshot-local static module": 1671,
+    "missing, shadowed, dynamic or reassigned binding": 7970,
+    "module object is not a symbol definition": 2,
+    "multiple lexical bindings": 1,
+    "member dispatch requires unsupported type/runtime evidence": 26,
+    "non-namespace member access": 122,
+    "no supported exported/imported definition": 25,
+    "package/alias import outside baseline": 24
+  },
+  "unresolved_import_reasons": {
+    "no snapshot-local static module": 361,
+    "package/alias import outside baseline": 7
+  }
+}
