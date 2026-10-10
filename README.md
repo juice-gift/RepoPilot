@@ -2,7 +2,8 @@
 
 RepoPilot is a long-term AI codebase intelligence and issue-resolution system.
 
-**Stage 0 — Project Inception is complete. V1 — Codebase RAG is complete.**
+**Stage 0, V1 — Codebase RAG, and V2 — Code Intelligence are complete.**
+The project stops at the V2 / V3 boundary until a new version goal is authorized.
 
 ## Current functionality
 
@@ -32,9 +33,27 @@ The UI reports backend and database connectivity separately, ingests and indexes
 
 The ingestion scanner currently supports Python, TypeScript, JavaScript, TSX, JSX, and Markdown. It excludes common dependency/build directories, unsupported and oversized files, binary/non-UTF-8 content, generated/minified files, and sensitive filenames such as `.env`, private keys, credentials, and secrets.
 
+V2 adds a separate deterministic path:
+
+```text
+Persisted snapshot file content
+-> Python AST / JavaScript and TypeScript Tree-sitter syntax
+-> symbols, static imports and reference occurrences
+-> conservative binding resolution
+-> versioned PostgreSQL structural index
+-> typed structural navigation API
+```
+
+Definitions and source locations come from the structural index. References carry
+`resolved`, `unresolved`, or `ambiguous` status plus a reason. This path uses no
+embedding or generation provider and never executes repository code. V1 chunking,
+retrieval ranking and the evidence UI retain their existing behavior.
+
 ## Planned functionality
 
-V1 has been completed, and the results are recorded in `docs/tasks/v1-plan.md`. Agent workflows, GitHub/MCP integration, and production engineering belong to later versions.
+Version results are recorded in `docs/tasks/v1-plan.md`, `docs/tasks/v2-plan.md`
+and `docs/evaluation/v2-code-intelligence-results.md`. Agent workflows,
+GitHub/MCP integration, and production engineering belong to later versions.
 
 ## Repository structure
 
@@ -148,6 +167,35 @@ The API is available at `http://localhost:8000`:
 - `POST /api/retrieve` independently returns ranked, snapshot-scoped evidence with chunk IDs, source locations, cosine score/distance, and raw content; it never invokes answer generation.
 - `POST /api/ask` retrieves evidence, builds bounded untrusted-data context, generates a grounded answer, and resolves `[E#]` references into backend-derived citations.
 
+V2 endpoints share the prefix
+`/api/repositories/{repository_id}/snapshots/{snapshot_id}/structure`:
+
+| Method and suffix | Purpose |
+| --- | --- |
+| `POST /index` | Explicitly build/reuse the current structural index |
+| `GET /files` | List persisted files, including before structural indexing |
+| `GET /symbols` | List symbols; filter with `file_path`, or search `q` with `match=exact`, `qualified`, or `normalized` |
+| `GET /symbols/{symbol_id}` | Return the definition metadata and saved source lines |
+| `GET /symbols/{symbol_id}/references` | List only references resolved to this exact symbol |
+| `GET /references` | Inspect occurrences; filter by `file_path` and `status` |
+| `GET /imports?file_path=...` | Static dependencies including unresolved occurrences |
+| `GET /importers?file_path=...` | Reverse lookup of resolved local dependencies |
+
+List endpoints accept `limit` (1–500, default 100) and `offset` (default 0).
+Source lines are one-based and inclusive; occurrence columns are one-based UTF-8
+byte offsets. Duplicate symbol names return separate definitions. Queries never
+guess which duplicate the caller meant. Missing resources return 404; queries
+requiring a missing/older structural index return 409; syntax failures and invalid
+inputs return 422. A syntax failure aborts the structural rebuild and preserves
+the previous index; it does not change V1's chunking fallback behavior.
+
+Python resolves static absolute imports using the repository root and source
+roots inferred from package markers, plus relative imports. Ambiguous roots stay
+ambiguous. JS/TS resolves relative modules and explicit exported definitions;
+package aliases, export-list/re-export chains, dynamic loaders, runtime mutation,
+and type-dependent member dispatch remain outside the baseline. Markdown stays
+available for V1 RAG and file navigation without structural symbols.
+
 The V1 live-validated external provider is Alibaba Cloud Model Studio / Qwen: `qwen3.7-text-embedding` produces 512-dimensional embeddings, and `qwen3.7-flash` performs grounded generation through the OpenAI-compatible Responses API. Requests use `store=false`, an explicit output bound, and grounding instructions separated from untrusted repository content. The deterministic local provider is an extractive pipeline test aid, not an LLM-quality substitute.
 
 Example ingestion request from the repository root configured by `.env.example`:
@@ -194,6 +242,18 @@ RUN_DATABASE_TESTS=1 uv run pytest
 
 The live test verifies the database health API, Alembic revision, and installed pgvector extension.
 
+The complete suite also verifies structural persistence, isolation, concurrent
+idempotency, imports, references, API contracts and frozen evaluation. Migration
+replay creates and removes its own uniquely named disposable database; this test
+requires local database creation permission. It never drops the configured
+development database. The current migration head is `0005_structural_index`.
+
+Backend lint, from `apps/api`:
+
+```bash
+uv run ruff check src tests migrations
+```
+
 Frontend TypeScript validation and production build, from `apps/web`:
 
 ```bash
@@ -217,6 +277,26 @@ macOS or Linux:
 PYTHONPATH=src uv run python -m repopilot.evaluation.runner --strategy vector --top-k 5
 PYTHONPATH=src uv run python -m repopilot.evaluation.runner --strategy hybrid --top-k 5
 ```
+
+Run the independent frozen V2 structural evaluation from `apps/api`:
+
+```powershell
+$env:PYTHONPATH = "src"
+uv run python -m repopilot.evaluation.structural
+Remove-Item Env:PYTHONPATH
+```
+
+On macOS/Linux use `PYTHONPATH=src uv run python -m repopilot.evaluation.structural`.
+Use `--output path.json` to save the report. The checked-in structural dataset and
+normalized source hashes are frozen. Perfect scores on this small labeled corpus
+do not imply complete reference resolution on arbitrary repositories.
+
+The additional parser dependencies are `tree-sitter`, `tree-sitter-javascript`
+and `tree-sitter-typescript`. The lockfile uses Tree-sitter 0.25.2: 0.26.0 caused
+a native Windows crash on the actual React TSX source, so the supported range
+currently stays below 0.26 with subprocess regression coverage. The algorithm
+version is `structural-v2`; bump this version when extraction/resolution semantics
+change so existing snapshots rebuild from their persisted content.
 
 After configuring `DASHSCOPE_API_KEY` in the ignored root `.env`, the Qwen
 live-provider check can be reproduced from `apps/api`. It embeds the 19 Golden

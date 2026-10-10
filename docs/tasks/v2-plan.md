@@ -2,45 +2,55 @@
 
 ## Goal and boundary
 
-Implement the authorized [V2 goal](../goals/v2-code-intelligence.md): deterministic snapshot-based symbols, definitions, imports, conservative references, independent navigation, and structural evaluation. Preserve V1 retrieval and stop before V3.
+Deliver the authorized [V2 goal](../goals/v2-code-intelligence.md): snapshot-based deterministic symbols, definitions, imports, conservative references, independent navigation and measured structural evaluation. Preserve V1 and stop before V3.
 
 ## Milestones
 
 | Milestone | Outcome | Status |
 | --- | --- | --- |
 | M0 | Inspect source of truth and validate V1 baseline | Complete |
-| M1 | Python AST and JS/TS syntax analyzers with explicit failure behavior | Complete |
-| M2 | Versioned snapshot structural schema, migration and symbol persistence | Complete |
+| M1 | Python AST and JS/TS syntax analyzers | Complete |
+| M2 | Versioned structural schema, migration and symbol persistence | Complete |
 | M3 | Static imports and conservative references | Complete |
 | M4 | Typed structural navigation APIs | Complete |
-| M5 | Frozen structural golden dataset and measured evaluation | Complete |
-| Final | Live migration, regression, build, acceptance and scope audit | Pending |
+| M5 | Frozen golden dataset and structural/V1 evaluation | Complete |
+| Final | Live migration, regression, build, acceptance and scope audit | Complete |
 
-## Decisions
+## Current state
 
-- Read only persisted SnapshotFile content; never execute repository code.
-- Python uses standard-library ast; JS/JSX and TS/TSX use minimal Tree-sitter grammar dependencies.
-- Parser nodes remain inside analyzers. Extraction and resolution use plain typed records.
-- Definitions are CodeSymbol source locations; no duplicate definition or directory table.
-- Structural navigation remains independent of general retrieval; no ranking changes without measured need.
-- Conservative resolution favors unresolved over an unsupported semantic claim.
-- Existing uncommitted PROJECT.md relocation was byte-equivalent; owner requested restoring docs/PROJECT.md, completed without content edits.
+V2 complete. Stop at the V2 / V3 boundary. No required work or blockers remain.
+The [completion report](../evaluation/v2-code-intelligence-results.md) records files,
+architecture, commits, commands, all acceptance items, limitations and risks.
+Initial HEAD was 6f7f3d0; no V2 implementation existed at inspection.
 
-## Validation and baseline
+## Important decisions
 
-- Ordinary V1 tests: 66 passed, 8 database tests skipped.
-- Ruff: passed. Frontend production build: passed.
-- Live V1 suite: 74 passed; migration at 0004 head; alembic check clean. Frozen evaluation is covered by the live suite; full metric reports are also rerun at final validation.
+- Analyze persisted SnapshotFile.content; never execute repository code. Parser nodes stay inside analyzer modules.
+- Python uses standard-library ast; JS/JSX and TS/TSX use real Tree-sitter syntax. Do not rewrite V1 chunking.
+- Definition is CodeSymbol source location; files reuse SnapshotFile, with no duplicate directory or definition tables.
+- Structural navigation remains independent of embeddings, LLMs and V1 ranking. No fuzzy search or fusion weights.
+- Lexical bindings, shadowing, duplicate definitions and supported imports resolve conservatively with explicit reasons.
+- The algorithm version is structural-v2. Repeat indexing keeps IDs; version changes rebuild saved content. Parse failure preserves the old index; snapshot row locks serialize concurrent calls.
+- Composite database foreign keys prevent cross-snapshot relations and cross-version reference targets.
+- Owner requested restoring the byte-equivalent uncommitted PROJECT.md relocation to docs/PROJECT.md; done before content changes.
 
-## Current work
+## Dependencies and observed failure
 
-Final validation and acceptance audit. No V2 implementation existed at initial HEAD 6f7f3d0.
+Added tree-sitter 0.25.2, tree-sitter-javascript 0.25.0 and tree-sitter-typescript
+0.23.2 to replace insufficient regex parsing for V2 JS/TS structure extraction.
+Tree-sitter 0.26.0 crashed natively on Windows with the actual App.tsx; retaining
+source/tree lifetimes did not fix it. 0.25.2 parsed that file repeatedly. The
+supported dependency range excludes 0.26, with subprocess regression coverage.
 
-## Dependencies / evaluation / blockers
+## Validation and evaluation
 
-Dependencies: tree-sitter 0.25.2, tree-sitter-javascript 0.25.0, tree-sitter-typescript 0.23.2; required for syntax-based JS/TS extraction. M1: 10 analyzer tests passed; focused Ruff passed. M2: 11 focused/live tests passed, 0004 → 0005 migration applied, alembic check clean. Symbol ID stability, persisted-content rebuild, isolation, failure atomicity and cascading cleanup verified. M3: 27 focused tests passed, including two live persistence tests; cross-snapshot foreign-key rejection, cross-file Python/TS references, all resolution statuses and stable reference IDs verified. M4: 16 API/live tests passed; exact/qualified/normalized lookup, definition source, references, imports/importers, pagination, missing resources, invalid requests and cross-snapshot symbol rejection verified. Frozen structural evaluation: 16/16 definitions, 5/5 import relations, 8/8 resolved references, all 21 occurrence statuses correct; seven symbol queries Hit@1/3/5 and MRR@1/3/5 = 1.0. Independent V1 vector/hybrid reports reproduce baseline metrics. Full suite before final fixes: 121 passed. No blockers identified.
-
-- Real RepoPilot App.tsx exposed a native Windows access violation with tree-sitter 0.26.0. Retaining source/tree lifetimes alone did not fix it. The same file parsed repeatedly with 0.25.2; dependency constrained below 0.26 and subprocess regression coverage added. No technology change.
-- Disposable-database test passed empty → V1 → V2, V2 → V1 → V2 and alembic check while preserving a V1 sentinel.
-
-- Final review added explicit UTF-8 byte-column checks and rejected duplicate imported JS bindings instead of selecting an exported candidate. Final analyzer version is structural-v2; prior development indexes rebuild from persisted content. Failed rebuild preserves the previous index; concurrent requests serialize on the snapshot lock.
+- V1 baseline: ordinary 66 passed / 8 skipped; live 74 passed; migration 0004; Ruff/build passed.
+- Final ordinary suite: 112 passed / 14 live database tests skipped.
+- Final live database suite: 126 passed. Includes ID stability, persisted-content rebuild, failure preservation, snapshot isolation, cross-file references/imports, reverse navigation, cascading cleanup, FK rejection, concurrent idempotency and API contracts.
+- Ruff passed. Alembic current is 0005_structural_index (head); alembic check found no pending operations.
+- Disposable clean database replay passed empty → V1 → V2 and V2 → V1 → V2, preserving a V1 sentinel.
+- Frontend TypeScript/Vite production build passed. One existing Starlette/AnyIO deprecation warning remains.
+- Frozen structural corpus committed before measurement: seven symbol queries Hit@1/3/5 and MRR@1/3/5 1.0; 16/16 definitions; 5/5 import relations; 8/8 resolved reference targets; all 21 occurrence/status labels correct (8 resolved, 12 unresolved, 1 ambiguous).
+- Frozen V1 rerun: vector Hit@1 0.7500, Hit@3 0.8750, Hit@5 1.0000, MRR@5 0.8375; hybrid all reported metrics 1.0000.
+- Real snapshot observation: 123 files, 513 symbols, 11,012 references; 1,171 resolved, 9,840 unresolved, 1 ambiguous. No labeled ground truth: these counts do not measure accuracy.
+- Final diff/security/scope audit: V1 retriever/chunker/frontend source and historical dataset unchanged; no tracked secret; no V3 or later implementation.

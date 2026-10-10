@@ -1266,11 +1266,11 @@ V1 主要解决：
 
 > 语义上哪些代码和问题相关？
 
-V2 开始解决：
+V2 已完成确定性代码导航 Baseline，解决：
 
 > 代码结构本身是什么？
 
-逐渐加入：
+已建立：
 
 - AST / Syntax Tree
 - Symbol Index
@@ -1281,22 +1281,33 @@ V2 开始解决：
 - Class Metadata
 - Repository Structure
 
-必要时使用：
+Python 使用标准库 AST，JavaScript / JSX 和 TypeScript / TSX 使用 Tree-sitter。
+结构数据从持久化的 SnapshotFile.content 生成，保存 Symbol、Reference 和
+Import Relation；不保存整棵语法树，不执行仓库代码。
 
-Tree-sitter。
+结构索引按 Snapshot 和 Analyzer Version 隔离。同版本重复索引保留 ID；
+版本变化从保存的源码重建，解析失败不替换旧索引。数据库外键约束禁止跨快照关系。
+
+引用解析区分 resolved / unresolved / ambiguous。参数遮蔽、重复绑定、动态成员
+分派以及不支持的模块语义不会通过相似名字猜测目标。
 
 ---
 
 ## V2 Retrieval
 
-逐渐研究：
+当前保留两条独立路径：
 
 - Vector Retrieval
 - Lexical Retrieval
 - Symbol Retrieval
 - Structural Retrieval
 
-如何组合。
+V1 Vector / Hybrid Retrieval 继续提供语义证据；V2 Symbol / Structural
+Navigation 提供无需 Embedding / LLM 的结构查询。V2 未修改 V1 Ranking。
+
+已提供文件、Symbol、Definition、Reference、imports / importers 的只读查询
+API，以及显式结构索引入口。后端 API 与 Evaluation 是 V2 的检查入口。
+评估与范围说明见 `docs/evaluation/v2-code-intelligence-results.md`。
 
 不要一开始承诺：
 
@@ -2289,8 +2300,9 @@ RepoPilot 才真正成为我的简历项目。
 
 - Stage 0 — Project Inception 已完成
 - V1 — Codebase RAG 已完成
-- 当前停在 V1 / V2 Version Boundary
-- V2 尚未授权开始
+- V2 — Code Intelligence 已完成
+- 当前停在 V2 / V3 Version Boundary
+- V3 尚未授权开始
 
 当前基础架构：
 
@@ -2325,7 +2337,15 @@ Final Validation
 → Completion Report
 → Stop
 
-RepoPilot 当前保持在此边界；没有单独授权的 Version Goal，不得自动进入 V2。
+在独立授权的 V2 Goal 下，已完成 Language Analysis、Structural Index、
+Symbol / Definition、Import Relations、Conservative References、Navigation API
+与 Structural Evaluation。普通测试 112 passed / 14 skipped；实时数据库全套
+126 passed；Ruff、Alembic、前端构建与 V1 Frozen Retrieval Regression 通过。
+
+V2 的执行计划见 `docs/tasks/v2-plan.md`，完成报告见
+`docs/evaluation/v2-code-intelligence-results.md`。
+
+RepoPilot 当前保持在 V2 / V3 边界；没有单独授权的 Version Goal，不得自动进入 V3。
 
 ---
 

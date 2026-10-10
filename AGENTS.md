@@ -30,7 +30,7 @@ For the complete long-term product scope, architecture direction, and version ro
 
 Current stage:
 
-**V1 — Codebase RAG is complete.**
+**V2 — Code Intelligence is complete.**
 
 Stage 0 — Project Inception has been completed and serves as the stable engineering foundation.
 
@@ -51,7 +51,14 @@ V1 has completed the following capabilities:
 
 V1 followed the baseline-first architecture defined in `docs/PROJECT.md`.
 
-The repository is currently stopped at the V1 / V2 version boundary. Do not implement V2 Code Intelligence, Agent, MCP, GitHub integration, or later-stage functionality unless explicitly authorized by a new goal.
+V2 adds snapshot-scoped syntax analysis, independent Symbol/Definition lookup,
+static import navigation, conservative reference resolution, typed structural
+APIs, and frozen structural evaluation. Python uses standard-library AST;
+JavaScript/TypeScript families use Tree-sitter. The V1 retriever remains separate.
+
+The repository is currently stopped at the V2 / V3 version boundary. Do not
+implement Repository Agent, agent loops, MCP, GitHub integration, code modification
+agents, or later-stage functionality without an explicitly active new goal.
 
 ---
 
@@ -1031,6 +1038,14 @@ When V1 is complete:
 * stop.
 
 Do not begin V2 automatically.
+
+When V2 is complete:
+
+* perform final V2 validation;
+* produce the completion report;
+* stop at the V2 / V3 boundary.
+
+Do not begin V3 automatically.
 
 ---
 
