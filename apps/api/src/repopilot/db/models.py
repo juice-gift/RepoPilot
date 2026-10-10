@@ -3,8 +3,10 @@ from datetime import datetime
 from pgvector.sqlalchemy import Vector
 from sqlalchemy import (
     BigInteger,
+    CheckConstraint,
     DateTime,
     ForeignKey,
+    ForeignKeyConstraint,
     Identity,
     Integer,
     String,
@@ -53,10 +55,15 @@ class RepositorySnapshot(Base):
     total_bytes: Mapped[int] = mapped_column(BigInteger)
     chunk_count: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
     chunking_version: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    structural_index_version: Mapped[str | None] = mapped_column(
+        String(64), nullable=True
+    )
     embedding_provider: Mapped[str | None] = mapped_column(String(64), nullable=True)
     embedding_model: Mapped[str | None] = mapped_column(String(255), nullable=True)
     embedding_dimensions: Mapped[int | None] = mapped_column(Integer, nullable=True)
-    indexed_chunk_count: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+    indexed_chunk_count: Mapped[int] = mapped_column(
+        Integer, default=0, server_default="0"
+    )
     indexed_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
@@ -74,6 +81,7 @@ class SnapshotFile(Base):
     __tablename__ = "snapshot_files"
     __table_args__ = (
         UniqueConstraint("snapshot_id", "path", name="uq_snapshot_files_path"),
+        UniqueConstraint("snapshot_id", "id", name="uq_snapshot_files_snapshot_id"),
     )
 
     id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
@@ -130,3 +138,134 @@ class CodeChunk(Base):
     )
 
     snapshot_file: Mapped[SnapshotFile] = relationship(back_populates="chunks")
+
+
+class CodeSymbol(Base):
+    __tablename__ = "code_symbols"
+    __table_args__ = (
+        UniqueConstraint(
+            "snapshot_id", "index_version", "id", name="uq_symbols_snapshot_version_id"
+        ),
+        ForeignKeyConstraint(
+            ["snapshot_id", "snapshot_file_id"],
+            ["snapshot_files.snapshot_id", "snapshot_files.id"],
+            ondelete="CASCADE",
+        ),
+        ForeignKeyConstraint(
+            ["snapshot_id", "index_version", "parent_symbol_id"],
+            [
+                "code_symbols.snapshot_id",
+                "code_symbols.index_version",
+                "code_symbols.id",
+            ],
+            ondelete="CASCADE",
+        ),
+        CheckConstraint(
+            "start_line > 0 AND end_line >= start_line", name="ck_symbols_location"
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
+    snapshot_id: Mapped[int] = mapped_column(
+        ForeignKey("repository_snapshots.id", ondelete="CASCADE"), index=True
+    )
+    snapshot_file_id: Mapped[int] = mapped_column(BigInteger, index=True)
+    index_version: Mapped[str] = mapped_column(String(64))
+    language: Mapped[str] = mapped_column(String(32))
+    kind: Mapped[str] = mapped_column(String(32))
+    name: Mapped[str] = mapped_column(Text, index=True)
+    normalized_name: Mapped[str] = mapped_column(Text, index=True)
+    qualified_name: Mapped[str] = mapped_column(Text, index=True)
+    parent_symbol_id: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    start_line: Mapped[int] = mapped_column(Integer)
+    end_line: Mapped[int] = mapped_column(Integer)
+
+
+class ImportRelation(Base):
+    __tablename__ = "import_relations"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["snapshot_id", "snapshot_file_id"],
+            ["snapshot_files.snapshot_id", "snapshot_files.id"],
+            ondelete="CASCADE",
+        ),
+        ForeignKeyConstraint(
+            ["snapshot_id", "target_file_id"],
+            ["snapshot_files.snapshot_id", "snapshot_files.id"],
+            ondelete="CASCADE",
+        ),
+        CheckConstraint(
+            "status IN ('resolved', 'unresolved', 'ambiguous')",
+            name="ck_imports_status",
+        ),
+        CheckConstraint(
+            "(status = 'resolved' AND target_file_id IS NOT NULL) OR (status != 'resolved' AND target_file_id IS NULL)",
+            name="ck_imports_target",
+        ),
+        CheckConstraint("line > 0 AND column_number > 0", name="ck_imports_location"),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
+    snapshot_id: Mapped[int] = mapped_column(
+        ForeignKey("repository_snapshots.id", ondelete="CASCADE"), index=True
+    )
+    snapshot_file_id: Mapped[int] = mapped_column(BigInteger, index=True)
+    index_version: Mapped[str] = mapped_column(String(64))
+    module: Mapped[str] = mapped_column(Text)
+    imported_name: Mapped[str | None] = mapped_column(Text, nullable=True)
+    alias: Mapped[str | None] = mapped_column(Text, nullable=True)
+    level: Mapped[int] = mapped_column(Integer)
+    line: Mapped[int] = mapped_column(Integer)
+    column_number: Mapped[int] = mapped_column(Integer)
+    target_file_id: Mapped[int | None] = mapped_column(
+        BigInteger, nullable=True, index=True
+    )
+    status: Mapped[str] = mapped_column(String(16))
+    reason: Mapped[str] = mapped_column(Text)
+
+
+class CodeReference(Base):
+    __tablename__ = "code_references"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["snapshot_id", "snapshot_file_id"],
+            ["snapshot_files.snapshot_id", "snapshot_files.id"],
+            ondelete="CASCADE",
+        ),
+        ForeignKeyConstraint(
+            ["snapshot_id", "index_version", "target_symbol_id"],
+            [
+                "code_symbols.snapshot_id",
+                "code_symbols.index_version",
+                "code_symbols.id",
+            ],
+            ondelete="CASCADE",
+        ),
+        CheckConstraint(
+            "status IN ('resolved', 'unresolved', 'ambiguous')",
+            name="ck_references_status",
+        ),
+        CheckConstraint(
+            "(status = 'resolved' AND target_symbol_id IS NOT NULL) OR (status != 'resolved' AND target_symbol_id IS NULL)",
+            name="ck_references_target",
+        ),
+        CheckConstraint(
+            "line > 0 AND column_number > 0", name="ck_references_location"
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
+    snapshot_id: Mapped[int] = mapped_column(
+        ForeignKey("repository_snapshots.id", ondelete="CASCADE"), index=True
+    )
+    snapshot_file_id: Mapped[int] = mapped_column(BigInteger, index=True)
+    index_version: Mapped[str] = mapped_column(String(64))
+    name: Mapped[str] = mapped_column(Text)
+    qualifier: Mapped[str | None] = mapped_column(Text, nullable=True)
+    line: Mapped[int] = mapped_column(Integer)
+    column_number: Mapped[int] = mapped_column(Integer)
+    target_symbol_id: Mapped[int | None] = mapped_column(
+        BigInteger, nullable=True, index=True
+    )
+    status: Mapped[str] = mapped_column(String(16), index=True)
+    reason: Mapped[str] = mapped_column(Text)
