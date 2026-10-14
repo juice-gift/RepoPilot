@@ -1,0 +1,52 @@
+{
+  "version": "agent-v3-baseline-1",
+  "tasks": [
+    {
+      "id": "authorization-before-policy",
+      "task": "For submit_job with an invalid token, does execution reach retry_delay? Locate and read the entry point and token helper, then explain the failure ordering with citations.",
+      "expected_files": ["workflow.py", "auth.py"],
+      "expected_symbols": ["submit_job", "verify_token"],
+      "required_source_fragments": ["verify_token(token)", "raise PermissionError"],
+      "expected_conclusion": "submit_job calls verify_token before retry_delay; an invalid token raises PermissionError and does not reach the retry policy.",
+      "script": [
+        {"name": "search_symbol", "arguments": {"query": "submit_job"}},
+        {"name": "read_file", "arguments": {"path": "workflow.py"}},
+        {"name": "read_file", "arguments": {"path": "auth.py"}}
+      ],
+      "scripted_answer": "submit_job calls verify_token before retry_delay [E2_1]. Invalid tokens raise PermissionError in the helper, so the retry policy is not reached [E3_1]."
+    },
+    {
+      "id": "permanent-versus-transient",
+      "task": "Why are permanent jobs rejected, while a transient job at attempt 10 is scheduled with delay 300? Inspect submit_job and its retry helper, including the negative-attempt boundary. Cite both source files.",
+      "expected_files": ["workflow.py", "policy.py"],
+      "expected_symbols": ["submit_job", "retry_delay"],
+      "required_source_fragments": ["if delay is None:", "if not transient:", "return min(2 ** attempt, 300)", "if attempt < 0:"],
+      "expected_conclusion": "A negative attempt raises ValueError; permanent failures return None and submit_job rejects them; transient delays are capped at 300, including attempt 10.",
+      "script": [
+        {"name": "list_files", "arguments": {}},
+        {"name": "search_symbol", "arguments": {"query": "submit_job"}},
+        {"name": "read_file", "arguments": {"path": "workflow.py"}},
+        {"name": "search_symbol", "arguments": {"query": "retry_delay"}},
+        {"name": "read_file", "arguments": {"path": "policy.py"}}
+      ],
+      "scripted_answer": "submit_job rejects a None delay [E3_1]. retry_delay raises ValueError for negative attempts, returns None for permanent failures, and caps transient delays at 300, including attempt 10 [E5_1]."
+    },
+    {
+      "id": "documentation-policy-mismatch",
+      "task": "The public retry guide promises a 60-second maximum, but submit_job at transient attempt 10 returns 300. Compare the saved documentation, entry point and actual retry policy. Explain the mismatch and propose a resolution without modifying code. Cite all three files.",
+      "expected_files": ["README.md", "workflow.py", "policy.py"],
+      "expected_symbols": ["submit_job", "retry_delay"],
+      "required_source_fragments": ["at most 60 seconds", "delay = retry_delay", "return min(2 ** attempt, 300)"],
+      "expected_conclusion": "README promises 60 but submit_job uses retry_delay, which caps at 300. Clarify the intended limit, then align the documentation or policy; do not silently assume which is correct.",
+      "script": [
+        {"name": "retrieve_context", "arguments": {"query": "transient retry maximum guide policy submit_job", "top_k": 3}},
+        {"name": "search_code", "arguments": {"query": "60 seconds"}},
+        {"name": "search_symbol", "arguments": {"query": "retry_delay"}},
+        {"name": "read_file", "arguments": {"path": "README.md"}},
+        {"name": "read_file", "arguments": {"path": "workflow.py"}},
+        {"name": "read_file", "arguments": {"path": "policy.py"}}
+      ],
+      "scripted_answer": "The guide promises 60 seconds [E4_1], but submit_job invokes retry_delay [E5_1], which caps at 300 [E6_1]. Confirm the intended policy, then align the guide or implementation; neither intent is established by these sources."
+    }
+  ]
+}
