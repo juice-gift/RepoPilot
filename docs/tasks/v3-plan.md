@@ -68,3 +68,10 @@ No writes, execution, sandbox, GitHub, MCP, workers or multiple agents. Stop at 
   Agent requests use a 30-second SDK timeout and no automatic retries. UI locks
   snapshot selection during operations and resets results when scope changes.
 - M4–Final remain. No new dependencies. No blockers.
+
+### M4 review finding
+
+An escaped-source regression exposed a bounding defect: oversized JSON escaping
+could discard an entire read result. Fixed by retaining the largest content prefix
+that fits the complete JSON bound; regression now requires nonempty saved source.
+All 70 focused V3 tests passed against live PostgreSQL after the fix; Ruff passed.

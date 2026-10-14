@@ -44,6 +44,16 @@ def validate_path(value: str) -> str:
     return value
 
 
+def validate_single_line_query(value: str) -> str:
+    if not value.strip() or "\n" in value or "\r" in value:
+        raise ValueError("Expected a nonempty single-line literal query")
+    return value
+
+
+def validate_optional_path(value: str | None) -> str | None:
+    return validate_path(value) if value is not None else None
+
+
 class Arguments(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
 
@@ -54,7 +64,7 @@ class ListFilesArguments(Arguments):
 
 
 class ReadFileArguments(Arguments):
-    path: str
+    path: str = Field(min_length=1, max_length=512)
     start_line: int = Field(default=1, ge=1, le=1_000_000)
     end_line: int | None = Field(default=None, ge=1, le=1_000_000)
 
@@ -66,17 +76,8 @@ class SearchCodeArguments(Arguments):
     file_path: str | None = None
     limit: int = Field(default=10, ge=1, le=20)
 
-    @field_validator("query")
-    @classmethod
-    def nonempty(cls, value: str) -> str:
-        if not value.strip() or "\n" in value or "\r" in value:
-            raise ValueError("Expected a nonempty single-line literal query")
-        return value
-
-    @field_validator("file_path")
-    @classmethod
-    def path(cls, value: str | None) -> str | None:
-        return validate_path(value) if value is not None else None
+    _query = field_validator("query")(validate_single_line_query)
+    _path = field_validator("file_path")(validate_optional_path)
 
 
 class SearchSymbolArguments(Arguments):
@@ -85,8 +86,8 @@ class SearchSymbolArguments(Arguments):
     file_path: str | None = None
     limit: int = Field(default=10, ge=1, le=20)
 
-    _query = field_validator("query")(SearchCodeArguments.nonempty.__func__)
-    _path = field_validator("file_path")(SearchCodeArguments.path.__func__)
+    _query = field_validator("query")(validate_single_line_query)
+    _path = field_validator("file_path")(validate_optional_path)
 
 
 class RetrieveContextArguments(Arguments):
@@ -121,14 +122,25 @@ def bound_observation(observation: Observation, limit: int) -> Observation:
     while len(bounded.model_dump_json()) > limit and bounded.items:
         bounded.truncated = True
         item = bounded.items[-1]
-        excess = len(bounded.model_dump_json()) - limit
-        if item.content and len(item.content) > excess + 64:
-            # JSON escaping can increase size: repeat until the actual wire size fits.
-            item.content = item.content[: max(0, len(item.content) - excess - 64)]
+        if item.content:
+            content = item.content
+            item.content = ""
             item.truncated = True
-        else:
-            bounded.items.pop()
-            bounded.omitted_items += 1
+            if len(bounded.model_dump_json()) < limit:
+                # Search actual JSON size: escaped quotes/backslashes must retain
+                # a useful prefix rather than dropping the entire saved source.
+                low, high = 0, len(content)
+                while low < high:
+                    middle = (low + high + 1) // 2
+                    item.content = content[:middle]
+                    if len(bounded.model_dump_json()) <= limit:
+                        low = middle
+                    else:
+                        high = middle - 1
+                item.content = content[:low]
+                break
+        bounded.items.pop()
+        bounded.omitted_items += 1
     return bounded
 
 

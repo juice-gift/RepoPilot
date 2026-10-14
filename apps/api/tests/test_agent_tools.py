@@ -187,6 +187,8 @@ def test_full_json_size_bound_and_explicit_truncation():
     bounded = bound_observation(raw, 1_000)
     assert len(bounded.model_dump_json()) <= 1_000
     assert bounded.truncated
+    assert bounded.items and bounded.items[0].truncated
+    assert bounded.items[0].content
     assert len(raw.items[0].content) == 60_000
     assert json.loads(bounded.model_dump_json())["status"] == "ok"
 
