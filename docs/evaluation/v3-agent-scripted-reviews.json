@@ -1,0 +1,17 @@
+{
+  "authorization-before-policy": {
+    "review_hash": "8881683886812f55e9f1740f54f3170f9f79d975a33c17338dec028bb31ee02e",
+    "grounded": true,
+    "reason": "Codex source review, 2026-10-14: E2_1 shows verify_token before retry_delay with no exception handler; E3_1 raises PermissionError for invalid tokens. All scripted claims follow from those saved sources. This is a prewritten regression answer, not LLM accuracy."
+  },
+  "permanent-versus-transient": {
+    "review_hash": "ddd7227112648f939bb1bc88d2e95f5f02eabfd9472554d83b5d4c5758b77641",
+    "grounded": true,
+    "reason": "Codex source review, 2026-10-14: E3_1 rejects a None delay; E5_1 establishes the negative-attempt exception, permanent None result and 300 cap. The conditional statements and arithmetic are supported. Prewritten regression answer only."
+  },
+  "documentation-policy-mismatch": {
+    "review_hash": "69337b649465cc67bb0b0782a63035c1a2be24addc2746973d5d5a52c855a5c5",
+    "grounded": true,
+    "reason": "Codex source review, 2026-10-14: E4_1 promises 60; E5_1 delegates to retry_delay; E6_1 caps at 300. The proposed decision remains conditional because these files do not establish product intent. Prewritten regression answer only."
+  }
+}

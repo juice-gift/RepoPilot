@@ -1,0 +1,17 @@
+{
+  "authorization-before-policy": {
+    "review_hash": "5c156b25825ccb9cfcacf9452a306a1d5ce7cb57ec8273a3bfba24dc31bb22d4",
+    "grounded": false,
+    "reason": "Codex source review, 2026-10-14: the behavioral conclusion and evidence IDs are correct, but the answer invents workflow.py line 8/9 annotations for calls actually on lines 6/7. Strict source-grounding verdict fails despite finding every expected source."
+  },
+  "permanent-versus-transient": {
+    "review_hash": "915c706c77015bc1b8836386ceba744f065b914772ba617fe09a82316d08f58d",
+    "grounded": false,
+    "reason": "Codex source review, 2026-10-14: the answer says permanent jobs return None unconditionally regardless of attempt, contradicting the earlier negative-attempt ValueError in E4_1. It also omits token-validation preconditions for universal submit_job behavior. Later discussion of negative attempts does not repair the unconditional claim."
+  },
+  "documentation-policy-mismatch": {
+    "review_hash": "c7afc6297bbf6a914903dd32991b5b2c6f2e4939579b49d3b641af2433a1456a",
+    "grounded": false,
+    "reason": "Codex source review, 2026-10-14: 60 versus 300 and delegation are supported, but the answer prefers changing the guide without first establishing intended behavior, and assumes read-only investigation restricts proposed resolutions to documentary/operational changes. This does not satisfy the frozen task's intent-sensitive conclusion."
+  }
+}

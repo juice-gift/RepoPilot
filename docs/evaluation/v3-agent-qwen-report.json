@@ -1,0 +1,971 @@
+{
+  "dataset_version": "agent-v3-baseline-1",
+  "mode": "qwen",
+  "embedding_provider": "deterministic-token-hash (pipeline baseline only)",
+  "snapshot_hash": "78a989886bb845274f3ab22a7723109bb6cb0f48003943dd09bfae1738d19257",
+  "limitations": "Three small controlled tasks. Scripted calls do not measure model decisions. Manual grounding review is separate; no general accuracy claim.",
+  "task_count": 3,
+  "cases": [
+    {
+      "id": "authorization-before-policy",
+      "task": "For submit_job with an invalid token, does execution reach retry_delay? Locate and read the entry point and token helper, then explain the failure ordering with citations.",
+      "expected_files": [
+        "workflow.py",
+        "auth.py"
+      ],
+      "expected_symbols": [
+        "submit_job",
+        "verify_token"
+      ],
+      "expected_conclusion": "submit_job calls verify_token before retry_delay; an invalid token raises PermissionError and does not reach the retry policy.",
+      "actual_tools": [
+        "search_symbol",
+        "read_file",
+        "search_symbol",
+        "read_file",
+        "search_symbol",
+        "read_file"
+      ],
+      "step_count": 6,
+      "model_calls": 7,
+      "stop_reason": "completed",
+      "found_files": [
+        "auth.py",
+        "policy.py",
+        "workflow.py"
+      ],
+      "found_symbols": [
+        "retry_delay",
+        "submit_job",
+        "verify_token"
+      ],
+      "missing_files": [],
+      "missing_symbols": [],
+      "missing_source_fragments": [],
+      "expected_evidence_found": true,
+      "multistep": true,
+      "citation_ids": [
+        "E2_1",
+        "E4_1",
+        "E6_1"
+      ],
+      "invalid_citation_ids": [],
+      "grounded_final_answer": false,
+      "grounding_review": "Codex source review, 2026-10-14: the behavioral conclusion and evidence IDs are correct, but the answer invents workflow.py line 8/9 annotations for calls actually on lines 6/7. Strict source-grounding verdict fails despite finding every expected source.",
+      "review_hash": "5c156b25825ccb9cfcacf9452a306a1d5ce7cb57ec8273a3bfba24dc31bb22d4",
+      "result": {
+        "repository_id": 113,
+        "snapshot_id": 173,
+        "final_answer": "## Investigation Result\n\n**No, execution does not reach `retry_delay` when `submit_job` receives an invalid token.** The failure ordering is strict and sequential:\n\n### Entry Point — `submit_job` in `workflow.py` [E2_1]\n```python\ndef submit_job(token: str, attempt: int, transient: bool) -> dict:\n    verify_token(token)                    # ← line 8\n    delay = retry_delay(attempt, transient) # ← line 9\n    ...\n```\n\n### Token Helper — `verify_token` in `auth.py` [E4_1]\n```python\ndef verify_token(token: str) -> None:\n    if token != \"trusted\":\n        raise PermissionError(\"Invalid token\")\n```\n\n### Failure Ordering Explanation\n\n1. **`verify_token(token)` executes first** (line 8 of `workflow.py`). If the token is anything other than the literal `\"trusted\"`, it raises a `PermissionError` immediately [E4_1]. This exception propagates out of `submit_job` and aborts the function.\n\n2. **`retry_delay(attempt, transient)` on line 9 is never reached** because the `PermissionError` from step 1 causes early exit. There is no try/except or guard around the `verify_token` call that would allow execution to continue to the retry logic.\n\n3. Only if `verify_token` succeeds (i.e., `token == \"trusted\"`) does execution proceed to `retry_delay` in `policy.py` [E6_1], which then evaluates the attempt/transient parameters and returns either a computed delay or `None`.\n\nIn summary: **token validation always precedes retry-delay evaluation**. An invalid token causes a `PermissionError` before any retry logic can be consulted.",
+        "trace": [
+          {
+            "step": 1,
+            "model_turn": 1,
+            "call_id": "call_91905e5812c44f3bac5ec478",
+            "tool_name": "search_symbol",
+            "validated_arguments": {
+              "query": "submit_job",
+              "match": "exact",
+              "file_path": null,
+              "limit": 10
+            },
+            "observation": {
+              "status": "ok",
+              "items": [
+                {
+                  "evidence_id": "E1_1",
+                  "file_path": "workflow.py",
+                  "language": "python",
+                  "symbol_name": "submit_job",
+                  "qualified_name": "submit_job",
+                  "symbol_id": 1728,
+                  "start_line": 5,
+                  "end_line": 10,
+                  "content": null,
+                  "rank": null,
+                  "score": null,
+                  "distance": null,
+                  "truncated": false
+                }
+              ],
+              "omitted_items": 0,
+              "truncated": false,
+              "error_code": null,
+              "error_message": null
+            },
+            "duration_ms": 11.393
+          },
+          {
+            "step": 2,
+            "model_turn": 2,
+            "call_id": "call_389a0bc146f24ef3a46fd643",
+            "tool_name": "read_file",
+            "validated_arguments": {
+              "path": "workflow.py",
+              "start_line": 1,
+              "end_line": 100
+            },
+            "observation": {
+              "status": "ok",
+              "items": [
+                {
+                  "evidence_id": "E2_1",
+                  "file_path": "workflow.py",
+                  "language": "python",
+                  "symbol_name": null,
+                  "qualified_name": null,
+                  "symbol_id": null,
+                  "start_line": 1,
+                  "end_line": 10,
+                  "content": "from auth import verify_token\nfrom policy import retry_delay\n\n\ndef submit_job(token: str, attempt: int, transient: bool) -> dict:\n    verify_token(token)\n    delay = retry_delay(attempt, transient)\n    if delay is None:\n        return {\"status\": \"rejected\"}\n    return {\"status\": \"scheduled\", \"delay\": delay}",
+                  "rank": null,
+                  "score": null,
+                  "distance": null,
+                  "truncated": false
+                }
+              ],
+              "omitted_items": 0,
+              "truncated": false,
+              "error_code": null,
+              "error_message": null
+            },
+            "duration_ms": 10.296
+          },
+          {
+            "step": 3,
+            "model_turn": 3,
+            "call_id": "call_0c1bb2a8aae9406fb043ae21",
+            "tool_name": "search_symbol",
+            "validated_arguments": {
+              "query": "verify_token",
+              "match": "exact",
+              "file_path": null,
+              "limit": 10
+            },
+            "observation": {
+              "status": "ok",
+              "items": [
+                {
+                  "evidence_id": "E3_1",
+                  "file_path": "auth.py",
+                  "language": "python",
+                  "symbol_name": "verify_token",
+                  "qualified_name": "verify_token",
+                  "symbol_id": 1726,
+                  "start_line": 1,
+                  "end_line": 3,
+                  "content": null,
+                  "rank": null,
+                  "score": null,
+                  "distance": null,
+                  "truncated": false
+                }
+              ],
+              "omitted_items": 0,
+              "truncated": false,
+              "error_code": null,
+              "error_message": null
+            },
+            "duration_ms": 10.37
+          },
+          {
+            "step": 4,
+            "model_turn": 4,
+            "call_id": "call_ae3ccf22395e4226bac4734e",
+            "tool_name": "read_file",
+            "validated_arguments": {
+              "path": "auth.py",
+              "start_line": 1,
+              "end_line": 50
+            },
+            "observation": {
+              "status": "ok",
+              "items": [
+                {
+                  "evidence_id": "E4_1",
+                  "file_path": "auth.py",
+                  "language": "python",
+                  "symbol_name": null,
+                  "qualified_name": null,
+                  "symbol_id": null,
+                  "start_line": 1,
+                  "end_line": 3,
+                  "content": "def verify_token(token: str) -> None:\n    if token != \"trusted\":\n        raise PermissionError(\"Invalid token\")",
+                  "rank": null,
+                  "score": null,
+                  "distance": null,
+                  "truncated": false
+                }
+              ],
+              "omitted_items": 0,
+              "truncated": false,
+              "error_code": null,
+              "error_message": null
+            },
+            "duration_ms": 5.026
+          },
+          {
+            "step": 5,
+            "model_turn": 5,
+            "call_id": "call_3c16639b9c9a4553b2c5ec59",
+            "tool_name": "search_symbol",
+            "validated_arguments": {
+              "query": "retry_delay",
+              "match": "exact",
+              "file_path": null,
+              "limit": 10
+            },
+            "observation": {
+              "status": "ok",
+              "items": [
+                {
+                  "evidence_id": "E5_1",
+                  "file_path": "policy.py",
+                  "language": "python",
+                  "symbol_name": "retry_delay",
+                  "qualified_name": "retry_delay",
+                  "symbol_id": 1727,
+                  "start_line": 1,
+                  "end_line": 6,
+                  "content": null,
+                  "rank": null,
+                  "score": null,
+                  "distance": null,
+                  "truncated": false
+                }
+              ],
+              "omitted_items": 0,
+              "truncated": false,
+              "error_code": null,
+              "error_message": null
+            },
+            "duration_ms": 8.628
+          },
+          {
+            "step": 6,
+            "model_turn": 6,
+            "call_id": "call_8c3be28a6d2d4e9585f98146",
+            "tool_name": "read_file",
+            "validated_arguments": {
+              "path": "policy.py",
+              "start_line": 1,
+              "end_line": 30
+            },
+            "observation": {
+              "status": "ok",
+              "items": [
+                {
+                  "evidence_id": "E6_1",
+                  "file_path": "policy.py",
+                  "language": "python",
+                  "symbol_name": null,
+                  "qualified_name": null,
+                  "symbol_id": null,
+                  "start_line": 1,
+                  "end_line": 6,
+                  "content": "def retry_delay(attempt: int, transient: bool) -> int | None:\n    if attempt < 0:\n        raise ValueError(\"Attempt must be nonnegative\")\n    if not transient:\n        return None\n    return min(2 ** attempt, 300)",
+                  "rank": null,
+                  "score": null,
+                  "distance": null,
+                  "truncated": false
+                }
+              ],
+              "omitted_items": 0,
+              "truncated": false,
+              "error_code": null,
+              "error_message": null
+            },
+            "duration_ms": 5.735
+          }
+        ],
+        "sources": [
+          {
+            "evidence_id": "E1_1",
+            "file_path": "workflow.py",
+            "language": "python",
+            "symbol_name": "submit_job",
+            "qualified_name": "submit_job",
+            "symbol_id": 1728,
+            "start_line": 5,
+            "end_line": 10,
+            "content": null,
+            "rank": null,
+            "score": null,
+            "distance": null,
+            "truncated": false
+          },
+          {
+            "evidence_id": "E2_1",
+            "file_path": "workflow.py",
+            "language": "python",
+            "symbol_name": null,
+            "qualified_name": null,
+            "symbol_id": null,
+            "start_line": 1,
+            "end_line": 10,
+            "content": "from auth import verify_token\nfrom policy import retry_delay\n\n\ndef submit_job(token: str, attempt: int, transient: bool) -> dict:\n    verify_token(token)\n    delay = retry_delay(attempt, transient)\n    if delay is None:\n        return {\"status\": \"rejected\"}\n    return {\"status\": \"scheduled\", \"delay\": delay}",
+            "rank": null,
+            "score": null,
+            "distance": null,
+            "truncated": false
+          },
+          {
+            "evidence_id": "E3_1",
+            "file_path": "auth.py",
+            "language": "python",
+            "symbol_name": "verify_token",
+            "qualified_name": "verify_token",
+            "symbol_id": 1726,
+            "start_line": 1,
+            "end_line": 3,
+            "content": null,
+            "rank": null,
+            "score": null,
+            "distance": null,
+            "truncated": false
+          },
+          {
+            "evidence_id": "E4_1",
+            "file_path": "auth.py",
+            "language": "python",
+            "symbol_name": null,
+            "qualified_name": null,
+            "symbol_id": null,
+            "start_line": 1,
+            "end_line": 3,
+            "content": "def verify_token(token: str) -> None:\n    if token != \"trusted\":\n        raise PermissionError(\"Invalid token\")",
+            "rank": null,
+            "score": null,
+            "distance": null,
+            "truncated": false
+          },
+          {
+            "evidence_id": "E5_1",
+            "file_path": "policy.py",
+            "language": "python",
+            "symbol_name": "retry_delay",
+            "qualified_name": "retry_delay",
+            "symbol_id": 1727,
+            "start_line": 1,
+            "end_line": 6,
+            "content": null,
+            "rank": null,
+            "score": null,
+            "distance": null,
+            "truncated": false
+          },
+          {
+            "evidence_id": "E6_1",
+            "file_path": "policy.py",
+            "language": "python",
+            "symbol_name": null,
+            "qualified_name": null,
+            "symbol_id": null,
+            "start_line": 1,
+            "end_line": 6,
+            "content": "def retry_delay(attempt: int, transient: bool) -> int | None:\n    if attempt < 0:\n        raise ValueError(\"Attempt must be nonnegative\")\n    if not transient:\n        return None\n    return min(2 ** attempt, 300)",
+            "rank": null,
+            "score": null,
+            "distance": null,
+            "truncated": false
+          }
+        ],
+        "total_steps": 6,
+        "stop_reason": "completed",
+        "diagnostics": {
+          "provider": "qwen",
+          "model": "qwen3.7-flash",
+          "model_calls": 7,
+          "tool_failures": 0,
+          "input_character_count": 8206,
+          "max_steps": 12,
+          "observation_character_limit": 12000,
+          "context_character_limit": 60000,
+          "model_output_character_limit": 12000,
+          "duration_ms": 20673.967,
+          "invalid_evidence_ids": [],
+          "failure": null
+        }
+      }
+    },
+    {
+      "id": "permanent-versus-transient",
+      "task": "Why are permanent jobs rejected, while a transient job at attempt 10 is scheduled with delay 300? Inspect submit_job and its retry helper, including the negative-attempt boundary. Cite both source files.",
+      "expected_files": [
+        "workflow.py",
+        "policy.py"
+      ],
+      "expected_symbols": [
+        "submit_job",
+        "retry_delay"
+      ],
+      "expected_conclusion": "A negative attempt raises ValueError; permanent failures return None and submit_job rejects them; transient delays are capped at 300, including attempt 10.",
+      "actual_tools": [
+        "search_symbol",
+        "read_file",
+        "search_symbol",
+        "read_file"
+      ],
+      "step_count": 4,
+      "model_calls": 5,
+      "stop_reason": "completed",
+      "found_files": [
+        "policy.py",
+        "workflow.py"
+      ],
+      "found_symbols": [
+        "retry_delay",
+        "submit_job"
+      ],
+      "missing_files": [],
+      "missing_symbols": [],
+      "missing_source_fragments": [],
+      "expected_evidence_found": true,
+      "multistep": true,
+      "citation_ids": [
+        "E2_1",
+        "E4_1"
+      ],
+      "invalid_citation_ids": [],
+      "grounded_final_answer": false,
+      "grounding_review": "Codex source review, 2026-10-14: the answer says permanent jobs return None unconditionally regardless of attempt, contradicting the earlier negative-attempt ValueError in E4_1. It also omits token-validation preconditions for universal submit_job behavior. Later discussion of negative attempts does not repair the unconditional claim.",
+      "review_hash": "915c706c77015bc1b8836386ceba744f065b914772ba617fe09a82316d08f58d",
+      "result": {
+        "repository_id": 113,
+        "snapshot_id": 173,
+        "final_answer": "The behavior follows directly from the logic in `policy.py`'s `retry_delay` function and how `workflow.py`'s `submit_job` uses it.\n\n### 1. Permanent jobs are rejected\nIn **`policy.py`** lines 4–5:\n```python\nif not transient:\n    return None\n```\nWhen `transient=False` (i.e., a permanent job), `retry_delay` returns `None` unconditionally, regardless of the attempt number. Back in **`workflow.py`** lines 8–9:\n```python\nif delay is None:\n    return {\"status\": \"rejected\"}\n```\nSo any permanent job (`transient=False`) immediately gets `\"status\": \"rejected\"`.\n\n### 2. Transient job at attempt 10 gets delay 300\nFor a transient job (`transient=True`), line 6 of `policy.py` computes:\n```python\nreturn min(2 ** attempt, 300)\n```\nAt `attempt=10`, `2 ** 10 = 1024`, and `min(1024, 300)` caps the result at **300**. This value flows back through `submit_job` as `{\"status\": \"scheduled\", \"delay\": 300}`.\n\n### 3. The negative-attempt boundary\nLine 2–3 of `policy.py` enforces that attempts must be nonnegative:\n```python\nif attempt < 0:\n    raise ValueError(\"Attempt must be nonnegative\")\n```\nNegative attempts cause an exception rather than rejection or scheduling.\n\n---\n\n**Summary:** Permanent jobs always return `None` from `retry_delay`, which `submit_job` treats as rejection. Transient jobs get a capped exponential-backoff delay via `min(2**attempt, 300)`, so attempt 10 hits the 300-second ceiling. Negative attempts violate the precondition and raise `ValueError`.\n\n**Source files cited:**\n- **`workflow.py`** — `submit_job` ([E2_1])\n- **`policy.py`** — `retry_delay` ([E4_1])",
+        "trace": [
+          {
+            "step": 1,
+            "model_turn": 1,
+            "call_id": "call_67108ce7e1724657b80c2a2b",
+            "tool_name": "search_symbol",
+            "validated_arguments": {
+              "query": "submit_job",
+              "match": "exact",
+              "file_path": null,
+              "limit": 10
+            },
+            "observation": {
+              "status": "ok",
+              "items": [
+                {
+                  "evidence_id": "E1_1",
+                  "file_path": "workflow.py",
+                  "language": "python",
+                  "symbol_name": "submit_job",
+                  "qualified_name": "submit_job",
+                  "symbol_id": 1728,
+                  "start_line": 5,
+                  "end_line": 10,
+                  "content": null,
+                  "rank": null,
+                  "score": null,
+                  "distance": null,
+                  "truncated": false
+                }
+              ],
+              "omitted_items": 0,
+              "truncated": false,
+              "error_code": null,
+              "error_message": null
+            },
+            "duration_ms": 8.813
+          },
+          {
+            "step": 2,
+            "model_turn": 2,
+            "call_id": "call_755babfba0e3402aaa8e7fb2",
+            "tool_name": "read_file",
+            "validated_arguments": {
+              "path": "workflow.py",
+              "start_line": 1,
+              "end_line": 100
+            },
+            "observation": {
+              "status": "ok",
+              "items": [
+                {
+                  "evidence_id": "E2_1",
+                  "file_path": "workflow.py",
+                  "language": "python",
+                  "symbol_name": null,
+                  "qualified_name": null,
+                  "symbol_id": null,
+                  "start_line": 1,
+                  "end_line": 10,
+                  "content": "from auth import verify_token\nfrom policy import retry_delay\n\n\ndef submit_job(token: str, attempt: int, transient: bool) -> dict:\n    verify_token(token)\n    delay = retry_delay(attempt, transient)\n    if delay is None:\n        return {\"status\": \"rejected\"}\n    return {\"status\": \"scheduled\", \"delay\": delay}",
+                  "rank": null,
+                  "score": null,
+                  "distance": null,
+                  "truncated": false
+                }
+              ],
+              "omitted_items": 0,
+              "truncated": false,
+              "error_code": null,
+              "error_message": null
+            },
+            "duration_ms": 6.155
+          },
+          {
+            "step": 3,
+            "model_turn": 3,
+            "call_id": "call_7b751c253db14c73b3a9ccbf",
+            "tool_name": "search_symbol",
+            "validated_arguments": {
+              "query": "retry_delay",
+              "match": "exact",
+              "file_path": null,
+              "limit": 10
+            },
+            "observation": {
+              "status": "ok",
+              "items": [
+                {
+                  "evidence_id": "E3_1",
+                  "file_path": "policy.py",
+                  "language": "python",
+                  "symbol_name": "retry_delay",
+                  "qualified_name": "retry_delay",
+                  "symbol_id": 1727,
+                  "start_line": 1,
+                  "end_line": 6,
+                  "content": null,
+                  "rank": null,
+                  "score": null,
+                  "distance": null,
+                  "truncated": false
+                }
+              ],
+              "omitted_items": 0,
+              "truncated": false,
+              "error_code": null,
+              "error_message": null
+            },
+            "duration_ms": 8.879
+          },
+          {
+            "step": 4,
+            "model_turn": 4,
+            "call_id": "call_d5fcc691df6c4aefbbbb26ab",
+            "tool_name": "read_file",
+            "validated_arguments": {
+              "path": "policy.py",
+              "start_line": 1,
+              "end_line": 50
+            },
+            "observation": {
+              "status": "ok",
+              "items": [
+                {
+                  "evidence_id": "E4_1",
+                  "file_path": "policy.py",
+                  "language": "python",
+                  "symbol_name": null,
+                  "qualified_name": null,
+                  "symbol_id": null,
+                  "start_line": 1,
+                  "end_line": 6,
+                  "content": "def retry_delay(attempt: int, transient: bool) -> int | None:\n    if attempt < 0:\n        raise ValueError(\"Attempt must be nonnegative\")\n    if not transient:\n        return None\n    return min(2 ** attempt, 300)",
+                  "rank": null,
+                  "score": null,
+                  "distance": null,
+                  "truncated": false
+                }
+              ],
+              "omitted_items": 0,
+              "truncated": false,
+              "error_code": null,
+              "error_message": null
+            },
+            "duration_ms": 5.34
+          }
+        ],
+        "sources": [
+          {
+            "evidence_id": "E1_1",
+            "file_path": "workflow.py",
+            "language": "python",
+            "symbol_name": "submit_job",
+            "qualified_name": "submit_job",
+            "symbol_id": 1728,
+            "start_line": 5,
+            "end_line": 10,
+            "content": null,
+            "rank": null,
+            "score": null,
+            "distance": null,
+            "truncated": false
+          },
+          {
+            "evidence_id": "E2_1",
+            "file_path": "workflow.py",
+            "language": "python",
+            "symbol_name": null,
+            "qualified_name": null,
+            "symbol_id": null,
+            "start_line": 1,
+            "end_line": 10,
+            "content": "from auth import verify_token\nfrom policy import retry_delay\n\n\ndef submit_job(token: str, attempt: int, transient: bool) -> dict:\n    verify_token(token)\n    delay = retry_delay(attempt, transient)\n    if delay is None:\n        return {\"status\": \"rejected\"}\n    return {\"status\": \"scheduled\", \"delay\": delay}",
+            "rank": null,
+            "score": null,
+            "distance": null,
+            "truncated": false
+          },
+          {
+            "evidence_id": "E3_1",
+            "file_path": "policy.py",
+            "language": "python",
+            "symbol_name": "retry_delay",
+            "qualified_name": "retry_delay",
+            "symbol_id": 1727,
+            "start_line": 1,
+            "end_line": 6,
+            "content": null,
+            "rank": null,
+            "score": null,
+            "distance": null,
+            "truncated": false
+          },
+          {
+            "evidence_id": "E4_1",
+            "file_path": "policy.py",
+            "language": "python",
+            "symbol_name": null,
+            "qualified_name": null,
+            "symbol_id": null,
+            "start_line": 1,
+            "end_line": 6,
+            "content": "def retry_delay(attempt: int, transient: bool) -> int | None:\n    if attempt < 0:\n        raise ValueError(\"Attempt must be nonnegative\")\n    if not transient:\n        return None\n    return min(2 ** attempt, 300)",
+            "rank": null,
+            "score": null,
+            "distance": null,
+            "truncated": false
+          }
+        ],
+        "total_steps": 4,
+        "stop_reason": "completed",
+        "diagnostics": {
+          "provider": "qwen",
+          "model": "qwen3.7-flash",
+          "model_calls": 5,
+          "tool_failures": 0,
+          "input_character_count": 6856,
+          "max_steps": 12,
+          "observation_character_limit": 12000,
+          "context_character_limit": 60000,
+          "model_output_character_limit": 12000,
+          "duration_ms": 14391.742,
+          "invalid_evidence_ids": [],
+          "failure": null
+        }
+      }
+    },
+    {
+      "id": "documentation-policy-mismatch",
+      "task": "The public retry guide promises a 60-second maximum, but submit_job at transient attempt 10 returns 300. Compare the saved documentation, entry point and actual retry policy. Explain the mismatch and propose a resolution without modifying code. Cite all three files.",
+      "expected_files": [
+        "README.md",
+        "workflow.py",
+        "policy.py"
+      ],
+      "expected_symbols": [
+        "submit_job",
+        "retry_delay"
+      ],
+      "expected_conclusion": "README promises 60 but submit_job uses retry_delay, which caps at 300. Clarify the intended limit, then align the documentation or policy; do not silently assume which is correct.",
+      "actual_tools": [
+        "list_files",
+        "read_file",
+        "read_file",
+        "read_file"
+      ],
+      "step_count": 4,
+      "model_calls": 3,
+      "stop_reason": "completed",
+      "found_files": [
+        "README.md",
+        "policy.py",
+        "workflow.py"
+      ],
+      "found_symbols": [
+        "retry_delay",
+        "submit_job"
+      ],
+      "missing_files": [],
+      "missing_symbols": [],
+      "missing_source_fragments": [],
+      "expected_evidence_found": true,
+      "multistep": true,
+      "citation_ids": [
+        "E2_1",
+        "E3_1",
+        "E4_1"
+      ],
+      "invalid_citation_ids": [],
+      "grounded_final_answer": false,
+      "grounding_review": "Codex source review, 2026-10-14: 60 versus 300 and delegation are supported, but the answer prefers changing the guide without first establishing intended behavior, and assumes read-only investigation restricts proposed resolutions to documentary/operational changes. This does not satisfy the frozen task's intent-sensitive conclusion.",
+      "review_hash": "c7afc6297bbf6a914903dd32991b5b2c6f2e4939579b49d3b641af2433a1456a",
+      "result": {
+        "repository_id": 113,
+        "snapshot_id": 173,
+        "final_answer": "Here is the investigation result:\n\n### Files Examined\n1. **README.md** (public retry guide) — [E2_1]\n2. **workflow.py** (`submit_job` entry point) — [E3_1]\n3. **policy.py** (actual retry policy) — [E4_1]\n\n---\n\n### The Mismatch\n\n| Source | Claim / Behavior |\n|---|---|\n| **README.md** [E2_1] | *\"The public retry guide claims transient jobs wait at most **60 seconds**.\"* |\n| **policy.py** [E4_1] | `retry_delay(attempt, transient)` returns `min(2 ** attempt, 300)`. At **attempt 10**, `2^10 = 1024`, capped at **300**. |\n| **workflow.py** [E3_1] | `submit_job` delegates to `retry_delay`; at attempt 10 it will return `{\"status\": \"scheduled\", \"delay\": 300}`. |\n\nAt transient attempt 10, the policy returns a **300-second** delay, not the **60-second** maximum advertised in the documentation.\n\n### Root Cause\n\nThe policy caps the exponential backoff at **300 seconds** (`min(2 ** attempt, 300)`), but the public-facing guide states the cap is **60 seconds**. These two values are inconsistent. There is no code path that enforces a 60-second ceiling; the only hard limit is 300.\n\n### Proposed Resolution (Without Modifying Code)\n\nSince we cannot modify code, the resolution must be documentary or operational:\n\n1. **Align the documentation with the actual policy.** Update README.md [E2_1] to accurately state that the maximum transient retry delay is **300 seconds**, not 60. This is the simplest fix—correct the claim rather than the implementation.\n\n2. **Alternatively, if 60 seconds is the intended business requirement**, add an explicit note in README.md flagging the discrepancy as a known bug and directing users to file an issue against `policy.py` [E4_1]. This preserves honesty while signaling that the current behavior does not match the promise.\n\nIn either case, the root inconsistency is between the stated maximum of 60s in the guide and the hardcoded 300s cap in the policy function.",
+        "trace": [
+          {
+            "step": 1,
+            "model_turn": 1,
+            "call_id": "call_65100b4fb5e34862b6ceabaa",
+            "tool_name": "list_files",
+            "validated_arguments": {
+              "limit": 50,
+              "offset": 0
+            },
+            "observation": {
+              "status": "ok",
+              "items": [
+                {
+                  "evidence_id": null,
+                  "file_path": "auth.py",
+                  "language": "python",
+                  "symbol_name": null,
+                  "qualified_name": null,
+                  "symbol_id": null,
+                  "start_line": null,
+                  "end_line": null,
+                  "content": null,
+                  "rank": null,
+                  "score": null,
+                  "distance": null,
+                  "truncated": false
+                },
+                {
+                  "evidence_id": null,
+                  "file_path": "policy.py",
+                  "language": "python",
+                  "symbol_name": null,
+                  "qualified_name": null,
+                  "symbol_id": null,
+                  "start_line": null,
+                  "end_line": null,
+                  "content": null,
+                  "rank": null,
+                  "score": null,
+                  "distance": null,
+                  "truncated": false
+                },
+                {
+                  "evidence_id": null,
+                  "file_path": "README.md",
+                  "language": "markdown",
+                  "symbol_name": null,
+                  "qualified_name": null,
+                  "symbol_id": null,
+                  "start_line": null,
+                  "end_line": null,
+                  "content": null,
+                  "rank": null,
+                  "score": null,
+                  "distance": null,
+                  "truncated": false
+                },
+                {
+                  "evidence_id": null,
+                  "file_path": "workflow.py",
+                  "language": "python",
+                  "symbol_name": null,
+                  "qualified_name": null,
+                  "symbol_id": null,
+                  "start_line": null,
+                  "end_line": null,
+                  "content": null,
+                  "rank": null,
+                  "score": null,
+                  "distance": null,
+                  "truncated": false
+                }
+              ],
+              "omitted_items": 0,
+              "truncated": false,
+              "error_code": null,
+              "error_message": null
+            },
+            "duration_ms": 8.963
+          },
+          {
+            "step": 2,
+            "model_turn": 2,
+            "call_id": "call_2bedf6696b0f484d90028bb5",
+            "tool_name": "read_file",
+            "validated_arguments": {
+              "path": "README.md",
+              "start_line": 1,
+              "end_line": null
+            },
+            "observation": {
+              "status": "ok",
+              "items": [
+                {
+                  "evidence_id": "E2_1",
+                  "file_path": "README.md",
+                  "language": "markdown",
+                  "symbol_name": null,
+                  "qualified_name": null,
+                  "symbol_id": null,
+                  "start_line": 1,
+                  "end_line": 7,
+                  "content": "# Dispatch fixture\n\nControlled source data for a small, read-only investigation baseline.\nDo not execute this repository.\n\nThe public retry guide claims transient jobs wait at most 60 seconds.\nCompare this statement with the policy actually called by submit_job.",
+                  "rank": null,
+                  "score": null,
+                  "distance": null,
+                  "truncated": false
+                }
+              ],
+              "omitted_items": 0,
+              "truncated": false,
+              "error_code": null,
+              "error_message": null
+            },
+            "duration_ms": 6.837
+          },
+          {
+            "step": 3,
+            "model_turn": 2,
+            "call_id": "call_8a35f1fc48064ec69a497912",
+            "tool_name": "read_file",
+            "validated_arguments": {
+              "path": "workflow.py",
+              "start_line": 1,
+              "end_line": null
+            },
+            "observation": {
+              "status": "ok",
+              "items": [
+                {
+                  "evidence_id": "E3_1",
+                  "file_path": "workflow.py",
+                  "language": "python",
+                  "symbol_name": null,
+                  "qualified_name": null,
+                  "symbol_id": null,
+                  "start_line": 1,
+                  "end_line": 10,
+                  "content": "from auth import verify_token\nfrom policy import retry_delay\n\n\ndef submit_job(token: str, attempt: int, transient: bool) -> dict:\n    verify_token(token)\n    delay = retry_delay(attempt, transient)\n    if delay is None:\n        return {\"status\": \"rejected\"}\n    return {\"status\": \"scheduled\", \"delay\": delay}",
+                  "rank": null,
+                  "score": null,
+                  "distance": null,
+                  "truncated": false
+                }
+              ],
+              "omitted_items": 0,
+              "truncated": false,
+              "error_code": null,
+              "error_message": null
+            },
+            "duration_ms": 5.394
+          },
+          {
+            "step": 4,
+            "model_turn": 2,
+            "call_id": "call_9ac779381ccd4d8791af2050",
+            "tool_name": "read_file",
+            "validated_arguments": {
+              "path": "policy.py",
+              "start_line": 1,
+              "end_line": null
+            },
+            "observation": {
+              "status": "ok",
+              "items": [
+                {
+                  "evidence_id": "E4_1",
+                  "file_path": "policy.py",
+                  "language": "python",
+                  "symbol_name": null,
+                  "qualified_name": null,
+                  "symbol_id": null,
+                  "start_line": 1,
+                  "end_line": 6,
+                  "content": "def retry_delay(attempt: int, transient: bool) -> int | None:\n    if attempt < 0:\n        raise ValueError(\"Attempt must be nonnegative\")\n    if not transient:\n        return None\n    return min(2 ** attempt, 300)",
+                  "rank": null,
+                  "score": null,
+                  "distance": null,
+                  "truncated": false
+                }
+              ],
+              "omitted_items": 0,
+              "truncated": false,
+              "error_code": null,
+              "error_message": null
+            },
+            "duration_ms": 5.301
+          }
+        ],
+        "sources": [
+          {
+            "evidence_id": "E2_1",
+            "file_path": "README.md",
+            "language": "markdown",
+            "symbol_name": null,
+            "qualified_name": null,
+            "symbol_id": null,
+            "start_line": 1,
+            "end_line": 7,
+            "content": "# Dispatch fixture\n\nControlled source data for a small, read-only investigation baseline.\nDo not execute this repository.\n\nThe public retry guide claims transient jobs wait at most 60 seconds.\nCompare this statement with the policy actually called by submit_job.",
+            "rank": null,
+            "score": null,
+            "distance": null,
+            "truncated": false
+          },
+          {
+            "evidence_id": "E3_1",
+            "file_path": "workflow.py",
+            "language": "python",
+            "symbol_name": null,
+            "qualified_name": null,
+            "symbol_id": null,
+            "start_line": 1,
+            "end_line": 10,
+            "content": "from auth import verify_token\nfrom policy import retry_delay\n\n\ndef submit_job(token: str, attempt: int, transient: bool) -> dict:\n    verify_token(token)\n    delay = retry_delay(attempt, transient)\n    if delay is None:\n        return {\"status\": \"rejected\"}\n    return {\"status\": \"scheduled\", \"delay\": delay}",
+            "rank": null,
+            "score": null,
+            "distance": null,
+            "truncated": false
+          },
+          {
+            "evidence_id": "E4_1",
+            "file_path": "policy.py",
+            "language": "python",
+            "symbol_name": null,
+            "qualified_name": null,
+            "symbol_id": null,
+            "start_line": 1,
+            "end_line": 6,
+            "content": "def retry_delay(attempt: int, transient: bool) -> int | None:\n    if attempt < 0:\n        raise ValueError(\"Attempt must be nonnegative\")\n    if not transient:\n        return None\n    return min(2 ** attempt, 300)",
+            "rank": null,
+            "score": null,
+            "distance": null,
+            "truncated": false
+          }
+        ],
+        "total_steps": 4,
+        "stop_reason": "completed",
+        "diagnostics": {
+          "provider": "qwen",
+          "model": "qwen3.7-flash",
+          "model_calls": 3,
+          "tool_failures": 0,
+          "input_character_count": 7796,
+          "max_steps": 12,
+          "observation_character_limit": 12000,
+          "context_character_limit": 60000,
+          "model_output_character_limit": 12000,
+          "duration_ms": 12823.157,
+          "invalid_evidence_ids": [],
+          "failure": null
+        }
+      }
+    }
+  ],
+  "instructions_sha256": "64d2ab766743590746e93917f31e6c4dc4ef2c9ef921a53e91166e03832abfe3"
+}

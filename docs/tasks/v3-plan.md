@@ -25,8 +25,8 @@ No writes, execution, sandbox, GitHub, MCP, workers or multiple agents. Stop at 
 | M1 | Typed allowlist and bounded snapshot tools with tests | Complete |
 | M2 | Provider extension and explicit bounded loop/trace with deterministic tests | Complete |
 | M3 | Thin investigate API and minimal existing-workflow React UI | Complete |
-| M4 | Frozen multistep baseline, live integration/provider validation and regressions | Current |
-| Final | Acceptance/scope/security/Git audit and completion documentation | Pending |
+| M4 | Frozen multistep baseline, live integration/provider validation and regressions | Complete |
+| Final | Acceptance/scope/security/Git audit and completion documentation | Current |
 
 ## Decisions
 
@@ -67,7 +67,21 @@ No writes, execution, sandbox, GitHub, MCP, workers or multiple agents. Stop at 
   Temporary test origin was configured explicitly; no tracked local setting changed.
   Agent requests use a 30-second SDK timeout and no automatic retries. UI locks
   snapshot selection during operations and resets results when scope changes.
-- M4–Final remain. No new dependencies. No blockers.
+- M4: corpus/tasks frozen in `b1fb839` before measurement. Scripted real-DB cases
+  take 3/5/6 calls, find every expected source, and have reviewed prewritten answers.
+  Qwen key was available: first live cases completed with 6/4/4 tools; all found
+  evidence, but strict source/decision grounding failed all three. A general
+  prompt constraint trial on identical frozen inputs completed with 6/4/7 tools;
+  one answer passed strict source review, two retained unsupported universal/intent
+  claims. Preserve both reports and exact-answer/evidence-hashed review verdicts.
+  The small non-repeated comparison does not establish accuracy or causal gain.
+- Full live suite: 196 passed (includes API + tools → loop → final trace and
+  disposable migration replay). Ordinary suite: 180 passed / 16 DB skips.
+  Alembic current/check and Ruff passed. V1 vector/hybrid metrics and V2 structural
+  expectations reproduced unchanged. V1 CLI lacks --output; corrected the initial
+  unsupported invocation by saving its stdout, then both commands succeeded.
+- Final documentation/audit remains. No new dependencies or implementation blocker.
+  Observed LLM conclusion/grounding failures remain explicit baseline limitations.
 
 ### M4 review finding
 

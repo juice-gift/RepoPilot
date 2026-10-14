@@ -5,6 +5,7 @@ from pathlib import Path
 import pytest
 from sqlalchemy import delete, select
 from test_agent_runner import ScriptedProvider, call
+from test_structure_api import client_for
 
 from repopilot.agent.models import AgentRequest
 from repopilot.agent.runner import run_investigation
@@ -23,7 +24,9 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-def test_all_tools_read_saved_snapshot_and_enforce_both_ids(tmp_path: Path):
+def test_all_tools_read_saved_snapshot_and_enforce_both_ids(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
     source = tmp_path / "app.py"
     source.write_text('def run():\n    return "100%_literal"\n', encoding="utf-8")
     engine = create_database_engine(Settings().database_url)
@@ -138,6 +141,30 @@ def test_all_tools_read_saved_snapshot_and_enforce_both_ids(tmp_path: Path):
                 provider=DeterministicAgentProvider(),
             )
             assert local.stop_reason == "completed" and local.total_steps == 2
+            monkeypatch.setattr(
+                "repopilot.api.routes.agent.create_agent_provider",
+                lambda settings: DeterministicAgentProvider(),
+            )
+            monkeypatch.setattr(
+                "repopilot.api.routes.agent.create_embedding_provider",
+                lambda settings: DeterministicEmbeddingProvider(),
+            )
+            with client_for(session, tmp_path) as client:
+                payload = {
+                    "repository_id": scope.repository_id,
+                    "snapshot_id": scope.snapshot_id,
+                    "question": "run literal",
+                }
+                response = client.post("/api/agent/investigate", json=payload)
+                assert response.status_code == 200
+                assert response.json()["stop_reason"] == "completed"
+                assert response.json()["total_steps"] == 2
+                assert "100%_literal" in response.text and "newer" not in response.text
+                payload["repository_id"] = other.repository.id
+                assert (
+                    client.post("/api/agent/investigate", json=payload).status_code
+                    == 404
+                )
             # Exercise the bound using persisted content with heavily escaped lines.
             saved = session.scalar(
                 select(SnapshotFile).where(
