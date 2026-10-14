@@ -22,8 +22,8 @@ No writes, execution, sandbox, GitHub, MCP, workers or multiple agents. Stop at 
 | Milestone | Outcome | Status |
 | --- | --- | --- |
 | M0 | Preflight, authorized goal, execution plan | Complete |
-| M1 | Typed allowlist and bounded snapshot tools with tests | Current |
-| M2 | Provider extension and explicit bounded loop/trace with deterministic tests | Pending |
+| M1 | Typed allowlist and bounded snapshot tools with tests | Complete |
+| M2 | Provider extension and explicit bounded loop/trace with deterministic tests | Current |
 | M3 | Thin investigate API and minimal existing-workflow React UI | Pending |
 | M4 | Frozen multistep baseline, live integration/provider validation and regressions | Pending |
 | Final | Acceptance/scope/security/Git audit and completion documentation | Pending |
@@ -48,5 +48,9 @@ No writes, execution, sandbox, GitHub, MCP, workers or multiple agents. Stop at 
 
 ## Validation and progress
 
-See preflight above. M1–Final validation will be recorded as it is executed.
-No new dependencies planned. No remaining preflight blocker.
+- M1: 30 tool unit cases plus one live PostgreSQL full-tool/isolation test passed.
+  Covers invalid typed arguments/path traversal/scope overrides, literal SQL
+  wildcard escaping, saved-source reads despite working-tree changes, missing
+  indexes, V1/V2 reuse and whole-JSON output bounding. Ruff passed after formatting.
+  Scope review: queries only; no filesystem access, indexing or schema changes.
+- M2–Final remain. No new dependencies. No blockers.
