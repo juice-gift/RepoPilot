@@ -44,7 +44,7 @@ def complete_response(
     history: list[dict[str, object]],
     tools: list[dict[str, object]],
 ) -> AgentTurn:
-    response = client.responses.create(
+    response = client.with_options(timeout=30, max_retries=0).responses.create(
         model=model,
         instructions=instructions,
         input=cast(list[ResponseInputItemParam], history),

@@ -93,6 +93,14 @@ dd { margin: 4px 0 0; color: #dfe6e2; font: 500 11px "DM Mono", monospace; overf
 .evidence-meta .not-used { color: #e2ae68; }
 pre { max-height: 270px; margin: 0; overflow: auto; border-top: 1px solid #252d2a; padding: 14px; color: #bdc9c3; background: #0d1210; font: 400 10px/1.6 "DM Mono", monospace; tab-size: 2; white-space: pre; }
 
+.agent-button { grid-column: 1 / -1; }
+.agent-step { margin-top: 12px; border: 1px solid #29312e; border-radius: 8px; padding: 12px; }
+.agent-step summary { cursor: pointer; overflow-wrap: anywhere; font-size: 12px; }
+.agent-step .label { margin-top: 12px; }
+.agent-step pre { margin-top: 6px; }
+.agent-result h4 { margin-bottom: 8px; }
+.agent-result .answer-copy { overflow-wrap: anywhere; }
+
 @media (max-width: 1180px) {
   .workspace { grid-template-columns: 270px 1fr; }
   .evidence-panel { grid-column: 1 / -1; border-left: 0 !important; border-top: 1px solid #29312e; }

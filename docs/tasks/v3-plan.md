@@ -24,8 +24,8 @@ No writes, execution, sandbox, GitHub, MCP, workers or multiple agents. Stop at 
 | M0 | Preflight, authorized goal, execution plan | Complete |
 | M1 | Typed allowlist and bounded snapshot tools with tests | Complete |
 | M2 | Provider extension and explicit bounded loop/trace with deterministic tests | Complete |
-| M3 | Thin investigate API and minimal existing-workflow React UI | Current |
-| M4 | Frozen multistep baseline, live integration/provider validation and regressions | Pending |
+| M3 | Thin investigate API and minimal existing-workflow React UI | Complete |
+| M4 | Frozen multistep baseline, live integration/provider validation and regressions | Current |
 | Final | Acceptance/scope/security/Git audit and completion documentation | Pending |
 
 ## Decisions
@@ -59,4 +59,12 @@ No writes, execution, sandbox, GitHub, MCP, workers or multiple agents. Stop at 
   IDs, incomplete/oversized output, citation identity and untrusted-data separation
   covered. Real DB scripted and local deterministic runs use saved snapshot source.
   Existing generate contract preserved; complete uses the same Responses clients.
-- M3–Final remain. No new dependencies. No blockers.
+- M3: ordinary suite 174 passed / 15 DB skips; Ruff and frontend build passed.
+  Ten API cases cover validation, OpenAPI/typed result, missing resource/provider,
+  database failure and inspectable provider-failure results. Browser path on
+  temporary ports 8001/5174 passed: select persisted golden snapshot → investigate
+  → two real tool calls → final answer → expanded read observation and saved source.
+  Temporary test origin was configured explicitly; no tracked local setting changed.
+  Agent requests use a 30-second SDK timeout and no automatic retries. UI locks
+  snapshot selection during operations and resets results when scope changes.
+- M4–Final remain. No new dependencies. No blockers.

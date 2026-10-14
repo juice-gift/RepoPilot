@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
+import { InvestigationResult, InvestigationSources } from "./AgentResult";
+import { investigate, prepareSymbols, type AgentResult } from "./api/agent";
 import { getDatabaseHealth, getHealth } from "./api/health";
 import {
   indexSnapshot,
@@ -21,7 +23,7 @@ import {
 import "./App.css";
 
 type ConnectionStatus = "checking" | "connected" | "unavailable";
-type Operation = "ingest" | "retrieve" | "ask" | null;
+type Operation = "ingest" | "retrieve" | "ask" | "agent" | "structure" | null;
 
 const statusMessages: Record<ConnectionStatus, string> = {
   checking: "Checking",
@@ -57,6 +59,8 @@ function App() {
   const [indexing, setIndexing] = useState<IndexResponse | null>(null);
   const [retrieval, setRetrieval] = useState<RetrieveResponse | null>(null);
   const [answer, setAnswer] = useState<AskResponse | null>(null);
+  const [investigation, setInvestigation] = useState<AgentResult | null>(null);
+  const [structureMessage, setStructureMessage] = useState<string | null>(null);
   const [focusedChunkId, setFocusedChunkId] = useState<number | null>(null);
 
   const selectedRepository = useMemo(
@@ -117,6 +121,8 @@ function App() {
     setRetrieval(null);
     setAnswer(null);
     setFocusedChunkId(null);
+    setInvestigation(null);
+    setStructureMessage(null);
   }
 
   async function handleIngest(): Promise<void> {
@@ -151,6 +157,7 @@ function App() {
     setOperation("retrieve");
     setError(null);
     setAnswer(null);
+    setInvestigation(null);
     setFocusedChunkId(null);
     try {
       setRetrieval(
@@ -169,12 +176,42 @@ function App() {
     setOperation("ask");
     setError(null);
     setRetrieval(null);
+    setInvestigation(null);
     setFocusedChunkId(null);
     try {
       setAnswer(await askQuestion(selectedRepositoryId, selectedSnapshotId, question, topK));
     } catch (askError: unknown) {
       setAnswer(null);
       setError(errorMessage(askError));
+    } finally {
+      setOperation(null);
+    }
+  }
+
+  async function handleInvestigate(): Promise<void> {
+    if (selectedRepositoryId === null || selectedSnapshotId === null) return;
+    setOperation("agent");
+    setError(null);
+    resetQueryResults();
+    try {
+      setInvestigation(await investigate(selectedRepositoryId, selectedSnapshotId, question));
+    } catch (investigateError: unknown) {
+      setError(errorMessage(investigateError));
+    } finally {
+      setOperation(null);
+    }
+  }
+
+  async function handlePrepareSymbols(): Promise<void> {
+    if (selectedRepositoryId === null || selectedSnapshotId === null) return;
+    setOperation("structure");
+    setError(null);
+    setStructureMessage(null);
+    try {
+      const result = await prepareSymbols(selectedRepositoryId, selectedSnapshotId);
+      setStructureMessage(`${result.symbol_count} symbols ready for this snapshot.`);
+    } catch (structureError: unknown) {
+      setError(errorMessage(structureError));
     } finally {
       setOperation(null);
     }
@@ -199,7 +236,7 @@ function App() {
     <div className="app-shell">
       <header className="topbar">
         <div>
-          <p className="eyebrow">Codebase RAG · V1</p>
+          <p className="eyebrow">Repository Agent · V3</p>
           <h1>RepoPilot</h1>
         </div>
         <div className="connections" role="status" aria-label="Service connections">
@@ -235,14 +272,14 @@ function App() {
           <div className="divider" />
           <label>
             Repository
-            <select value={selectedRepositoryId ?? ""} onChange={(event) => { setSelectedRepositoryId(Number(event.target.value)); resetQueryResults(); }}>
+            <select disabled={operation !== null} value={selectedRepositoryId ?? ""} onChange={(event) => { setSelectedRepositoryId(Number(event.target.value)); setSnapshots([]); setSelectedSnapshotId(null); resetQueryResults(); }}>
               {repositories.length === 0 && <option value="">No repositories yet</option>}
               {repositories.map((repository) => <option key={repository.id} value={repository.id}>{repository.name}</option>)}
             </select>
           </label>
           <label>
             Snapshot
-            <select value={selectedSnapshotId ?? ""} onChange={(event) => { setSelectedSnapshotId(Number(event.target.value)); resetQueryResults(); }}>
+            <select disabled={operation !== null} value={selectedSnapshotId ?? ""} onChange={(event) => { setSelectedSnapshotId(Number(event.target.value)); resetQueryResults(); }}>
               {snapshots.length === 0 && <option value="">No snapshots yet</option>}
               {snapshots.map((snapshot) => (
                 <option key={snapshot.id} value={snapshot.id}>
@@ -251,6 +288,11 @@ function App() {
               ))}
             </select>
           </label>
+
+          <button className="secondary-button" disabled={operation !== null || selectedSnapshotId === null} onClick={() => void handlePrepareSymbols()}>
+            {operation === "structure" ? "Preparing symbols…" : "Prepare symbol navigation"}
+          </button>
+          {structureMessage && <p className="muted" role="status">{structureMessage}</p>}
 
           {selectedRepository && (
             <div className="snapshot-card">
@@ -282,7 +324,7 @@ function App() {
           </div>
           <label className="question-label">
             Ask about the selected snapshot
-            <textarea value={question} onChange={(event) => setQuestion(event.target.value)} placeholder="Where is database connectivity configured, and how does it fail?" rows={5} />
+            <textarea disabled={operation !== null} maxLength={4000} value={question} onChange={(event) => setQuestion(event.target.value)} placeholder="Where is database connectivity configured, and how does it fail?" rows={5} />
           </label>
           <div className="query-controls">
             <label>
@@ -305,10 +347,15 @@ function App() {
             <button className="primary-button" disabled={!canQuery} onClick={() => void handleAsk()}>
               {operation === "ask" ? "Generating…" : "Ask with evidence"}
             </button>
+            <button className="primary-button agent-button" disabled={!canQuery} onClick={() => void handleInvestigate()}>
+              {operation === "agent" ? "Investigating selected snapshot…" : "Investigate with agent"}
+            </button>
           </div>
 
+          {operation === "agent" && <p className="muted" role="status">Investigation running. The final result and tool trace will appear when it finishes.</p>}
+          {investigation && <InvestigationResult result={investigation} />}
           {error && <div className="error-banner" role="alert"><strong>Request failed</strong><span>{error}</span></div>}
-          {!answer && !retrieval && !error && (
+          {!answer && !retrieval && !investigation && !error && operation !== "agent" && (
             <div className="empty-state">
               <div className="empty-mark">RP</div>
               <h3>Evidence stays visible</h3>
@@ -356,10 +403,10 @@ function App() {
         <aside className="panel evidence-panel">
           <div className="panel-heading evidence-heading">
             <p className="step">03</p>
-            <div><h2>Evidence</h2><p>Why these chunks were selected</p></div>
-            <span className="count-badge">{visibleEvidence.length}</span>
+            <div><h2>Evidence</h2><p>{investigation ? "Sources observed during investigation" : "Why these chunks were selected"}</p></div>
+            <span className="count-badge">{investigation?.sources.length ?? visibleEvidence.length}</span>
           </div>
-          <div className="evidence-list">
+          {investigation ? <InvestigationSources result={investigation} /> : <div className="evidence-list">
             {visibleEvidence.length === 0 && (
               <div className="evidence-empty"><p>No evidence yet.</p><span>Ranked chunks, scores, symbols, line ranges, and source content will appear here.</span></div>
             )}
@@ -378,7 +425,7 @@ function App() {
                 <pre><code>{item.content}</code></pre>
               </article>
             ))}
-          </div>
+          </div>}
         </aside>
       </main>
     </div>

@@ -19,6 +19,7 @@ from repopilot.rag.tool_calling import DeterministicAgentProvider
 )
 def test_responses_boundary_keeps_calls_and_discards_reasoning(provider_type):
     client = MagicMock()
+    client.with_options.return_value = client
     client.responses.create.return_value = SimpleNamespace(
         status="completed",
         output_text="Intermediate reasoning must not be replayed",
@@ -59,6 +60,7 @@ def test_responses_boundary_keeps_calls_and_discards_reasoning(provider_type):
         "reasoning": {"effort": "none"},
         "store": False,
     }
+    client.with_options.assert_called_once_with(timeout=30, max_retries=0)
 
 
 def test_factory_deterministic_and_missing_key():
