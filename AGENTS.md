@@ -30,7 +30,7 @@ For the complete long-term product scope, architecture direction, and version ro
 
 Current stage:
 
-**V2 — Code Intelligence is complete.**
+**V3 — Read-only Repository Agent is complete.**
 
 Stage 0 — Project Inception has been completed and serves as the stable engineering foundation.
 
@@ -56,9 +56,15 @@ static import navigation, conservative reference resolution, typed structural
 APIs, and frozen structural evaluation. Python uses standard-library AST;
 JavaScript/TypeScript families use Tree-sitter. The V1 retriever remains separate.
 
-The repository is currently stopped at the V2 / V3 version boundary. Do not
-implement Repository Agent, agent loops, MCP, GitHub integration, code modification
-agents, or later-stage functionality without an explicitly active new goal.
+V3 wraps persisted snapshot source, V2 symbol navigation and V1 retrieval in five
+typed, bounded read-only tools. An explicit synchronous loop, Responses provider
+boundary, investigation API, React tool trace and frozen small evaluation exist.
+Live Qwen investigation works, but evaluation records unsupported final claims;
+engineering completion does not imply general agent accuracy.
+
+The repository is stopped at the V3 / V4 version boundary. Do not implement code
+modification, repository execution, sandboxing, MCP, GitHub integration, multiple
+agents or later-stage functionality without an explicitly active new goal.
 
 ---
 
@@ -1046,6 +1052,14 @@ When V2 is complete:
 * stop at the V2 / V3 boundary.
 
 Do not begin V3 automatically.
+
+When V3 is complete:
+
+* perform final V3 validation;
+* produce the completion report;
+* stop at the V3 / V4 boundary.
+
+Do not begin V4 automatically.
 
 ---
 

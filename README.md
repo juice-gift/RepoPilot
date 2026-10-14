@@ -2,8 +2,8 @@
 
 RepoPilot is a long-term AI codebase intelligence and issue-resolution system.
 
-**Stage 0, V1 — Codebase RAG, and V2 — Code Intelligence are complete.**
-The project stops at the V2 / V3 boundary until a new version goal is authorized.
+**Stage 0, V1 — Codebase RAG, V2 — Code Intelligence, and V3 — Read-only Repository Agent are complete.**
+The project stops at the V3 / V4 boundary until a new version goal is authorized.
 
 ## Current functionality
 
@@ -52,8 +52,30 @@ retrieval ranking and the evidence UI retain their existing behavior.
 ## Planned functionality
 
 Version results are recorded in `docs/tasks/v1-plan.md`, `docs/tasks/v2-plan.md`
-and `docs/evaluation/v2-code-intelligence-results.md`. Agent workflows,
-GitHub/MCP integration, and production engineering belong to later versions.
+and `docs/tasks/v3-plan.md`, with completion reports under `docs/evaluation/`.
+Code modification, repository execution/sandboxing, GitHub/MCP integration,
+multiple agents and production engineering belong to later versions.
+
+V3 adds a separate read-only investigation flow:
+
+```text
+Question / issue + repository_id + snapshot_id
+-> bounded explicit agent loop -> Responses provider tool calls
+-> typed allowlist -> persisted source / V2 symbols / V1 retrieval
+-> bounded observations -> next model turn -> final answer + tool trace + sources
+```
+
+The five tools are `list_files`, `read_file`, `search_code`, `search_symbol` and
+`retrieve_context`. They cannot access host filesystem paths, execute source,
+change snapshots or build indexes. Repository content remains untrusted data.
+The UI retains V1 retrieval/ask and adds investigation plus expandable observations.
+Use **Prepare symbol navigation** to explicitly build the selected snapshot's V2
+index before investigation; **Ingest & index** prepares V1 retrieval. Missing
+indexes return safe tool failures that the model can inspect.
+
+Engineering and live multi-turn Qwen validation passed; observed answer-grounding
+failures remain in the small baseline. See
+[`V3 completion and evaluation`](docs/evaluation/v3-repository-agent-results.md).
 
 ## Repository structure
 
@@ -105,6 +127,16 @@ The zero-cost local setup uses `EMBEDDING_PROVIDER=deterministic`. It produces n
 For grounded generation with the V1 live-validated provider, set `GENERATION_PROVIDER=qwen`. Alibaba Cloud Model Studio / Qwen uses `qwen3.7-flash` through the OpenAI-compatible Responses API in the Beijing region. Both external providers preserve the same grounding instructions, untrusted-repository-data boundary, and backend citation resolution. Deterministic providers support reproducible offline tests and evaluation; OpenAI providers are implemented and contract-tested but were not live-tested for V1.
 
 `RETRIEVAL_STRATEGY=hybrid` is the measured V1 default. It reranks exact-vector results using a small lexical score over the same metadata-enriched chunk content. Set it to `vector` to reproduce the mandatory vector-only baseline. The measured comparison and limitations are recorded in `docs/evaluation/v1-retrieval-results.md`.
+
+Investigation reuses `GENERATION_PROVIDER` and its existing Qwen/OpenAI model
+settings. `deterministic` runs a retrieve/read workflow for local verification,
+not LLM investigation. Default bounds are 12 model turns including the final
+answer, five calls per turn, 4,000 characters per argument object, 12,000 per
+serialized observation, 60,000 for accumulated input including instructions and
+tool schemas, and 12,000 for model output. Configure the four `AGENT_*` values
+in `.env.example`; generation also retains `GENERATION_MAX_OUTPUT_TOKENS`.
+Each agent model request has a 30-second timeout and no SDK retry. Character
+budgets are application limits, not tokenizer measurements.
 
 ## Start PostgreSQL
 
@@ -166,6 +198,7 @@ The API is available at `http://localhost:8000`:
 - `POST /api/repositories/{repository_id}/snapshots/{snapshot_id}/index` creates or reuses all snapshot embeddings and records model, dimensions, count, and duration.
 - `POST /api/retrieve` independently returns ranked, snapshot-scoped evidence with chunk IDs, source locations, cosine score/distance, and raw content; it never invokes answer generation.
 - `POST /api/ask` retrieves evidence, builds bounded untrusted-data context, generates a grounded answer, and resolves `[E#]` references into backend-derived citations.
+- `POST /api/agent/investigate` runs read-only multi-turn investigation over one saved repository snapshot and returns the final answer, trace, sources, stop reason and diagnostics.
 
 V2 endpoints share the prefix
 `/api/repositories/{repository_id}/snapshots/{snapshot_id}/structure`:
@@ -195,6 +228,33 @@ ambiguous. JS/TS resolves relative modules and explicit exported definitions;
 package aliases, export-list/re-export chains, dynamic loaders, runtime mutation,
 and type-dependent member dispatch remain outside the baseline. Markdown stays
 available for V1 RAG and file navigation without structural symbols.
+
+An investigation request contains only `repository_id`, `snapshot_id` and a
+nonempty `question` (maximum 4,000 characters). Model tool arguments cannot
+override either ID. Missing snapshots return 404; missing model configuration or
+an initially unavailable database returns 503. A started run returns HTTP 200
+with an inspectable result even when incomplete; always check `stop_reason`.
+Possible reasons are `completed`, `max_steps`, `context_limit`,
+`model_output_limit`, `invalid_model_response`, `provider_failure`, and
+`tool_failure`. `completed` means the model returned a final answer, not that
+its claims were independently proven.
+
+`max_steps` counts model turns; `total_steps` counts executed tool calls, which
+can share a model turn. Trace entries contain validated arguments (null for
+rejected calls), execution status, duration and bounded observation. No reasoning
+items or intermediate model prose are recorded. Known input/resource/index
+failures can be returned to the model for recovery; unexpected infrastructure
+failures stop the run. Source IDs such as `[E2_1]` are minted by the backend;
+invalid bracketed IDs are replaced and reported. This validates source identity,
+not the truth of every sentence. Symbol-only results carry definition metadata;
+behavioral claims require source inspection.
+
+`read_file` uses validated POSIX relative paths and one-based inclusive ranges,
+defaulting to 100 lines and limiting each request to 200. `search_code` is a
+case-sensitive literal substring baseline over persisted PostgreSQL source;
+SQL wildcards are escaped and results are ordered by file and line. Search/list
+limits and output truncation can omit items; `omitted_items` is a lower bound,
+not a total-count query. No regex engine or new search service is introduced.
 
 The V1 live-validated external provider is Alibaba Cloud Model Studio / Qwen: `qwen3.7-text-embedding` produces 512-dimensional embeddings, and `qwen3.7-flash` performs grounded generation through the OpenAI-compatible Responses API. Requests use `store=false`, an explicit output bound, and grounding instructions separated from untrusted repository content. The deterministic local provider is an extractive pipeline test aid, not an LLM-quality substitute.
 
@@ -290,6 +350,26 @@ On macOS/Linux use `PYTHONPATH=src uv run python -m repopilot.evaluation.structu
 Use `--output path.json` to save the report. The checked-in structural dataset and
 normalized source hashes are frozen. Perfect scores on this small labeled corpus
 do not imply complete reference resolution on arbitrary repositories.
+
+Run the frozen V3 multistep orchestration baseline from `apps/api`:
+
+```powershell
+$env:PYTHONPATH = "src"
+uv run python -m repopilot.evaluation.agent --output ../../docs/evaluation/local-agent-report.json
+# Conditional external check, with the existing ignored Qwen credential:
+uv run python -m repopilot.evaluation.agent --mode qwen --output ../../docs/evaluation/local-qwen-report.json
+Remove-Item Env:PYTHONPATH
+```
+
+The four-file corpus and three tasks are checksum-frozen. The scripted mode tests
+actual tools, saved data, multi-turn orchestration and evidence discovery; its
+prewritten answers do not measure LLM decisions. Qwen mode uses real tool calling
+and deterministic retrieval embeddings to keep model investigation separate from
+embedding quality. Raw evaluation leaves `grounded_final_answer` unreviewed.
+Compare claims against the saved source, then record boolean verdicts/reasons
+with matching `review_hash` and apply them using `--review-report` and `--reviews`.
+The checked-in initial/trial reports retain incorrect claims rather than changing
+ground truth. The completion report explains the remaining two failed trial cases.
 
 The additional parser dependencies are `tree-sitter`, `tree-sitter-javascript`
 and `tree-sitter-typescript`. The lockfile uses Tree-sitter 0.25.2: 0.26.0 caused

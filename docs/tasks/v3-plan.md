@@ -26,7 +26,7 @@ No writes, execution, sandbox, GitHub, MCP, workers or multiple agents. Stop at 
 | M2 | Provider extension and explicit bounded loop/trace with deterministic tests | Complete |
 | M3 | Thin investigate API and minimal existing-workflow React UI | Complete |
 | M4 | Frozen multistep baseline, live integration/provider validation and regressions | Complete |
-| Final | Acceptance/scope/security/Git audit and completion documentation | Current |
+| Final | Acceptance/scope/security/Git audit and completion documentation | Complete |
 
 ## Decisions
 
@@ -80,8 +80,17 @@ No writes, execution, sandbox, GitHub, MCP, workers or multiple agents. Stop at 
   Alembic current/check and Ruff passed. V1 vector/hybrid metrics and V2 structural
   expectations reproduced unchanged. V1 CLI lacks --output; corrected the initial
   unsupported invocation by saving its stdout, then both commands succeeded.
-- Final documentation/audit remains. No new dependencies or implementation blocker.
-  Observed LLM conclusion/grounding failures remain explicit baseline limitations.
+- Final: re-read acceptance and audited every item against source/tests/reports.
+  Final live suite again 196 passed; Ruff, Alembic current/check and frontend
+  production build passed after the source-prefix correction. Browser symbol
+  preparation showed 12 ready definitions for the saved V1 golden snapshot.
+  Scope/security/dependency/Git diff audit passed; V1/V2 source, migrations and
+  locks unchanged; no tracked credential or later-version implementation.
+  README/AGENTS/PROJECT now reflect V3 completion. The
+  [completion report](../evaluation/v3-repository-agent-results.md) contains full
+  acceptance, data flow, actual validation, commits and concrete limitations.
+  No required engineering work or blocker remains. Observed LLM grounding failures
+  remain baseline limitations. Stop at V3 / V4; do not begin V4.
 
 ### M4 review finding
 

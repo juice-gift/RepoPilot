@@ -1319,7 +1319,9 @@ API，以及显式结构索引入口。后端 API 与 Evaluation 是 V2 的检�
 
 # 二十七、V3 — Repository Agent
 
-进入 Agent 学习阶段后开始。
+已在独立授权的 V3 Goal 下完成第一版 Read-only Repository Agent。
+实现与验收见 `docs/tasks/v3-plan.md` 和
+`docs/evaluation/v3-repository-agent-results.md`。
 
 第一版：
 
@@ -1350,6 +1352,17 @@ Agent Loop。
 第一版禁止：
 
 Multi-Agent。
+
+当前实现显式同步 Agent Loop：Provider 返回 Tool Call → Allowlist / Typed
+Arguments → 固定 repository_id + snapshot_id 的持久化只读查询 → 有界 Observation
+→ Provider 下一轮 → Final Result。五个 Tool 不修改仓库、不执行代码、不自动建索引。
+API 返回完整 Tool Trace、来源与 stop_reason；React 在原有 V1 页面展示调查结果。
+模型轮次、单轮调用数、输出和累积上下文均有上限，SDK 不存储响应、不重试。
+没有新增 Agent Framework、搜索服务、数据库表或依赖。
+
+小型 Frozen Baseline 有三个跨文件任务。Scripted 测试只验证编排；Qwen 两次
+实测均找到预期证据，但最终复核仍有过度概括及未经证实的修复偏好。
+这些真实 Bad Cases 已保留，不能把“工具与工程验收通过”当成通用 Agent Accuracy。
 
 ---
 
@@ -2301,8 +2314,9 @@ RepoPilot 才真正成为我的简历项目。
 - Stage 0 — Project Inception 已完成
 - V1 — Codebase RAG 已完成
 - V2 — Code Intelligence 已完成
-- 当前停在 V2 / V3 Version Boundary
-- V3 尚未授权开始
+- V3 — Read-only Repository Agent 已完成
+- 当前停在 V3 / V4 Version Boundary
+- V4 尚未授权开始
 
 当前基础架构：
 
@@ -2345,7 +2359,13 @@ Symbol / Definition、Import Relations、Conservative References、Navigation AP
 V2 的执行计划见 `docs/tasks/v2-plan.md`，完成报告见
 `docs/evaluation/v2-code-intelligence-results.md`。
 
-RepoPilot 当前保持在 V2 / V3 边界；没有单独授权的 Version Goal，不得自动进入 V3。
+V3 在 `docs/goals/v3-repository-agent.md` 的独立授权下完成。完整实时数据库测试
+196 passed；普通测试 180 passed / 16 skipped；Ruff、Alembic current/check/replay、
+前端生产构建和 V1/V2 Frozen Regression 通过。真实 Qwen 多轮 Tool Calling 已验证，
+但最终 Grounding / Conclusion 的实测失败仍作为 Baseline 限制公开保留。
+
+V3 的完成报告见 `docs/evaluation/v3-repository-agent-results.md`。
+RepoPilot 当前保持在 V3 / V4 边界；没有独立授权的新 Goal，不得自动进入 V4。
 
 ---
 
