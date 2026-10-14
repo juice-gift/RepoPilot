@@ -4,7 +4,10 @@ from pathlib import Path
 
 import pytest
 from sqlalchemy import delete, select
+from test_agent_runner import ScriptedProvider, call
 
+from repopilot.agent.models import AgentRequest
+from repopilot.agent.runner import run_investigation
 from repopilot.agent.tools import RunScope, ToolRegistry
 from repopilot.config import Settings
 from repopilot.db.models import Repository, SnapshotFile
@@ -13,6 +16,7 @@ from repopilot.embeddings.providers import DeterministicEmbeddingProvider
 from repopilot.indexing.service import index_snapshot
 from repopilot.ingestion.service import ingest_repository
 from repopilot.intelligence.service import index_structure
+from repopilot.rag.tool_calling import AgentTurn, DeterministicAgentProvider
 
 pytestmark = pytest.mark.skipif(
     os.getenv("RUN_DATABASE_TESTS") != "1", reason="requires migrated PostgreSQL"
@@ -108,6 +112,32 @@ def test_all_tools_read_saved_snapshot_and_enforce_both_ids(tmp_path: Path):
                 ).observation.error_code
                 == "index_not_ready"
             )
+            result = run_investigation(
+                AgentRequest(
+                    repository_id=scope.repository_id,
+                    snapshot_id=scope.snapshot_id,
+                    question="Inspect run and its saved return value",
+                ),
+                registry=registry,
+                provider=ScriptedProvider(
+                    call("search_symbol", {"query": "run"}, "symbol"),
+                    call("read_file", {"path": "app.py"}, "read"),
+                    AgentTurn(text="run returns a saved literal [E2_1]."),
+                ),
+            )
+            assert result.stop_reason == "completed" and result.total_steps == 2
+            assert "100%_literal" in result.sources[-1].content
+            assert "newer" not in result.model_dump_json()
+            local = run_investigation(
+                AgentRequest(
+                    repository_id=scope.repository_id,
+                    snapshot_id=scope.snapshot_id,
+                    question="run literal",
+                ),
+                registry=registry,
+                provider=DeterministicAgentProvider(),
+            )
+            assert local.stop_reason == "completed" and local.total_steps == 2
             # Exercise the bound using persisted content with heavily escaped lines.
             saved = session.scalar(
                 select(SnapshotFile).where(

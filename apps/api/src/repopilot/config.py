@@ -33,6 +33,10 @@ class Settings(BaseSettings):
     generation_max_output_tokens: int = Field(default=1_200, ge=64, le=16_000)
     context_character_limit: int = Field(default=24_000, ge=1_000, le=200_000)
     context_max_evidence: int = Field(default=8, ge=1, le=20)
+    agent_max_steps: int = Field(default=12, ge=1, le=30)
+    agent_observation_character_limit: int = Field(default=12_000, ge=1_000, le=30_000)
+    agent_context_character_limit: int = Field(default=60_000, ge=10_000, le=200_000)
+    agent_model_output_character_limit: int = Field(default=12_000, ge=1_000, le=30_000)
 
     model_config = SettingsConfigDict(
         env_file=REPOSITORY_ROOT / ".env",

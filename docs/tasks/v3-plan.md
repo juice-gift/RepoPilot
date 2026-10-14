@@ -23,8 +23,8 @@ No writes, execution, sandbox, GitHub, MCP, workers or multiple agents. Stop at 
 | --- | --- | --- |
 | M0 | Preflight, authorized goal, execution plan | Complete |
 | M1 | Typed allowlist and bounded snapshot tools with tests | Complete |
-| M2 | Provider extension and explicit bounded loop/trace with deterministic tests | Current |
-| M3 | Thin investigate API and minimal existing-workflow React UI | Pending |
+| M2 | Provider extension and explicit bounded loop/trace with deterministic tests | Complete |
+| M3 | Thin investigate API and minimal existing-workflow React UI | Current |
 | M4 | Frozen multistep baseline, live integration/provider validation and regressions | Pending |
 | Final | Acceptance/scope/security/Git audit and completion documentation | Pending |
 
@@ -53,4 +53,10 @@ No writes, execution, sandbox, GitHub, MCP, workers or multiple agents. Stop at 
   wildcard escaping, saved-source reads despite working-tree changes, missing
   indexes, V1/V2 reuse and whole-JSON output bounding. Ruff passed after formatting.
   Scope review: queries only; no filesystem access, indexing or schema changes.
-- M2–Final remain. No new dependencies. No blockers.
+- M2: 60 focused tests passed (tools, loop, provider boundary, PostgreSQL and V1
+  generation); full Ruff passed. Multi-turn/multi-call, recovery, unknown/invalid
+  calls, infrastructure failures, context/schema accounting, max turns, duplicate
+  IDs, incomplete/oversized output, citation identity and untrusted-data separation
+  covered. Real DB scripted and local deterministic runs use saved snapshot source.
+  Existing generate contract preserved; complete uses the same Responses clients.
+- M3–Final remain. No new dependencies. No blockers.

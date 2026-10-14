@@ -3,6 +3,12 @@ from typing import Protocol
 from openai import OpenAI
 
 from repopilot.config import Settings
+from repopilot.rag.tool_calling import (
+    AgentProvider,
+    AgentTurn,
+    DeterministicAgentProvider,
+    complete_response,
+)
 
 
 class GenerationConfigurationError(ValueError):
@@ -34,6 +40,22 @@ class OpenAIResponsesGenerationProvider:
         self.model_name = model_name
         self.max_output_tokens = max_output_tokens
         self._client = client or OpenAI(api_key=api_key)
+
+    def complete(
+        self,
+        *,
+        instructions: str,
+        history: list[dict[str, object]],
+        tools: list[dict[str, object]],
+    ) -> AgentTurn:
+        return complete_response(
+            self._client,
+            model=self.model_name,
+            max_output_tokens=self.max_output_tokens,
+            instructions=instructions,
+            history=history,
+            tools=tools,
+        )
 
     def generate(self, *, instructions: str, input_text: str) -> str:
         response = self._client.responses.create(
@@ -73,6 +95,22 @@ class QwenResponsesGenerationProvider:
         self.model_name = model_name
         self.max_output_tokens = max_output_tokens
         self._client = client or OpenAI(api_key=api_key, base_url=base_url)
+
+    def complete(
+        self,
+        *,
+        instructions: str,
+        history: list[dict[str, object]],
+        tools: list[dict[str, object]],
+    ) -> AgentTurn:
+        return complete_response(
+            self._client,
+            model=self.model_name,
+            max_output_tokens=self.max_output_tokens,
+            instructions=instructions,
+            history=history,
+            tools=tools,
+        )
 
     def generate(self, *, instructions: str, input_text: str) -> str:
         response = self._client.responses.create(
@@ -128,6 +166,19 @@ def create_generation_provider(settings: Settings) -> GenerationProvider:
         api_key=api_key,
         model_name=settings.generation_model,
         max_output_tokens=settings.generation_max_output_tokens,
+    )
+
+
+def create_agent_provider(settings: Settings) -> AgentProvider:
+    if settings.generation_provider == "deterministic":
+        return DeterministicAgentProvider()
+    provider = create_generation_provider(settings)
+    if isinstance(
+        provider, (QwenResponsesGenerationProvider, OpenAIResponsesGenerationProvider)
+    ):
+        return provider
+    raise GenerationConfigurationError(
+        "Configured provider does not support tool calling"
     )
 
 
