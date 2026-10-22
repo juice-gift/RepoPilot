@@ -239,3 +239,21 @@ def test_live_observed_bad_schema_gets_precise_feedback_and_consumes_attempt():
         assert tools.patch_attempts == 1 and workspace.revision == 0
         _, observation = tools.execute("apply_patch", raw, remaining_seconds=180)
         assert observation.error_code == "patch_limit"
+
+
+def test_read_only_profile_does_not_offer_unavailable_execution():
+    with Workspace(RunScope(1, 2), golden_files()) as workspace:
+        tools = ResolutionTools(
+            workspace, load_profile("ambiguous-cap"), FakeExecutor(), ResolutionLimits()
+        )
+        assert {d["name"] for d in tools.definitions()} == {
+            "list_files",
+            "read_file",
+            "search_code",
+            "submit_plan",
+        }
+        _, observation = tools.execute(
+            "run_tests", '{"expected_revision":0}', remaining_seconds=180
+        )
+        assert observation.error_code == "unknown_tool"
+        assert not tools.tests

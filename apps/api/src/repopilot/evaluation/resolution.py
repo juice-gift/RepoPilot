@@ -150,7 +150,10 @@ def review_hash(result: dict[str, object]) -> str:
 
 
 def evaluate_resolution(
-    settings: Settings, mode: str, output: Path | None = None
+    settings: Settings,
+    mode: str,
+    output: Path | None = None,
+    selected_cases: tuple[str, ...] = CASES,
 ) -> dict[str, object]:
     if mode not in {"scripted", "qwen"}:
         raise ValueError("Unknown resolution evaluation mode")
@@ -158,7 +161,9 @@ def evaluate_resolution(
         raise ValueError(
             "RESOLUTION_SANDBOX_IMAGE must identify the prepared local image"
         )
-    profiles = [load_profile(case) for case in CASES]
+    if not selected_cases or not set(selected_cases) <= set(CASES):
+        raise ValueError("Select only frozen resolution cases")
+    profiles = [load_profile(case) for case in selected_cases]
     source = GOLDEN_ROOT / "repository"
     original = {p.name: p.read_bytes() for p in source.iterdir()}
     commit = subprocess.run(
@@ -174,6 +179,7 @@ def evaluate_resolution(
         "manifest_hash": FROZEN_MANIFEST_HASH,
         "code_commit": commit,
         "mode": mode,
+        "selected_cases": list(selected_cases),
         "started_at": datetime.now(UTC).isoformat(),
         "sandbox_image": settings.resolution_sandbox_image,
         "measurement": "actual external Qwen decisions"
@@ -293,7 +299,7 @@ def evaluate_resolution(
         engine.dispose()
     report["finished_at"] = datetime.now(UTC).isoformat()
     report["limitations"] = (
-        "Three controlled issues, one run each. No general success-rate inference. Independent tests are bounded evidence; review actual diffs and final claims."
+        "Small controlled corpus, each selected issue run once. No general success-rate inference. Independent tests are bounded evidence; review actual diffs and final claims."
     )
     save()
     return report
@@ -303,8 +309,11 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--mode", choices=["scripted", "qwen"], default="scripted")
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--case", choices=CASES)
     args = parser.parse_args()
-    evaluate_resolution(Settings(), args.mode, args.output)
+    evaluate_resolution(
+        Settings(), args.mode, args.output, (args.case,) if args.case else CASES
+    )
 
 
 if __name__ == "__main__":

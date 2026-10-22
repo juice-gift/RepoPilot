@@ -147,7 +147,16 @@ def test_security():
         assert workspace.read("probe.py") == source
 
 
-def test_live_timeout_kills_container_and_output_is_bounded(live_image):
+def test_live_timeout_kills_container_and_output_is_bounded(live_image, monkeypatch):
+    from repopilot.resolution.sandbox import bounded_start
+
+    owned_names = []
+
+    def observed_start(name, timeout):
+        owned_names.append(name)
+        return bounded_start(name, timeout)
+
+    monkeypatch.setattr("repopilot.resolution.sandbox.bounded_start", observed_start)
     source = "VALUE = 1\n"
     test = """import os, time
 def test_forever():
@@ -169,11 +178,10 @@ def test_forever():
             and len(result.stderr) <= 8000
         )
     assert not root.exists()
-    assert (
-        docker(
-            "ps", "--all", "--quiet", "--filter", "label=repopilot.resolution=1"
-        ).strip()
-        == ""
+    assert owned_names
+    assert all(
+        not docker("ps", "--all", "--quiet", "--filter", f"name=^/{name}$").strip()
+        for name in owned_names
     )
 
 
@@ -244,7 +252,10 @@ def test_process_limit():
 def test_live_cancellation_cleans_owned_container_and_workspace(
     live_image, monkeypatch
 ):
-    def cancelled(*args, **kwargs):
+    owned_names = []
+
+    def cancelled(name, *_args, **_kwargs):
+        owned_names.append(name)
         raise KeyboardInterrupt
 
     monkeypatch.setattr("repopilot.resolution.sandbox.bounded_start", cancelled)
@@ -255,9 +266,8 @@ def test_live_cancellation_cleans_owned_container_and_workspace(
         root = workspace.root
         SandboxExecutor(live_image).run(workspace, load_profile("fee-days"))
     assert not root.exists()
-    assert (
-        docker(
-            "ps", "--all", "--quiet", "--filter", "label=repopilot.resolution=1"
-        ).strip()
-        == ""
+    assert owned_names
+    assert all(
+        not docker("ps", "--all", "--quiet", "--filter", f"name=^/{name}$").strip()
+        for name in owned_names
     )

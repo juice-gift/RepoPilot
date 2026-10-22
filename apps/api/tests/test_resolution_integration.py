@@ -72,7 +72,9 @@ def test_saved_snapshot_workspace_isolation_and_integrity(tmp_path: Path):
 @pytest.mark.skipif(
     os.getenv("RUN_SANDBOX_TESTS") != "1", reason="requires prepared Docker test image"
 )
-def test_live_snapshot_resolution_repairs_actual_failure_and_preserves_baseline():
+def test_live_snapshot_resolution_repairs_actual_failure_and_preserves_baseline(
+    tmp_path: Path,
+):
     from test_agent_runner import ScriptedProvider, call
     from test_resolution_runner import fee_patch, plan
 
@@ -87,6 +89,10 @@ def test_live_snapshot_resolution_repairs_actual_failure_and_preserves_baseline(
     from repopilot.resolution.service import resolve_snapshot
 
     original = {p.name: p.read_bytes() for p in (GOLDEN_ROOT / "repository").iterdir()}
+    target = tmp_path / "golden-source"
+    target.mkdir()
+    for name, data in original.items():
+        (target / name).write_bytes(data)
     engine = create_database_engine(Settings().database_url)
     factory = create_database_session_factory(engine)
     repository_id = None
@@ -94,8 +100,8 @@ def test_live_snapshot_resolution_repairs_actual_failure_and_preserves_baseline(
         with factory() as session:
             ingested = ingest_repository(
                 session,
-                requested_path=str(GOLDEN_ROOT / "repository"),
-                allowed_root=GOLDEN_ROOT,
+                requested_path=str(target),
+                allowed_root=tmp_path,
             )
             repository_id = ingested.repository.id
             scope = RunScope(repository_id, ingested.snapshot.id)
@@ -157,6 +163,7 @@ def test_live_snapshot_resolution_repairs_actual_failure_and_preserves_baseline(
             assert {
                 p.name: p.read_bytes() for p in (GOLDEN_ROOT / "repository").iterdir()
             } == original
+            assert {p.name: p.read_bytes() for p in target.iterdir()} == original
     finally:
         if repository_id:
             with factory() as session:

@@ -112,6 +112,10 @@ class ResolutionTools:
             "apply_patch": (PatchArguments, self._patch),
             "run_tests": (RunTestsArguments, self._tests),
         }
+        if not profile.validation:
+            self.handlers.pop("run_tests")
+        if not profile.editable_paths:
+            self.handlers.pop("apply_patch")
 
     def definitions(self) -> list[dict[str, object]]:
         descriptions = {
@@ -134,9 +138,12 @@ class ResolutionTools:
         # Keep this one nested edit schema explicit. The live Qwen probe generated
         # unrelated old_string/new_string fields when Edit was only a local $ref.
         patch_schema = next(
-            d["parameters"] for d in definitions if d["name"] == "apply_patch"
+            (d["parameters"] for d in definitions if d["name"] == "apply_patch"), None
         )
-        patch_schema["properties"]["edits"]["items"] = patch_schema.pop("$defs")["Edit"]
+        if patch_schema is not None:
+            patch_schema["properties"]["edits"]["items"] = patch_schema.pop("$defs")[
+                "Edit"
+            ]
         if self.baseline:
             for definition in self.baseline.definitions():
                 if definition["name"] in {"search_symbol", "retrieve_context"}:

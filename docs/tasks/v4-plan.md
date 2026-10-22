@@ -158,3 +158,24 @@ fee case deliberately exercises failed patch → repair → retest. Production n
 uses the scripted patch generator. Manifest canonical hash guards all frozen
 source/test/profile expectations. Dataset source/tests/issue intent unchanged.
 Focused evaluation/loop checks: 13 passed; Ruff passed after formatting/import fixes.
+
+### M6 measured outcomes and review fixes
+
+- Frozen scripted: all three conditions met (fee repair includes actual failed
+  attempt + retest); no external-model inference. First full Qwen: fees verified
+  (8 turns/1 patch); cross-file preconditions verified (12 turns/1 patch, 11 tests).
+  Ambiguous case safely made no changes but called an unavailable test profile,
+  stopped with sandbox_failure and did not meet the expected owner-decision
+  condition. Preserve this in `v4-resolution-qwen-report.json`.
+- Fix: definitions/dispatch now expose only capabilities actually permitted by a
+  profile. A profile with no validation/edit permission offers read/plan tools,
+  without unusable execution/edit tools; hallucinated calls still safely fail.
+  No fixture intent, tests, provider or edit permission was changed. A separate
+  targeted ambiguity Qwen trial will measure this correction on frozen inputs.
+- Final review makes DB integration sources disposable instead of reusing an
+  existing Golden repository record; cleanup checks target exact owned container
+  names and tolerate other live runs. These changes protect pre-existing data and
+  avoid false failures under parallel evaluation.
+- Full live backend suite before the capability correction: 261 passed. Alembic
+  current/check and production web build passed. Final relevant checks remain
+  required after the correction. Existing AnyIO warning remains.
