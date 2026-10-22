@@ -44,6 +44,8 @@ def test_resolve_rejects_unapproved_contract(tmp_path, patch):
 
 def test_sandbox_configuration_required(tmp_path):
     with client_for(MagicMock(spec=Session), tmp_path) as client:
+        # Exercise missing configuration even when a live-test image is exported.
+        client.app.state.settings.resolution_sandbox_image = None
         response = client.post("/api/agent/resolve", json=PAYLOAD)
         assert response.status_code == 503
         assert "RESOLUTION_SANDBOX_IMAGE" in response.text
