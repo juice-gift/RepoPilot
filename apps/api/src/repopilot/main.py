@@ -12,6 +12,7 @@ from repopilot.api.routes.health import router as health_router
 from repopilot.api.routes.indexing import router as indexing_router
 from repopilot.api.routes.rag import router as rag_router
 from repopilot.api.routes.repositories import router as repositories_router
+from repopilot.api.routes.resolution import router as resolution_router
 from repopilot.api.routes.retrieval import router as retrieval_router
 from repopilot.api.routes.structure import router as structure_router
 from repopilot.config import Settings
@@ -57,6 +58,7 @@ def create_app(
     app.include_router(rag_router)
     app.include_router(structure_router)
     app.include_router(agent_router)
+    app.include_router(resolution_router)
     return app
 
 

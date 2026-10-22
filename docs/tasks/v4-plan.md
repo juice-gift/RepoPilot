@@ -37,8 +37,8 @@ systems. Stop at V4/V5.
 | M2 | Atomic patch, workspace-aware reads, actual diff | Complete |
 | M3 | Docker executor, controlled profiles, real isolation tests | Complete |
 | M4 | Structured plan, bounded resolution/repair loop | Complete |
-| M5 | Typed resolve API and minimal React workflow | Current |
-| M6 | Frozen real-model evaluation, regressions and final review | Pending |
+| M5 | Typed resolve API and minimal React workflow | Complete |
+| M6 | Frozen real-model evaluation, regressions and final review | Current |
 
 ## Implementation decisions
 
@@ -134,3 +134,16 @@ counted invalid calls in the patch budget. Permissions were not relaxed. The sam
 probe then produced strict valid path/old_text/new_text arguments. Focused API,
 patch, loop and V3 runner regression: 51 passed. Actual full browser rerun and
 M5 acceptance remain in progress; this small probe does not establish model repair.
+
+M5 acceptance subsequently passed: actual browser ingest/index (Qwen embeddings)
+→ prepare symbols → issue → resolve API → Qwen → real patch → Docker independent
+tests. Revision 0: 4 failed/4 passed; revision 1: 8 passed, isolation/container and
+workspace cleanup confirmed. Qwen took 10 model calls, one patch attempt, 44,877ms;
+one invalid plan call recovered via typed feedback. The model chose the real
+source replacement itself; this is actual external-model repair, not scripted.
+UI original/modified source, accepted plan, tests, stop/status and trace verified;
+the existing investigation button remains available. Screenshot:
+`docs/evaluation/v4-browser-verified.png`. Code repair succeeded, but final prose
+incorrectly described 1% of $100 as one cent; preserve that quality limitation.
+No original fixture file changed. Full three-case frozen evaluation, final
+regressions, architecture/security/scope review and completion report remain in M6.
