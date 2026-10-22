@@ -4,7 +4,7 @@ import json
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from repopilot.agent.tools import (
     ListFilesArguments,
@@ -119,7 +119,7 @@ class ResolutionTools:
             "read_file": "Read CURRENT modified source at the returned revision. At most 200 lines. Read before planning edits.",
             "search_code": "Literal substring search in CURRENT modified source. No regex or execution.",
             "submit_plan": "Submit a public bounded action plan. Must precede writes. Files must be read and server-approved. Refuse when intent is ambiguous.",
-            "apply_patch": "Atomically replace unique exact text contexts in approved existing Python files. Requires repair plan and failing baseline. Supply current expected_revision. No tests/config edits.",
+            "apply_patch": "Atomically replace unique exact source text. Supply expected_revision and edits; every edit must include path, old_text, new_text with exactly these field names. Requires repair plan and failing baseline. No tests/config edits.",
             "run_tests": "Run the fixed server-selected independent pytest profile in Docker at expected_revision. No command, image, test or security options are accepted. Run before and after patches.",
         }
         definitions = [
@@ -131,6 +131,12 @@ class ResolutionTools:
             }
             for name, (schema, _) in self.handlers.items()
         ]
+        # Keep this one nested edit schema explicit. The live Qwen probe generated
+        # unrelated old_string/new_string fields when Edit was only a local $ref.
+        patch_schema = next(
+            d["parameters"] for d in definitions if d["name"] == "apply_patch"
+        )
+        patch_schema["properties"]["edits"]["items"] = patch_schema.pop("$defs")["Edit"]
         if self.baseline:
             for definition in self.baseline.definitions():
                 if definition["name"] in {"search_symbol", "retrieve_context"}:
@@ -148,6 +154,13 @@ class ResolutionTools:
     ) -> tuple[dict[str, object] | None, ResolutionObservation]:
         validated = None
         try:
+            if name == "apply_patch":
+                if self.patch_attempts >= self.limits.patch_attempts:
+                    return None, ResolutionObservation(
+                        status="error", error_code="patch_limit"
+                    )
+                # Invalid schemas are attempts too; do not leave them uncounted.
+                self.patch_attempts += 1
             if len(raw) > 36_000:
                 raise ValueError("Argument budget exceeded")
             self.workspace.verify()
@@ -183,6 +196,25 @@ class ResolutionTools:
             return validated, bounded(
                 ResolutionObservation(payload=payload),
                 self.limits.observation_characters,
+            )
+        except ValidationError as exc:
+            errors = [
+                {"field": list(error["loc"]), "type": error["type"]}
+                for error in exc.errors(include_input=False, include_url=False)[:10]
+            ]
+            return validated, ResolutionObservation(
+                status="error",
+                error_code="invalid_arguments",
+                payload={
+                    "schema_errors": errors,
+                    "message": "Use the exact field names and types in the supplied tool schema",
+                },
+            )
+        except PatchError as exc:
+            return validated, ResolutionObservation(
+                status="error",
+                error_code="patch_rejected",
+                payload={"message": str(exc)},
             )
         except (ValueError, TypeError, RecursionError) as exc:
             code = (
@@ -225,9 +257,6 @@ class ResolutionTools:
         return {"accepted": True, "plan": args.model_dump(mode="json")}
 
     def _patch(self, args: PatchArguments) -> dict[str, object]:
-        if self.patch_attempts >= self.limits.patch_attempts:
-            raise ValueError("patch_limit")
-        self.patch_attempts += 1
         if not self.plans or self.plans[-1].decision != "repair":
             raise PatchError("A validated repair plan is required")
         if not {e.path for e in args.edits} <= set(self.plans[-1].files):

@@ -199,3 +199,43 @@ def test_complete_json_observation_bound_preserves_useful_prefix():
     assert observation.truncated and len(observation.model_dump_json()) <= 1000
     assert observation.payload["preview"]
     assert json.loads(observation.model_dump_json())
+
+
+def test_live_observed_bad_schema_gets_precise_feedback_and_consumes_attempt():
+    with Workspace(RunScope(1, 2), golden_files()) as workspace:
+        tools = ResolutionTools(
+            workspace,
+            load_profile("fee-days"),
+            FakeExecutor(),
+            ResolutionLimits(patch_attempts=1),
+        )
+        schema = next(
+            d["parameters"] for d in tools.definitions() if d["name"] == "apply_patch"
+        )
+        assert "$defs" not in schema
+        assert set(schema["properties"]["edits"]["items"]["properties"]) == {
+            "path",
+            "old_text",
+            "new_text",
+        }
+        raw = json.dumps(
+            {
+                "expected_revision": 0,
+                "edits": [
+                    {
+                        "description": "replace expression",
+                        "old_string": "old",
+                        "new_string": "new",
+                    }
+                ],
+            }
+        )
+        _, observation = tools.execute("apply_patch", raw, remaining_seconds=180)
+        assert observation.error_code == "invalid_arguments"
+        assert {
+            "field": ["edits", 0, "path"],
+            "type": "missing",
+        } in observation.payload["schema_errors"]
+        assert tools.patch_attempts == 1 and workspace.revision == 0
+        _, observation = tools.execute("apply_patch", raw, remaining_seconds=180)
+        assert observation.error_code == "patch_limit"

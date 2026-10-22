@@ -15,9 +15,20 @@ class PatchError(ValueError):
 
 class Edit(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
-    path: str = Field(min_length=1, max_length=240)
-    old_text: str = Field(min_length=1, max_length=16_000)
-    new_text: str = Field(max_length=16_000)
+    path: str = Field(
+        min_length=1,
+        max_length=240,
+        description="Existing approved relative source path, for example fees.py",
+    )
+    old_text: str = Field(
+        min_length=1,
+        max_length=16_000,
+        description="Exact source text to replace; must occur once. Field name is old_text.",
+    )
+    new_text: str = Field(
+        max_length=16_000,
+        description="Replacement source text. Field name is new_text.",
+    )
 
     _path = field_validator("path")(safe_path)
 

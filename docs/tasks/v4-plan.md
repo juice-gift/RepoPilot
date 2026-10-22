@@ -118,3 +118,19 @@ systems. Stop at V4/V5.
   external-model repair and API/UI/final acceptance remain required in M5/M6.
 
 M5–M6 and the remaining V4 acceptance evidence are outstanding.
+
+### M5 live-interface finding
+
+API contract/investigation tests: 22 passed; web production build and Ruff passed.
+The first real Qwen browser run reproduced the failing baseline and planned the
+correct change, but repeated invalid nested patch arguments until max_steps. It
+made no source changes and cleaned its workspace. Preserve the measured failure
+in `docs/evaluation/v4-browser-initial-failure.md` (not a successful repair).
+
+A separate non-executing Qwen probe generated old_string/new_string and omitted
+path under the local-$ref edit schema. Inlined the existing Edit properties,
+added explicit field descriptions and safe field/type validation errors, and
+counted invalid calls in the patch budget. Permissions were not relaxed. The same
+probe then produced strict valid path/old_text/new_text arguments. Focused API,
+patch, loop and V3 runner regression: 51 passed. Actual full browser rerun and
+M5 acceptance remain in progress; this small probe does not establish model repair.
