@@ -36,8 +36,8 @@ systems. Stop at V4/V5.
 | M1 | Owned workspace lifecycle, executable Golden fixtures | Complete |
 | M2 | Atomic patch, workspace-aware reads, actual diff | Complete |
 | M3 | Docker executor, controlled profiles, real isolation tests | Complete |
-| M4 | Structured plan, bounded resolution/repair loop | Current |
-| M5 | Typed resolve API and minimal React workflow | Pending |
+| M4 | Structured plan, bounded resolution/repair loop | Complete |
+| M5 | Typed resolve API and minimal React workflow | Current |
 | M6 | Frozen real-model evaluation, regressions and final review | Pending |
 
 ## Implementation decisions
@@ -96,4 +96,25 @@ systems. Stop at V4/V5.
 - One initial PowerShell pytest glob was not expanded (no tests ran); corrected
   explicit file-list invocation passed. Do not count the failed command as a pass.
 
-M4–M6 and the remaining V4 acceptance evidence are outstanding.
+- M4: full live PostgreSQL + Docker suite: **245 passed**, existing AnyIO warning
+  only; Ruff passed. Nine new deterministic runner tests plus V3 loop regressions
+  passed. Real DB/source → loop → deliberately wrong patch → actual failing tests
+  → repair → independent passing tests verified, including unchanged source and
+  Snapshot, current-revision reads and baseline-only stale index labels.
+- Strict public plan is required before writes; source must be read and in both
+  server/plan allowlists, with a real failing revision-0 baseline. Model, patch,
+  test, output/context and wall-deadline admission bounds have separate reasons.
+  Late model responses cannot authorize tools; SDK timeout stays 30 seconds;
+  Docker cleanup has separately bounded grace calls. No background subsystem.
+- Status is server-derived: final prose is not proof. Verification also requires
+  the exact expected independent test count (8/11), no truncated pass evidence,
+  no timeout/infrastructure failure and the tested current revision. Safe refusal
+  cannot hide earlier changes. Scripted results are orchestration evidence only.
+- Real multi-file integration exposed DB collation versus scanner ordering in
+  Snapshot hash checking; fixed V4 verification to use the unchanged V1 Python
+  sort order. The initially failed integration passed after the fix, then all
+  245 tests passed. No V1 Snapshot identity definition was changed.
+- Qwen credentials are available (presence only inspected, never printed). Actual
+  external-model repair and API/UI/final acceptance remain required in M5/M6.
+
+M5–M6 and the remaining V4 acceptance evidence are outstanding.

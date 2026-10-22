@@ -52,10 +52,15 @@ class RunLimits:
             raise ValueError("Agent character limits must be at least 1000")
 
 
-def input_size(history: list[dict[str, object]], tools: list[dict[str, object]]) -> int:
+def input_size(
+    history: list[dict[str, object]],
+    tools: list[dict[str, object]],
+    *,
+    instructions: str = AGENT_INSTRUCTIONS,
+) -> int:
     return len(
         json.dumps(
-            {"instructions": AGENT_INSTRUCTIONS, "input": history, "tools": tools},
+            {"instructions": instructions, "input": history, "tools": tools},
             ensure_ascii=False,
             separators=(",", ":"),
         )

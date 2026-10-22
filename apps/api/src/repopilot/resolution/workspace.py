@@ -100,8 +100,15 @@ def snapshot_sources(session: Session, scope: RunScope) -> tuple[SavedSource, ..
         .order_by(SnapshotFile.path)
         .limit(MAX_FILES + 1)
     )
+    # V1's identity uses Python path ordering, not database collation ordering.
     result = tuple(
-        SavedSource(f.path, f.content, f.content_hash, f.byte_size) for f in files
+        sorted(
+            (
+                SavedSource(f.path, f.content, f.content_hash, f.byte_size)
+                for f in files
+            ),
+            key=lambda file: file.path,
+        )
     )
     if (
         len(result) != snapshot.accepted_file_count

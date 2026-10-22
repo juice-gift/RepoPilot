@@ -20,7 +20,8 @@
         "test_fees.py"
       ],
       "expected_decision": "verified_repair",
-      "baseline_failures": 4
+      "baseline_failures": 4,
+      "expected_tests": 8
     },
     {
       "id": "dispatch-preconditions",
@@ -33,7 +34,8 @@
         "test_dispatch.py"
       ],
       "expected_decision": "verified_repair",
-      "baseline_failures": 2
+      "baseline_failures": 2,
+      "expected_tests": 11
     },
     {
       "id": "ambiguous-cap",
@@ -41,7 +43,8 @@
       "editable_paths": [],
       "validation_files": [],
       "expected_decision": "needs_owner_decision",
-      "baseline_failures": 0
+      "baseline_failures": 0,
+      "expected_tests": 0
     }
   ]
 }

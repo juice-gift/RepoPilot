@@ -113,6 +113,7 @@ def controlled_security_profile(source: str, test: str):
     # Engineering-only adversarial fixture; production loader never offers it.
     return replace(
         load_profile("fee-days"),
+        expected_tests=1,
         expected_sources=MappingProxyType({"probe.py": digest(source)}),
         validation=MappingProxyType({"test_probe.py": test.encode("utf-8")}),
     )

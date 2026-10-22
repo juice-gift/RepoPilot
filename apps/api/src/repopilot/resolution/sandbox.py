@@ -9,7 +9,7 @@ from pathlib import Path
 from time import monotonic
 from uuid import uuid4
 
-from pydantic import BaseModel
+from pydantic import BaseModel, computed_field
 
 from repopilot.resolution.profiles import TestProfile
 from repopilot.resolution.workspace import Workspace, WorkspaceError
@@ -35,7 +35,10 @@ class TestResult(BaseModel):
     infrastructure_error: str | None = None
     isolation_confirmed: bool = False
     cleanup_confirmed: bool = False
+    expected_tests: int = 0
+    observed_passed: int = 0
 
+    @computed_field
     @property
     def passed(self) -> bool:
         return (
@@ -44,6 +47,9 @@ class TestResult(BaseModel):
             and self.infrastructure_error is None
             and self.isolation_confirmed
             and self.cleanup_confirmed
+            and not self.truncated
+            and self.expected_tests > 0
+            and self.observed_passed == self.expected_tests
         )
 
 
@@ -270,6 +276,7 @@ class SandboxExecutor:
             stdout="",
             stderr="",
             elapsed_ms=0,
+            expected_tests=profile.expected_tests,
         )
         attempted = False
         validation = workspace.root / ("validation-" + uuid4().hex)
@@ -316,6 +323,8 @@ class SandboxExecutor:
                 if not result.timed_out:
                     state = json.loads(invoke("inspect", name))[0]["State"]
                     result.exit_code = state["ExitCode"]
+                    summaries = re.findall(r"(?:^|\s)(\d+) passed", result.stdout)
+                    result.observed_passed = int(summaries[-1]) if summaries else 0
                     if state["Running"] or state["OOMKilled"] or state["Error"]:
                         raise SandboxError(
                             "Test container failed or exceeded resource limits"

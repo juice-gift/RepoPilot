@@ -22,6 +22,7 @@ class TestProfile:
     expected_sources: Mapping[str, str]
     expected_decision: str
     baseline_failures: int
+    expected_tests: int
 
     def require_snapshot(self, sources: Mapping[str, str]) -> None:
         if {path: digest(content) for path, content in sources.items()} != dict(
@@ -72,4 +73,5 @@ def load_profile(case_id: str) -> TestProfile:
         MappingProxyType(expected_sources),
         case["expected_decision"],
         case["baseline_failures"],
+        case["expected_tests"],
     )
