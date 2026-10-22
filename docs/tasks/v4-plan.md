@@ -33,8 +33,8 @@ systems. Stop at V4/V5.
 | Milestone | Deliverable | Status |
 | --- | --- | --- |
 | M0 | Preflight, approved goal, execution plan | Complete |
-| M1 | Owned workspace lifecycle, executable Golden fixtures | Current |
-| M2 | Atomic patch, workspace-aware reads, actual diff | Pending |
+| M1 | Owned workspace lifecycle, executable Golden fixtures | Complete |
+| M2 | Atomic patch, workspace-aware reads, actual diff | Current |
 | M3 | Docker executor, controlled profiles, real isolation tests | Pending |
 | M4 | Structured plan, bounded resolution/repair loop | Pending |
 | M5 | Typed resolve API and minimal React workflow | Pending |
@@ -55,6 +55,17 @@ systems. Stop at V4/V5.
 
 ## Validation and remaining work
 
-M0 complete. M1–M6 and all V4 acceptance evidence remain outstanding.
-No new dependency or product capability yet. Maintain this plan at each milestone,
-commit reviewable increments, and record actual failures without claiming success.
+- M1 (2026-10-22): 21 focused tests passed, including real PostgreSQL saved
+  snapshot → workspace, changed original source isolation and corrupt-source
+  rejection. Full Ruff passed after import/style corrections. Workspace checks
+  identity/count/bytes, portable paths, links/junctions, source hashes and snapshot
+  hash; temporary root is private and external to RepoPilot. Each published
+  revision is a complete directory; cleanup covers ordinary and exceptional exits.
+- Frozen v1 source/validation manifest has three issues, strict per-case edits,
+  independent pytest ground truth and explicit ambiguous-case refusal criterion.
+  No fixture code was executed on the host. Actual failing baseline execution and
+  independent test verification are still required in M3's Docker runtime.
+- V4 snapshots with BOM/normalization that cannot reproduce their original byte
+  hashes fail closed rather than silently claiming a verified executable snapshot.
+
+M2–M6 and the remaining V4 acceptance evidence are outstanding. No new dependency.

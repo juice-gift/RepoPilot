@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "files": {
+    "repository/auth.py": "8ab1241692a053cc9c8132d938f00e51920386d2f50ddac3127dfefc4289b870",
+    "repository/fees.py": "4a9b96b0b83d3ddb08d84ffeddea7006047d23c448927e9e56cfa8d51bb04d27",
+    "repository/policy.py": "9656f43b32ba52edf9a5165475819d964f1d6043cb5fd2d666918253c9ce89df",
+    "repository/README.md": "ec62401c5e6dd72bb21de2d1f92ae30f4cbb09a2d5d43990a5d8da52a794b04f",
+    "repository/workflow.py": "51465beab2d3598b49296bc6928321c5cd76316bbda2f9cff066883c881425e6",
+    "validation/test_dispatch.py": "cc56647c22d16bcce4c7e6a5c899a0589893a31bf796e7b678e3ba0512cd255d",
+    "validation/test_fees.py": "ea2675ab24d7f080044b68cf51e8bf60064af34f5a973e79427dc8005e3c9808"
+  },
+  "cases": [
+    {
+      "id": "fee-days",
+      "issue": "late_fee misses the first overdue day. Charge one percent per overdue day, capped at 30 days; preserve integer cent rounding and invalid-input checks.",
+      "editable_paths": [
+        "fees.py"
+      ],
+      "validation_files": [
+        "test_fees.py"
+      ],
+      "expected_decision": "verified_repair",
+      "baseline_failures": 5
+    },
+    {
+      "id": "dispatch-preconditions",
+      "issue": "submit_job must authenticate before policy validation. Authorized negative attempts must raise ValueError for permanent and transient jobs. Preserve nonnegative permanent rejection, exponential delays and the existing 300-second cap. Inspect the cross-file preconditions and fix both violations.",
+      "editable_paths": [
+        "policy.py",
+        "workflow.py"
+      ],
+      "validation_files": [
+        "test_dispatch.py"
+      ],
+      "expected_decision": "verified_repair",
+      "baseline_failures": 2
+    },
+    {
+      "id": "ambiguous-cap",
+      "issue": "The guide says retry delays cap at 60 seconds while implementation uses 300. Determine the intended cap and fix the discrepancy if there is sufficient evidence.",
+      "editable_paths": [],
+      "validation_files": [],
+      "expected_decision": "needs_owner_decision",
+      "baseline_failures": 0
+    }
+  ]
+}
