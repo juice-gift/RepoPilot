@@ -1391,6 +1391,17 @@ Repository Investigation
 
 # 二十八、V4 — Issue Resolution Agent
 
+V4 已在 `docs/goals/v4-issue-resolution-agent.md` 的独立授权下开始。
+M1–M5 已实现私有临时 Workspace、原子 Patch、受控 Docker/pytest、结构化 Plan、
+有界修复循环、独立 resolve API 和 React 结果视图；原始仓库与 Snapshot 不变。
+只允许冻结 Golden profiles，不开放任意仓库、Shell、依赖安装或外部集成。
+
+M6 完整本地/数据库/Docker 测试 262 passed，两个真实 Qwen 正例修复通过独立测试。
+歧义用例首次实测安全停止但未满足决策标准；工具权限公布已修正，真实复测因
+Qwen 免费额度耗尽（403）尚未通过。因此 V4 尚未完成，不得进入 V5。
+执行计划见 `docs/tasks/v4-plan.md`，实际验收状态及失败记录见
+`docs/evaluation/v4-issue-resolution-status.md`。
+
 在 Read-only Agent 稳定后才开放：
 
 - `edit_file`
@@ -2315,8 +2326,9 @@ RepoPilot 才真正成为我的简历项目。
 - V1 — Codebase RAG 已完成
 - V2 — Code Intelligence 已完成
 - V3 — Read-only Repository Agent 已完成
-- 当前停在 V3 / V4 Version Boundary
-- V4 尚未授权开始
+- V4 已独立授权，M1–M5 已实现，M6 验收进行中
+- 当前阻碍：Qwen 免费额度耗尽，修正后的歧义用例真实复测未通过
+- V4 未宣告完成；V5 未授权
 
 当前基础架构：
 
@@ -2365,7 +2377,8 @@ V3 在 `docs/goals/v3-repository-agent.md` 的独立授权下完成。完整实�
 但最终 Grounding / Conclusion 的实测失败仍作为 Baseline 限制公开保留。
 
 V3 的完成报告见 `docs/evaluation/v3-repository-agent-results.md`。
-RepoPilot 当前保持在 V3 / V4 边界；没有独立授权的新 Goal，不得自动进入 V4。
+以上是 V3 的历史完成状态。当前 V4 状态以其授权 Goal、执行计划和实际验收报告为准；
+不得自动进入 V5。
 
 ---
 

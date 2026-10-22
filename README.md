@@ -4,9 +4,12 @@ RepoPilot is a long-term AI codebase intelligence and issue-resolution system.
 
 **Stage 0, V1 — Codebase RAG, V2 — Code Intelligence, and V3 — Read-only Repository Agent are complete.**
 V4 is authorized and in progress under `docs/goals/v4-issue-resolution-agent.md`.
-M1–M4 implement private workspaces, patches, Docker tests and the bounded repair
-loop; API/UI and external-model/final acceptance are being validated. V4 is not
-yet declared complete. See `docs/tasks/v4-plan.md` for actual progress.
+M1–M5 implement private workspaces, patches, Docker tests, bounded repairs and the
+API/UI. Final local regressions pass and two real Qwen positive repairs pass
+independent tests. Corrected ambiguity revalidation is blocked by exhausted Qwen
+quota (403), so **V4 is not complete**. See the
+[acceptance status](docs/evaluation/v4-issue-resolution-status.md) and
+`docs/tasks/v4-plan.md` for evidence and the remaining gate.
 
 ## Current functionality
 
@@ -129,6 +132,19 @@ $env:RUN_DATABASE_TESTS = '1'
 $env:RUN_SANDBOX_TESTS = '1'
 uv run pytest
 ```
+
+The small frozen repair baseline has separate scripted and real Qwen modes. With
+the same prepared image setting, run from `apps/api`:
+
+```powershell
+$env:PYTHONPATH = 'src'
+uv run python -m repopilot.evaluation.resolution --mode scripted --output ../../docs/evaluation/local-v4-scripted.json
+uv run python -m repopilot.evaluation.resolution --mode qwen --output ../../docs/evaluation/local-v4-qwen.json
+```
+
+Use `--case ambiguous-cap` for the pending targeted revalidation after Qwen quota
+is restored. Reports preserve source/Snapshot integrity, exact tested revisions,
+actual tool decisions and review hashes; scripted patches are not model success.
 
 ## Repository structure
 

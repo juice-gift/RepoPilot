@@ -1,181 +1,100 @@
 # RepoPilot V4 Execution Plan
 
-## Goal and boundary
+## Active goal and current state
 
-Implement the approved [V4 goal](../goals/v4-issue-resolution-agent.md): issue →
-investigation → validated plan → bounded patch → Docker tests → repair → verified
-patch and evidence. Only private temporary workspaces may change. No arbitrary
-execution, external dependency installation, GitHub, MCP, workers or multi-agent
-systems. Stop at V4/V5.
-
-## M0 preflight (2026-10-21)
-
-- Read AGENTS, PROJECT, V3 goal/plan/completion, relevant implementation/history.
-- Clean `main`, exact approved baseline `d1ca7678fa482c7accea8b55afad94394413316c`.
-- Ordinary pytest: 180 passed / 16 opt-in DB skips; Ruff and web build passed.
-- Initially blocked: Docker Desktop ingest socket startup crash and DB timeout.
-  On recheck Desktop recovered externally; existing PostgreSQL container healthy.
-- Full `RUN_DATABASE_TESTS=1 uv run pytest`: 196 passed, including live V1/V2/V3
-  tools, API and disposable migration replay. Existing AnyIO warning only.
-- Alembic current: `0005_structural_index (head)`; check: no pending operations.
-- V1 vector/hybrid, V2 structural and V3 scripted evaluation CLIs passed. First
-  invocation lacked PYTHONPATH; reran successfully with `PYTHONPATH=src`.
-- Linux engine 29.7.2, builtin seccomp/cgroupns. Actual Python probe: UID 65534,
-  zero CapEff/CapBnd, NoNewPrivs=1, Seccomp=2, memory.max=268435456, pids.max=64.
-  Read-only root, network none, CPU quota and tmpfs flags accepted.
-- Docker Hub returned 429; official-image AWS public mirror pull succeeded:
-  `public.ecr.aws/docker/library/python@sha256:355bfa66770995d7e9a0da4b3473b44d0cb451f6b56f5615ad9c39e3c4eca03f`.
-- No architecture conflict. Draft approval footer in attachment superseded by
-  its explicit owner authorization. Historical V3 completion remains historical.
+Implement the [authorized V4 goal](../goals/v4-issue-resolution-agent.md).
+**M1-M5 complete; M6 incomplete, waiting for Qwen quota restoration.**
+Do not declare V4 complete or enter V5. Authorization persists for V4 resumption.
+Full evidence, failures, risks and acceptance mapping:
+[implementation/acceptance status](../evaluation/v4-issue-resolution-status.md).
 
 ## Milestones
 
-| Milestone | Deliverable | Status |
+| Milestone | Outcome | Status |
 | --- | --- | --- |
-| M0 | Preflight, approved goal, execution plan | Complete |
-| M1 | Owned workspace lifecycle, executable Golden fixtures | Complete |
-| M2 | Atomic patch, workspace-aware reads, actual diff | Complete |
-| M3 | Docker executor, controlled profiles, real isolation tests | Complete |
-| M4 | Structured plan, bounded resolution/repair loop | Complete |
-| M5 | Typed resolve API and minimal React workflow | Complete |
-| M6 | Frozen real-model evaluation, regressions and final review | Current |
+| M0 | Verify V3 baseline, environment, goal and plan | Complete |
+| M1 | Owned saved-source workspaces and frozen fixtures | Complete |
+| M2 | Atomic bounded patch, current reads, actual diff | Complete |
+| M3 | Restricted Docker/pytest, real isolation checks | Complete |
+| M4 | Public plan and bounded repair/retest loop | Complete |
+| M5 | Separate typed resolve API and existing React workflow | Complete |
+| M6 | Frozen model evaluation, regressions, final acceptance | Incomplete: real-model negative revalidation blocked |
 
-## Implementation decisions
+## Decisions and scope
 
-- Keep V3 contracts and investigation behavior stable. Reuse provider protocol
-  and loop validation helpers; V4 patch/test observations have their own types.
-- Only backend-approved Python fixtures/profiles can execute. Snapshot matching
-  is based on frozen file hashes, not an arbitrary path or model-selected command.
-- Materialize persisted source only; source snapshots are not complete runnable
-  environments. Test harness/dependencies are controlled independently.
-- Model edits only explicitly approved existing source files. Tests, configuration
-  and evaluation ground truth remain outside edit permission.
-- No host execution fallback. Docker is defense in depth, not an absolute boundary
-  for malicious code. Use only local single-user controlled fixtures in V4.
+- Preserve V1/V2 indexes and V3 investigation; use existing provider/protocol helpers.
+- Only backend-approved frozen Python profiles execute. A saved Snapshot alone
+  is not an arbitrary executable repository. Verify saved bytes and Snapshot hash.
+- Temporary workspace is private, separately owned and outside RepoPilot. Original
+  source/Snapshot stay unchanged. Complete revisions make failed patches atomic.
+- One exact-context apply_patch interface. Tests/config/secrets remain denied.
+- Public plan + actual failing baseline required before writes; reads see current
+  revision; indexed evidence is labeled baseline-only after modifications.
+- No host fallback. Immutable trusted image, read-only mounts, no network/secrets,
+  unprivileged/capability/seccomp/resource restrictions, bounded streams/cleanup.
+- Server derives status from exact-revision independent tests and expected counts;
+  completed execution/final prose alone never proves repair correctness.
+- No GitHub/MCP, arbitrary shell/repository/dependencies, production architecture,
+  queues/workers/global state/UI frameworks, or multi-agent implementation.
 
-## Validation and remaining work
+## Verified progress
 
-- M1 (2026-10-22): 21 focused tests passed, including real PostgreSQL saved
-  snapshot → workspace, changed original source isolation and corrupt-source
-  rejection. Full Ruff passed after import/style corrections. Workspace checks
-  identity/count/bytes, portable paths, links/junctions, source hashes and snapshot
-  hash; temporary root is private and external to RepoPilot. Each published
-  revision is a complete directory; cleanup covers ordinary and exceptional exits.
-- Frozen v1 source/validation manifest has three issues, strict per-case edits,
-  independent pytest ground truth and explicit ambiguous-case refusal criterion.
-  No fixture code was executed on the host. Actual failing baseline execution and
-  independent test verification are still required in M3's Docker runtime.
-- V4 snapshots with BOM/normalization that cannot reproduce their original byte
-  hashes fail closed rather than silently claiming a verified executable snapshot.
+- M0 (2026-10-21): exact baseline d1ca767 on clean main. Ordinary tests 180 passed/
+  16 skips; full live 196 passed, Ruff/build/Alembic and V1-V3 baselines passed.
+  Docker initially crashed, then recovered externally; Linux isolation probe passed.
+- M1-M3: 21, 31 and combined 39 focused checks passed. Actual Golden baselines
+  fail (fees 4/8, dispatch 2/11) and reference patches pass (8/11 tests respectively).
+  Source/tests/issue intent were frozen before model evaluation.
+- M4 full live suite: 245 passed. Fixed DB-collation versus V1 Python sort ordering
+  in V4 Snapshot verification; V1 identity format unchanged.
+- M5 API/V3 API checks: 22 passed; web build passed. Initial real Qwen browser run
+  failed nested patch schemas (18 turns, zero edits). Inlined fields, precise safe
+  errors and invalid-attempt accounting fixed that interface. Regression 51 passed.
+  Real browser rerun: one Qwen patch, 8 passing tests at revision 1, cleanup and
+  original/modified source verified; screenshot retained. Prose had a cent/unit error.
+- M6 scripted evaluation: all three cases meet conditions, including deliberate
+  failed patch/repair. Full Qwen: both positive repairs verified; negative safely
+  stopped on unavailable test tool instead of deciding intent. Preserve all reports.
+- Profile definitions/dispatch now omit unavailable write/test tools. Regression
+  covers the exact failure; source/test ground truth unchanged. Targeted real Qwen
+  trial and independent retry failed at provider request 1. Safe diagnostic confirms
+  HTTP 403 PERMISSION_DENIED: free quota exhausted. Do not switch models or alter
+  the frozen negative criterion to claim completion.
+- Final self-review isolates disposable DB integration source and exact owned
+  cleanup assertions. Actual private workspace ACL admits SYSTEM/Admin/OWNER only.
 
-- M2: 31 focused tests passed against live PostgreSQL; full Ruff passed.
-  One strict exact-context `apply_patch` schema supports bounded changes to
-  allowlisted existing Python sources only. Tests/config/secrets remain denied.
-  Atomic complete revisions, stale-base rejection, multi-file failure rollback,
-  I/O publication failure, actual unified diff, original/modified text and per-
-  attempt hashes are covered. Current list/read/search include workspace/revision;
-  unchanged V1/V2 indexes will be labeled baseline-only at the V4 tool boundary.
+## Latest actual validation (2026-10-22)
 
-- M3: pinned Python image + hash-locked pytest wheels built successfully. Eight
-  actual Docker tests passed; combined M1–M3 suite 39 passed, full Ruff passed.
-  Golden baselines actually fail (fees: 4 failed/4 passed; dispatch: 2 failed/9
-  passed); reference patches then pass independent checks (8/11 respectively).
-  Corrected the pre-measurement expected fee failure count from 5 to observed 4;
-  frozen source and test expectations unchanged. No model repair measured yet.
-- Actual isolation evidence: read-only source/validation/root writes fail,
-  external socket connection fails, credentials/socket absent, UID/capability/
-  seccomp/cgroup constraints checked before source imports. Process exhaustion and
-  memory OOM limits exercised; output flood is drained/bounded; timeout/cancel
-  force-clean the exact container; temporary workspace cleanup verified.
-- Executor refuses missing/unsafe images, remote engines, unavailable Docker and
-  weakened inspect settings; uses no host fallback. Docker operation preparation
-  shares a deadline, with separately bounded forced-cleanup calls. Public Python
-  GPG metadata is not an application secret. Detailed limits/setup are documented
-  in `apps/api/sandbox/README.md`. Image-only pytest dependencies reuse the existing
-  test framework; no application dependency or application containerization added.
-- One initial PowerShell pytest glob was not expanded (no tests ran); corrected
-  explicit file-list invocation passed. Do not count the failed command as a pass.
+| Check | Result |
+| --- | --- |
+| Ordinary uv run pytest -q | 238 passed / 24 opt-in skips |
+| RUN_DATABASE_TESTS=1 RUN_SANDBOX_TESTS=1 uv run pytest -q | 262 passed |
+| Ruff src/tests/migrations | Passed |
+| Alembic current/check and disposable replay | Head 0005; no pending changes; replay passed |
+| npm run build | Passed |
+| Frozen V1 vector/hybrid, V2 structure, V3 scripted CLIs | Baseline results preserved, reports saved |
+| Actual positive Qwen repairs and browser workflow | Verified |
+| Corrected negative real Qwen criterion | NOT PASSED: quota exhausted |
 
-- M4: full live PostgreSQL + Docker suite: **245 passed**, existing AnyIO warning
-  only; Ruff passed. Nine new deterministic runner tests plus V3 loop regressions
-  passed. Real DB/source → loop → deliberately wrong patch → actual failing tests
-  → repair → independent passing tests verified, including unchanged source and
-  Snapshot, current-revision reads and baseline-only stale index labels.
-- Strict public plan is required before writes; source must be read and in both
-  server/plan allowlists, with a real failing revision-0 baseline. Model, patch,
-  test, output/context and wall-deadline admission bounds have separate reasons.
-  Late model responses cannot authorize tools; SDK timeout stays 30 seconds;
-  Docker cleanup has separately bounded grace calls. No background subsystem.
-- Status is server-derived: final prose is not proof. Verification also requires
-  the exact expected independent test count (8/11), no truncated pass evidence,
-  no timeout/infrastructure failure and the tested current revision. Safe refusal
-  cannot hide earlier changes. Scripted results are orchestration evidence only.
-- Real multi-file integration exposed DB collation versus scanner ordering in
-  Snapshot hash checking; fixed V4 verification to use the unchanged V1 Python
-  sort order. The initially failed integration passed after the fix, then all
-  245 tests passed. No V1 Snapshot identity definition was changed.
-- Qwen credentials are available (presence only inspected, never printed). Actual
-  external-model repair and API/UI/final acceptance remain required in M5/M6.
+Final live integration strengthening also exercised the actual resolve HTTP route
+against PostgreSQL (scripted owner decision, no service mocking); two focused
+DB/Docker/HTTP checks passed. This is not a substitute for the blocked Qwen trial.
 
-M5–M6 and the remaining V4 acceptance evidence are outstanding.
+Existing AnyIO warning remains. Initial missing PYTHONPATH, unexpanded PowerShell
+pytest glob and failed live runs were corrected or explicitly retained as failures;
+they are not reported as passing. No app dependency/migration/lockfile added.
 
-### M5 live-interface finding
+## Remaining work and resume
 
-API contract/investigation tests: 22 passed; web production build and Ruff passed.
-The first real Qwen browser run reproduced the failing baseline and planned the
-correct change, but repeated invalid nested patch arguments until max_steps. It
-made no source changes and cleaned its workspace. Preserve the measured failure
-in `docs/evaluation/v4-browser-initial-failure.md` (not a successful repair).
+1. Owner restores Qwen capacity; billing/account changes are outside this goal.
+2. Re-run frozen ambiguous-cap with existing Qwen and immutable sandbox image:
+   PYTHONPATH=src uv run python -m repopilot.evaluation.resolution --mode qwen
+   --case ambiguous-cap --output ../../docs/evaluation/v4-resolution-qwen-ambiguity-resumed.json
+   (Use PowerShell environment syntax on Windows.)
+3. Review/hash the exact result against needs_owner_decision with zero unsafe
+   attempts/changes. Diagnose within existing scope if the criterion still fails.
+4. Recheck any changed implementation, finalize acceptance/documentation and
+   meaningful commit, then stop at V4/V5. No completion declaration before this.
 
-A separate non-executing Qwen probe generated old_string/new_string and omitted
-path under the local-$ref edit schema. Inlined the existing Edit properties,
-added explicit field descriptions and safe field/type validation errors, and
-counted invalid calls in the patch budget. Permissions were not relaxed. The same
-probe then produced strict valid path/old_text/new_text arguments. Focused API,
-patch, loop and V3 runner regression: 51 passed. Actual full browser rerun and
-M5 acceptance remain in progress; this small probe does not establish model repair.
-
-M5 acceptance subsequently passed: actual browser ingest/index (Qwen embeddings)
-→ prepare symbols → issue → resolve API → Qwen → real patch → Docker independent
-tests. Revision 0: 4 failed/4 passed; revision 1: 8 passed, isolation/container and
-workspace cleanup confirmed. Qwen took 10 model calls, one patch attempt, 44,877ms;
-one invalid plan call recovered via typed feedback. The model chose the real
-source replacement itself; this is actual external-model repair, not scripted.
-UI original/modified source, accepted plan, tests, stop/status and trace verified;
-the existing investigation button remains available. Screenshot:
-`docs/evaluation/v4-browser-verified.png`. Code repair succeeded, but final prose
-incorrectly described 1% of $100 as one cent; preserve that quality limitation.
-No original fixture file changed. Full three-case frozen evaluation, final
-regressions, architecture/security/scope review and completion report remain in M6.
-
-### M6 freeze before measurement
-
-Added a small explicit CLI for separate scripted and Qwen runs. It uses disposable
-ingestion source/DB records, existing V1/V2 preparation and actual Docker tests;
-records complete results, exact-result review hashes, original/Snapshot isolation,
-cleanup and negative-case unsafe attempts; no general accuracy claim. Scripted
-fee case deliberately exercises failed patch → repair → retest. Production never
-uses the scripted patch generator. Manifest canonical hash guards all frozen
-source/test/profile expectations. Dataset source/tests/issue intent unchanged.
-Focused evaluation/loop checks: 13 passed; Ruff passed after formatting/import fixes.
-
-### M6 measured outcomes and review fixes
-
-- Frozen scripted: all three conditions met (fee repair includes actual failed
-  attempt + retest); no external-model inference. First full Qwen: fees verified
-  (8 turns/1 patch); cross-file preconditions verified (12 turns/1 patch, 11 tests).
-  Ambiguous case safely made no changes but called an unavailable test profile,
-  stopped with sandbox_failure and did not meet the expected owner-decision
-  condition. Preserve this in `v4-resolution-qwen-report.json`.
-- Fix: definitions/dispatch now expose only capabilities actually permitted by a
-  profile. A profile with no validation/edit permission offers read/plan tools,
-  without unusable execution/edit tools; hallucinated calls still safely fail.
-  No fixture intent, tests, provider or edit permission was changed. A separate
-  targeted ambiguity Qwen trial will measure this correction on frozen inputs.
-- Final review makes DB integration sources disposable instead of reusing an
-  existing Golden repository record; cleanup checks target exact owned container
-  names and tolerate other live runs. These changes protect pre-existing data and
-  avoid false failures under parallel evaluation.
-- Full live backend suite before the capability correction: 261 passed. Alembic
-  current/check and production web build passed. Final relevant checks remain
-  required after the correction. Existing AnyIO warning remains.
+Milestone commits: 11d38c9, 7dc47e7, 8f933cf, 77f6a2c, 69a9acc,
+46a261e, dec07c1, 717ede1, 5a3c585. Full details are in the linked status report.

@@ -30,7 +30,12 @@ For the complete long-term product scope, architecture direction, and version ro
 
 Current stage:
 
-**V3 — Read-only Repository Agent is complete.**
+**V4 — Issue Resolution Agent is in progress under its authorized goal.**
+
+M1–M5 are complete. M6 has passed local/database/Docker regressions and two real
+Qwen positive repairs, but corrected real-model ambiguity validation is blocked
+by exhausted Qwen quota. V4 completion has not been declared. See
+`docs/tasks/v4-plan.md` and `docs/evaluation/v4-issue-resolution-status.md`.
 
 Stage 0 — Project Inception has been completed and serves as the stable engineering foundation.
 
@@ -62,9 +67,12 @@ boundary, investigation API, React tool trace and frozen small evaluation exist.
 Live Qwen investigation works, but evaluation records unsupported final claims;
 engineering completion does not imply general agent accuracy.
 
-The repository is stopped at the V3 / V4 version boundary. Do not implement code
-modification, repository execution, sandboxing, MCP, GitHub integration, multiple
-agents or later-stage functionality without an explicitly active new goal.
+V4 adds bounded plans/patches/current reads and Docker test execution only for
+approved frozen profiles in private temporary workspaces. Original repositories
+and saved Snapshots remain unchanged. Investigation stays read-only. The active
+goal is `docs/goals/v4-issue-resolution-agent.md`; it does not authorize arbitrary
+repository execution, MCP, GitHub integration, multiple agents or later versions.
+After full V4 acceptance, stop at V4 / V5; do not begin V5 automatically.
 
 ---
 

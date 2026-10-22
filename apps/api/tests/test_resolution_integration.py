@@ -74,9 +74,11 @@ def test_saved_snapshot_workspace_isolation_and_integrity(tmp_path: Path):
 )
 def test_live_snapshot_resolution_repairs_actual_failure_and_preserves_baseline(
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ):
     from test_agent_runner import ScriptedProvider, call
     from test_resolution_runner import fee_patch, plan
+    from test_structure_api import client_for
 
     from repopilot.agent.tools import ToolRegistry
     from repopilot.embeddings.providers import DeterministicEmbeddingProvider
@@ -159,6 +161,35 @@ def test_live_snapshot_resolution_repairs_actual_failure_and_preserves_baseline(
                 result.trace[7].observation.payload["stale_after_modifications"] is True
             )
             assert result.trace[8].observation.payload["revision"] == 2
+            # Exercise the actual HTTP route and lifecycle against the same live
+            # saved Snapshot; no service mocking or external model is involved.
+            monkeypatch.setattr(
+                "repopilot.api.routes.resolution.create_agent_provider",
+                lambda settings: ScriptedProvider(
+                    call("read_file", {"path": "README.md"}, "intent"),
+                    call("submit_plan", plan("needs_owner_decision", []), "decision"),
+                    AgentTurn(text="The owner must choose the intended retry cap."),
+                ),
+            )
+            with client_for(session, tmp_path) as client:
+                client.app.state.settings.resolution_sandbox_image = docker(
+                    "image", "inspect", "repopilot-tests:v4", "--format", "{{.Id}}"
+                ).strip()
+                response = client.post(
+                    "/api/agent/resolve",
+                    json={
+                        "repository_id": scope.repository_id,
+                        "snapshot_id": scope.snapshot_id,
+                        "profile": "ambiguous-cap",
+                        "issue": "Which cap is intended?",
+                    },
+                )
+                assert response.status_code == 200
+                assert response.json()["repair_status"] == "needs_owner_decision"
+                assert (
+                    response.json()["workspace_cleaned"]
+                    and response.json()["patch"] == ""
+                )
             assert snapshot_sources(session, scope) == before
             assert {
                 p.name: p.read_bytes() for p in (GOLDEN_ROOT / "repository").iterdir()

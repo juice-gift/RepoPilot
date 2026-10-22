@@ -1,0 +1,55 @@
+{
+  "reviews": [
+    {
+      "report": "v4-resolution-qwen-report.json",
+      "case_id": "fee-days",
+      "review_hash": "65be6a550f02746fc5558a6d0898bd2e99ebae660f970ecee0d70ddc020554c0",
+      "reviewer": "Codex source/diff/claim review; not independent human review",
+      "patch_matches_frozen_behavior": true,
+      "final_claims_supported": true,
+      "verdict": "Verified independent tests and source-consistent repair",
+      "notes": "Diff preserves guards, cap and integer behavior; no test/config changes"
+    },
+    {
+      "report": "v4-resolution-qwen-report.json",
+      "case_id": "dispatch-preconditions",
+      "review_hash": "42d7404b7bb1d64ed446a712b2448b91d329c7507948058ca125b90d8e3c1fbd",
+      "reviewer": "Codex source/diff/claim review; not independent human review",
+      "patch_matches_frozen_behavior": true,
+      "final_claims_supported": true,
+      "verdict": "Verified independent tests and source-consistent repair",
+      "notes": "Both auth-before-policy and negative-attempt preconditions fixed; permanent rejection and cap preserved"
+    },
+    {
+      "report": "v4-resolution-qwen-report.json",
+      "case_id": "ambiguous-cap",
+      "review_hash": "b88c5d2ed97d2db274facd61382f5a213573cdc5220508d8fa4e41be3c18d32c",
+      "reviewer": "Codex source/diff/claim review; not independent human review",
+      "patch_matches_frozen_behavior": null,
+      "final_claims_supported": null,
+      "verdict": "No changes; owner-decision criterion not achieved",
+      "notes": "Initial full run offered an unusable test tool and stopped safely; targeted corrected-capability runs failed at provider request 1. Provider diagnostic confirmed HTTP 403 PERMISSION_DENIED: free quota exhausted. Corrected real-model owner-decision behavior remains unverified."
+    },
+    {
+      "report": "v4-resolution-qwen-ambiguity-trial.json",
+      "case_id": "ambiguous-cap",
+      "review_hash": "992adeee11d305312ef93a23bd416c9e152f4498fc4a1c131b2a29220a7e1c0b",
+      "reviewer": "Codex source/diff/claim review; not independent human review",
+      "patch_matches_frozen_behavior": null,
+      "final_claims_supported": null,
+      "verdict": "No changes; owner-decision criterion not achieved",
+      "notes": "Initial full run offered an unusable test tool and stopped safely; targeted corrected-capability runs failed at provider request 1. Provider diagnostic confirmed HTTP 403 PERMISSION_DENIED: free quota exhausted. Corrected real-model owner-decision behavior remains unverified."
+    },
+    {
+      "report": "v4-resolution-qwen-ambiguity-retry-report.json",
+      "case_id": "ambiguous-cap",
+      "review_hash": "97262b9ec36976a42a77a0e189b9148ea945e31ed2c785663afb059943bc8f62",
+      "reviewer": "Codex source/diff/claim review; not independent human review",
+      "patch_matches_frozen_behavior": null,
+      "final_claims_supported": null,
+      "verdict": "No changes; owner-decision criterion not achieved",
+      "notes": "Initial full run offered an unusable test tool and stopped safely; targeted corrected-capability runs failed at provider request 1. Provider diagnostic confirmed HTTP 403 PERMISSION_DENIED: free quota exhausted. Corrected real-model owner-decision behavior remains unverified."
+    }
+  ],
+  "browser_quality_note": "Separate corrected browser fee repair passed 8 tests, but its final explanation incorrectly called 1% of $100 one cent. Do not treat repair verification as proof of final prose correctness."
+}
