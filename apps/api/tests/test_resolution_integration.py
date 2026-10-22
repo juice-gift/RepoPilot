@@ -9,6 +9,7 @@ from repopilot.config import Settings
 from repopilot.db.models import Repository, SnapshotFile
 from repopilot.db.session import create_database_engine, create_database_session_factory
 from repopilot.ingestion.service import ingest_repository
+from repopilot.resolution.patch import PatchArguments, PatchEngine, actual_diff
 from repopilot.resolution.workspace import Workspace, WorkspaceError, snapshot_sources
 
 pytestmark = pytest.mark.skipif(
@@ -32,8 +33,21 @@ def test_saved_snapshot_workspace_isolation_and_integrity(tmp_path: Path):
             original.write_bytes(b"value = 999\n")
             with Workspace(scope, snapshot_sources(session, scope)) as workspace:
                 assert workspace.read("app.py") == "value = 1\n"
-                workspace.publish({"app.py": "value = 2\n"}, 0)
+                PatchEngine(workspace, frozenset({"app.py"})).apply(
+                    PatchArguments(
+                        expected_revision=0,
+                        edits=[
+                            {
+                                "path": "app.py",
+                                "old_text": "value = 1",
+                                "new_text": "value = 2",
+                            }
+                        ],
+                    ),
+                    attempt=1,
+                )
                 assert workspace.read("app.py") == "value = 2\n"
+                assert "-value = 1\n+value = 2\n" in actual_diff(workspace)
                 assert original.read_bytes() == b"value = 999\n"
                 saved = session.scalar(
                     select(SnapshotFile).where(

@@ -34,8 +34,8 @@ systems. Stop at V4/V5.
 | --- | --- | --- |
 | M0 | Preflight, approved goal, execution plan | Complete |
 | M1 | Owned workspace lifecycle, executable Golden fixtures | Complete |
-| M2 | Atomic patch, workspace-aware reads, actual diff | Current |
-| M3 | Docker executor, controlled profiles, real isolation tests | Pending |
+| M2 | Atomic patch, workspace-aware reads, actual diff | Complete |
+| M3 | Docker executor, controlled profiles, real isolation tests | Current |
 | M4 | Structured plan, bounded resolution/repair loop | Pending |
 | M5 | Typed resolve API and minimal React workflow | Pending |
 | M6 | Frozen real-model evaluation, regressions and final review | Pending |
@@ -68,4 +68,12 @@ systems. Stop at V4/V5.
 - V4 snapshots with BOM/normalization that cannot reproduce their original byte
   hashes fail closed rather than silently claiming a verified executable snapshot.
 
-M2–M6 and the remaining V4 acceptance evidence are outstanding. No new dependency.
+- M2: 31 focused tests passed against live PostgreSQL; full Ruff passed.
+  One strict exact-context `apply_patch` schema supports bounded changes to
+  allowlisted existing Python sources only. Tests/config/secrets remain denied.
+  Atomic complete revisions, stale-base rejection, multi-file failure rollback,
+  I/O publication failure, actual unified diff, original/modified text and per-
+  attempt hashes are covered. Current list/read/search include workspace/revision;
+  unchanged V1/V2 indexes will be labeled baseline-only at the V4 tool boundary.
+
+M3–M6 and the remaining V4 acceptance evidence are outstanding. No new dependency.
