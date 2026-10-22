@@ -10,6 +10,9 @@ from repopilot.config import REPOSITORY_ROOT
 from repopilot.resolution.workspace import WorkspaceError, digest, safe_path
 
 GOLDEN_ROOT = REPOSITORY_ROOT / "apps/api/evaluation/resolution_golden"
+FROZEN_MANIFEST_HASH = (
+    "b0b4d6b0741f9c3d7829205d1b419efa2be2d2d909e2e29391e93e8d02d6ff0d"
+)
 
 
 @dataclass(frozen=True)
@@ -36,6 +39,9 @@ class TestProfile:
 def load_profile(case_id: str) -> TestProfile:
     # No paths, images, commands or test arguments are taken from a caller/model.
     manifest = json.loads((GOLDEN_ROOT / "manifest.json").read_text(encoding="utf-8"))
+    encoded = json.dumps(manifest, sort_keys=True, separators=(",", ":")).encode()
+    if hashlib.sha256(encoded).hexdigest() != FROZEN_MANIFEST_HASH:
+        raise WorkspaceError("Frozen profile manifest was changed")
     cases = {case["id"]: case for case in manifest["cases"]}
     if case_id not in cases:
         raise WorkspaceError("Unknown approved issue profile")

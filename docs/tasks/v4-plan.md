@@ -147,3 +147,14 @@ the existing investigation button remains available. Screenshot:
 incorrectly described 1% of $100 as one cent; preserve that quality limitation.
 No original fixture file changed. Full three-case frozen evaluation, final
 regressions, architecture/security/scope review and completion report remain in M6.
+
+### M6 freeze before measurement
+
+Added a small explicit CLI for separate scripted and Qwen runs. It uses disposable
+ingestion source/DB records, existing V1/V2 preparation and actual Docker tests;
+records complete results, exact-result review hashes, original/Snapshot isolation,
+cleanup and negative-case unsafe attempts; no general accuracy claim. Scripted
+fee case deliberately exercises failed patch → repair → retest. Production never
+uses the scripted patch generator. Manifest canonical hash guards all frozen
+source/test/profile expectations. Dataset source/tests/issue intent unchanged.
+Focused evaluation/loop checks: 13 passed; Ruff passed after formatting/import fixes.
