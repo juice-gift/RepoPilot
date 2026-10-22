@@ -3,13 +3,14 @@
 RepoPilot is a long-term AI codebase intelligence and issue-resolution system.
 
 **Stage 0, V1 — Codebase RAG, V2 — Code Intelligence, and V3 — Read-only Repository Agent are complete.**
-V4 is authorized and in progress under `docs/goals/v4-issue-resolution-agent.md`.
-M1–M5 implement private workspaces, patches, Docker tests, bounded repairs and the
-API/UI. Final local regressions pass and two real Qwen positive repairs pass
-independent tests. Corrected ambiguity revalidation is blocked by exhausted Qwen
-quota (403), so **V4 is not complete**. See the
-[acceptance status](docs/evaluation/v4-issue-resolution-status.md) and
-`docs/tasks/v4-plan.md` for evidence and the remaining gate.
+**V4 — Issue Resolution Agent is complete under its authorized goal.**
+M0–M6 deliver private workspaces, patches, Docker tests, bounded repairs and the
+API/UI. Two real Qwen positive repairs pass independent tests; the resumed
+owner-selected model passes the frozen ambiguity criterion without modifications.
+Final regressions pass. See the
+[completion report](docs/evaluation/v4-issue-resolution-status.md) and
+`docs/tasks/v4-plan.md` for evidence, earlier failures and limitations.
+Development stops at V4/V5; V5 requires a new explicit goal.
 
 ## Current functionality
 
@@ -142,8 +143,8 @@ uv run python -m repopilot.evaluation.resolution --mode scripted --output ../../
 uv run python -m repopilot.evaluation.resolution --mode qwen --output ../../docs/evaluation/local-v4-qwen.json
 ```
 
-Use `--case ambiguous-cap` for the pending targeted revalidation after Qwen quota
-is restored. Reports preserve source/Snapshot integrity, exact tested revisions,
+Use `--case ambiguous-cap` for a targeted ambiguity evaluation. Reports preserve
+source/Snapshot integrity, exact tested revisions,
 actual tool decisions and review hashes; scripted patches are not model success.
 
 ## Repository structure

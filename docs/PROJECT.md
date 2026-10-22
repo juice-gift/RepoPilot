@@ -1397,8 +1397,10 @@ M1–M5 已实现私有临时 Workspace、原子 Patch、受控 Docker/pytest、
 只允许冻结 Golden profiles，不开放任意仓库、Shell、依赖安装或外部集成。
 
 M6 完整本地/数据库/Docker 测试 262 passed，两个真实 Qwen 正例修复通过独立测试。
-歧义用例首次实测安全停止但未满足决策标准；工具权限公布已修正，真实复测因
-Qwen 免费额度耗尽（403）尚未通过。因此 V4 尚未完成，不得进入 V5。
+歧义用例首次实测安全停止但未满足决策标准；工具权限公布修正后的两次复测因
+Qwen 免费额度耗尽（403）失败，历史记录保留。Owner 改为日期版本模型后，真实
+复测达到 needs_owner_decision、零补丁尝试与零修改的冻结标准。
+V4 已完成验收，停在 V4 / V5 边界；V5 需要新的明确授权。
 执行计划见 `docs/tasks/v4-plan.md`，实际验收状态及失败记录见
 `docs/evaluation/v4-issue-resolution-status.md`。
 
@@ -2326,9 +2328,9 @@ RepoPilot 才真正成为我的简历项目。
 - V1 — Codebase RAG 已完成
 - V2 — Code Intelligence 已完成
 - V3 — Read-only Repository Agent 已完成
-- V4 已独立授权，M1–M5 已实现，M6 验收进行中
-- 当前阻碍：Qwen 免费额度耗尽，修正后的歧义用例真实复测未通过
-- V4 未宣告完成；V5 未授权
+- V4 已独立授权，M0–M6 已完成并通过验收
+- 日期版本 Qwen 复测通过冻结歧义标准；此前额度耗尽及模型错误记录保留
+- 停在 V4 / V5 边界；V5 未授权
 
 当前基础架构：
 

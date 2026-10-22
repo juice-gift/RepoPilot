@@ -3,8 +3,8 @@
 ## Active goal and current state
 
 Implement the [authorized V4 goal](../goals/v4-issue-resolution-agent.md).
-**M1-M5 complete; M6 incomplete, waiting for Qwen quota restoration.**
-Do not declare V4 complete or enter V5. Authorization persists for V4 resumption.
+**M0–M6 complete; V4 accepted on 2026-10-22.**
+Stop at V4/V5. V5 requires a new explicitly authorized goal.
 Full evidence, failures, risks and acceptance mapping:
 [implementation/acceptance status](../evaluation/v4-issue-resolution-status.md).
 
@@ -18,7 +18,7 @@ Full evidence, failures, risks and acceptance mapping:
 | M3 | Restricted Docker/pytest, real isolation checks | Complete |
 | M4 | Public plan and bounded repair/retest loop | Complete |
 | M5 | Separate typed resolve API and existing React workflow | Complete |
-| M6 | Frozen model evaluation, regressions, final acceptance | Incomplete: real-model negative revalidation blocked |
+| M6 | Frozen model evaluation, regressions, final acceptance | Complete: resumed real-model negative criterion passed |
 
 ## Decisions and scope
 
@@ -58,10 +58,19 @@ Full evidence, failures, risks and acceptance mapping:
 - Profile definitions/dispatch now omit unavailable write/test tools. Regression
   covers the exact failure; source/test ground truth unchanged. Targeted real Qwen
   trial and independent retry failed at provider request 1. Safe diagnostic confirms
-  HTTP 403 PERMISSION_DENIED: free quota exhausted. Do not switch models or alter
-  the frozen negative criterion to claim completion.
+  HTTP 403 PERMISSION_DENIED: free quota exhausted. No criterion was relaxed and
+  no unapproved model switch was used to claim completion.
 - Final self-review isolates disposable DB integration source and exact owned
   cleanup assertions. Actual private workspace ACL admits SYSTEM/Admin/OWNER only.
+- Owner requested restart/retry after selecting qwen3.7-flash-2026-07-15 in
+  .env.example. Synchronized the ignored actual .env model setting, started
+  FastAPI at 127.0.0.1:8000 with the prepared immutable image, and verified health.
+  Frozen ambiguous-cap rerun passed: needs_owner_decision, nine model calls,
+  revision zero, zero patch/test attempts or changed files, source/Snapshot
+  unchanged and workspace cleaned. One invalid plan was safely rejected and
+  corrected. Source/claim review and all six exact-result review hashes verified.
+  Positive and resumed negative results use different Qwen identifiers; no
+  all-case success claim for a single model configuration is made.
 
 ## Latest actual validation (2026-10-22)
 
@@ -74,27 +83,33 @@ Full evidence, failures, risks and acceptance mapping:
 | npm run build | Passed |
 | Frozen V1 vector/hybrid, V2 structure, V3 scripted CLIs | Baseline results preserved, reports saved |
 | Actual positive Qwen repairs and browser workflow | Verified |
-| Corrected negative real Qwen criterion | NOT PASSED: quota exhausted |
+| Corrected negative real Qwen criterion | Passed on owner-selected dated model; historical quota failures retained |
 
 Final live integration strengthening also exercised the actual resolve HTTP route
 against PostgreSQL (scripted owner decision, no service mocking); two focused
-DB/Docker/HTTP checks passed. This is not a substitute for the blocked Qwen trial.
+DB/Docker/HTTP checks passed. The later real Qwen trial independently met the
+unchanged negative criterion.
+
+The resumed full suite initially had 261 passes/one failure because its exported
+image setting contaminated the API missing-configuration test. Explicitly set
+that test's application setting to None; 12 focused API tests and Ruff passed,
+then the full live suite passed again (262, no skips). No product code changed.
+Migration current/check and frontend production build were repeated and passed.
 
 Existing AnyIO warning remains. Initial missing PYTHONPATH, unexpanded PowerShell
 pytest glob and failed live runs were corrected or explicitly retained as failures;
 they are not reported as passing. No app dependency/migration/lockfile added.
 
-## Remaining work and resume
+## Completion and boundary
 
-1. Owner restores Qwen capacity; billing/account changes are outside this goal.
-2. Re-run frozen ambiguous-cap with existing Qwen and immutable sandbox image:
-   PYTHONPATH=src uv run python -m repopilot.evaluation.resolution --mode qwen
-   --case ambiguous-cap --output ../../docs/evaluation/v4-resolution-qwen-ambiguity-resumed.json
-   (Use PowerShell environment syntax on Windows.)
-3. Review/hash the exact result against needs_owner_decision with zero unsafe
-   attempts/changes. Diagnose within existing scope if the criterion still fails.
-4. Recheck any changed implementation, finalize acceptance/documentation and
-   meaningful commit, then stop at V4/V5. No completion declaration before this.
+Every V4 acceptance requirement has evidence in the linked completion report.
+No required V4 work remains. Preserve historical failures and measured model
+limitations; the small corpus does not establish general accuracy. FastAPI stays
+running as requested. No new dependency, architecture or V5 capability introduced.
+The owner's .env.example model edit is preserved outside agent commits; ignored
+.env contains the matching actual setting and is never staged.
 
 Milestone commits: 11d38c9, 7dc47e7, 8f933cf, 77f6a2c, 69a9acc,
-46a261e, dec07c1, 717ede1, 5a3c585. Full details are in the linked status report.
+46a261e, dec07c1, 717ede1, 5a3c585, d6326c0, 7b00ced. The resumed API test isolation
+fix and final acceptance evidence are committed separately. Full details are in the
+linked completion report. Stop here; V5 is not authorized.

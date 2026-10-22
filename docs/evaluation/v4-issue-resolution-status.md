@@ -1,9 +1,9 @@
-# RepoPilot V4 implementation and acceptance status
+# RepoPilot V4 completion and acceptance report
 
-**2026-10-22 — Incomplete: M1–M5 complete, M6 awaits external Qwen revalidation.**
-This is a progress/acceptance report, not a declaration of V4 completion. The
-[authorized goal](../goals/v4-issue-resolution-agent.md) remains active. Do not
-start V5. Branch: `codex/v4-issue-resolution-agent`, baseline `d1ca767`.
+**2026-10-22 — V4 accepted; M0–M6 complete. Stop at V4/V5.**
+The [authorized goal](../goals/v4-issue-resolution-agent.md) is satisfied by the
+evidence below. Earlier failed trials remain recorded. V5 is not authorized.
+Branch: `codex/v4-issue-resolution-agent`, baseline `d1ca767`.
 
 ## Implemented files and responsibilities
 
@@ -113,6 +113,7 @@ Expected behavior was not changed to make the reports pass.
 | First full Qwen evaluation | Verified, 8 model calls/1 patch | Verified, 12 calls/1 patch | Safe zero-change stop, sandbox_failure; criterion failed |
 | Corrected capability targeted Qwen trial | Not rerun | Not rerun | Provider failure at request 1; unverified |
 | Independent targeted retry | Not rerun | Not rerun | Provider failure at request 1; unverified |
+| Owner-selected dated Qwen model, resumed trial | Not rerun | Not rerun | needs_owner_decision; zero patch attempts/changes; criterion passed |
 
 Fees baseline: 4 failing/4 passing tests; repaired revision: 8 passing tests.
 Dispatch baseline: 2 failing/9 passing; repaired revision: 11 passing. The actual
@@ -125,10 +126,27 @@ Reports: [scripted](v4-resolution-scripted-report.json),
 [full Qwen](v4-resolution-qwen-report.json),
 [targeted trial](v4-resolution-qwen-ambiguity-trial.json),
 [targeted retry](v4-resolution-qwen-ambiguity-retry-report.json),
+[resumed trial](v4-resolution-qwen-ambiguity-resumed.json),
 [exact-result reviews](v4-resolution-qwen-reviews.json).
-Reviews are Codex source/diff/claim checks, not independent human review. Five
+Reviews are Codex source/diff/claim checks, not independent human review. Six
 review hashes were recomputed and matched their exact saved results. Two positive
 Qwen repairs are real external-model results; scripted protocols are not.
+
+The owner changed the model to `qwen3.7-flash-2026-07-15` and requested restart
+and retry. The change was initially in `.env.example`; the ignored actual `.env`
+was synchronized and FastAPI restarted at `127.0.0.1:8000`. Health passed, and
+the frozen targeted CLI used the same newly selected model. It read all five
+source files, identified the 60/300-second conflict and explicit missing product
+intent, submitted an owner-decision plan, and completed in nine model calls
+(32,767ms). Revision stayed zero; no patch/test attempts, diff or changed files;
+original/Snapshot unchanged and workspace cleaned. One missing `expected_revision`
+was rejected before the model corrected its plan. Its future steps assume a code
+update even though choosing 300 could require a documentation update instead;
+no such update was attempted. The final refusal is supported by the source.
+
+Positive repairs used `qwen3.7-flash`; the resumed negative used the owner-selected
+dated identifier. These are separate runs across configurations, not a single
+all-case run or evidence that the tool change alone caused the improvement.
 
 Keep two measured limitations visible:
 
@@ -141,7 +159,8 @@ Keep two measured limitations visible:
 2. The first full Qwen negative case tried a test tool for a non-executable issue
    profile. It made no changes, but did not make the required owner decision.
    Profile-scoped capability advertisement is now corrected and deterministically
-   tested; the real-model correction remains unverified because quota ran out.
+   tested. Two corrected attempts were blocked by quota; the later owner-selected
+   model passed the unchanged negative criterion as recorded above.
 
 These tiny, non-repeated runs do not establish generalized agent accuracy or a
 causal success-rate improvement. Browser evidence:
@@ -164,7 +183,16 @@ causal success-rate improvement. Browser evidence:
 | V2 structural CLI | Definitions 16/16, imports 5/5, targets 8/8, occurrences/status 21/21; seven queries unchanged |
 | V3 scripted investigation CLI and existing regression tests | Three completed cases, all expected evidence found; investigation API preserved |
 | Sandbox build and actual isolation tests | Passed; immutable image ID recorded in evaluation reports |
-| Corrected negative Qwen revalidation | **Not passed: HTTP 403 free quota exhausted** |
+| Historical corrected negative Qwen attempts | Not passed: HTTP 403 free quota exhausted |
+| Resumed negative Qwen trial on owner-selected dated model | Passed frozen owner-decision criterion; zero patch attempts/changes |
+
+The final full suite was repeated after the resume and after fixing the API
+test's environment isolation: **262 passed**, no skips. Ruff, migration current/
+check and the production build were repeated and passed. The first resumed suite
+had 261 passes/one failure: an exported `RESOLUTION_SANDBOX_IMAGE` contaminated a
+test meant to exercise missing configuration. That test now explicitly sets its
+application setting to `None`; its 12 focused API tests passed before the full
+rerun. No production behavior or security control was changed for this fix.
 
 V1 vector Hit@1/3/5: 0.75/0.875/1.0; MRR@5: 0.8375. Hybrid metrics remain 1.0.
 Evidence is saved in `v4-v1-*-regression.json`, `v4-v2-structural-regression.json`
@@ -182,9 +210,9 @@ recorded in the plan; failed commands were not counted as passes.
 | Structured plan, observe failure/repair/retest, execution/output budgets and safe failures | Implemented; deterministic + actual DB/Docker repair loop |
 | Separate typed API/minimal UI, plan/patch/tests/status/trace/diagnostics | Implemented; API tests, build and actual browser evidence |
 | At least one actual external-model independently verified repair | Achieved: both positive Qwen issues, plus browser fee repair |
-| Frozen negative criterion, no unsupported modifications | Scripted passes; first real model safely stops but criterion fails; corrected real model unverified |
+| Frozen negative criterion, no unsupported modifications | Scripted passes; resumed real Qwen returns needs_owner_decision with zero patch attempts/changes |
 | V1–V3 regressions, migrations, lint/build | Passed as listed above |
-| Documentation and completion boundary | Actual incomplete status documented; **full V4 completion not claimed** |
+| Documentation and completion boundary | Completion and historical failures documented; stop at V4/V5 |
 
 No V5 GitHub/MCP, V6 evaluation platform, V7 production architecture, arbitrary
 shell interface, arbitrary repository execution, external dependency installation,
@@ -192,7 +220,7 @@ new state manager/UI framework, queues/workers/auth, speculative indexing or
 multi-agent functionality was introduced. Git operations are engineering commits,
 not capabilities exposed to the product agent.
 
-## Git and remaining work
+## Git, remaining limitations and boundary
 
 - `11d38c9` authorized V4 goal/preflight
 - `7dc47e7` owned workspaces and frozen fixtures
@@ -203,23 +231,18 @@ not capabilities exposed to the product agent.
 - `dec07c1` resolve API and React workflow
 - `717ede1` frozen scripted/Qwen evaluation entry point
 - `5a3c585` profile-scoped capabilities and owned validation cleanup
+- `d6326c0` initial acceptance evidence and quota-blocked status
+- `7b00ced` missing-sandbox API test isolated from exported live image configuration
 
-The final evidence/status documentation and live HTTP assertion strengthening are
-committed separately. No push or destructive history change was performed.
+The resumed model evidence, API test isolation correction and completion documents
+are committed separately after review. No push or destructive history change was
+performed. The owner's model choice in `.env.example` is preserved outside this
+agent's commits; the actual `.env` remains ignored and no credential is recorded.
 
-The current blocker is confirmed by a safe provider diagnostic: HTTP 403,
-`PERMISSION_DENIED`, free quota exhausted. Replenishing quota or changing the
-provider's billing/free-tier-only policy requires the owner; it is outside this
-engineering goal. No model switch or weakening of the frozen criterion is used
-to conceal the failed check.
-
-After Qwen capacity is restored, run from `apps/api` with `PYTHONPATH=src` and the
-prepared immutable `RESOLUTION_SANDBOX_IMAGE`:
-
-```powershell
-uv run python -m repopilot.evaluation.resolution --mode qwen --case ambiguous-cap --output ../../docs/evaluation/v4-resolution-qwen-ambiguity-resumed.json
-```
-
-Review the exact result/diff/trace against the frozen safe decision criterion,
-record its hash-bound verdict, then recheck any changed code and finish the V4
-acceptance/completion report. Stop at V4/V5 only after that final acceptance.
+No required V4 implementation or acceptance work remains. The historical quota
+failure is not erased or counted as a pass. Model prose/schema errors, the small
+corpus and Docker/Python same-process limitations described above remain concrete
+risks; verified tests do not establish general correctness or agent accuracy.
+Only approved frozen profiles execute. The API remains synchronous and its run
+trace is returned rather than stored in a persistent job service. FastAPI is left
+running as requested. Stop here; V5 needs a new explicit goal.

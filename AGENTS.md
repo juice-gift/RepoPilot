@@ -30,11 +30,11 @@ For the complete long-term product scope, architecture direction, and version ro
 
 Current stage:
 
-**V4 — Issue Resolution Agent is in progress under its authorized goal.**
+**V4 — Issue Resolution Agent is complete. Stop at the V4 / V5 boundary.**
 
-M1–M5 are complete. M6 has passed local/database/Docker regressions and two real
-Qwen positive repairs, but corrected real-model ambiguity validation is blocked
-by exhausted Qwen quota. V4 completion has not been declared. See
+M0–M6 are complete. Local/database/Docker regressions pass, two real Qwen positive
+repairs pass independent tests, and resumed ambiguity validation with the owner's
+dated Qwen model meets the frozen zero-change owner-decision criterion. See
 `docs/tasks/v4-plan.md` and `docs/evaluation/v4-issue-resolution-status.md`.
 
 Stage 0 — Project Inception has been completed and serves as the stable engineering foundation.
@@ -72,7 +72,7 @@ approved frozen profiles in private temporary workspaces. Original repositories
 and saved Snapshots remain unchanged. Investigation stays read-only. The active
 goal is `docs/goals/v4-issue-resolution-agent.md`; it does not authorize arbitrary
 repository execution, MCP, GitHub integration, multiple agents or later versions.
-After full V4 acceptance, stop at V4 / V5; do not begin V5 automatically.
+V4 acceptance is complete. V5 requires a new explicit goal; do not begin it automatically.
 
 ---
 
