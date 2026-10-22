@@ -20,7 +20,7 @@
         "test_fees.py"
       ],
       "expected_decision": "verified_repair",
-      "baseline_failures": 5
+      "baseline_failures": 4
     },
     {
       "id": "dispatch-preconditions",

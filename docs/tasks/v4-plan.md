@@ -35,8 +35,8 @@ systems. Stop at V4/V5.
 | M0 | Preflight, approved goal, execution plan | Complete |
 | M1 | Owned workspace lifecycle, executable Golden fixtures | Complete |
 | M2 | Atomic patch, workspace-aware reads, actual diff | Complete |
-| M3 | Docker executor, controlled profiles, real isolation tests | Current |
-| M4 | Structured plan, bounded resolution/repair loop | Pending |
+| M3 | Docker executor, controlled profiles, real isolation tests | Complete |
+| M4 | Structured plan, bounded resolution/repair loop | Current |
 | M5 | Typed resolve API and minimal React workflow | Pending |
 | M6 | Frozen real-model evaluation, regressions and final review | Pending |
 
@@ -76,4 +76,24 @@ systems. Stop at V4/V5.
   attempt hashes are covered. Current list/read/search include workspace/revision;
   unchanged V1/V2 indexes will be labeled baseline-only at the V4 tool boundary.
 
-M3–M6 and the remaining V4 acceptance evidence are outstanding. No new dependency.
+- M3: pinned Python image + hash-locked pytest wheels built successfully. Eight
+  actual Docker tests passed; combined M1–M3 suite 39 passed, full Ruff passed.
+  Golden baselines actually fail (fees: 4 failed/4 passed; dispatch: 2 failed/9
+  passed); reference patches then pass independent checks (8/11 respectively).
+  Corrected the pre-measurement expected fee failure count from 5 to observed 4;
+  frozen source and test expectations unchanged. No model repair measured yet.
+- Actual isolation evidence: read-only source/validation/root writes fail,
+  external socket connection fails, credentials/socket absent, UID/capability/
+  seccomp/cgroup constraints checked before source imports. Process exhaustion and
+  memory OOM limits exercised; output flood is drained/bounded; timeout/cancel
+  force-clean the exact container; temporary workspace cleanup verified.
+- Executor refuses missing/unsafe images, remote engines, unavailable Docker and
+  weakened inspect settings; uses no host fallback. Docker operation preparation
+  shares a deadline, with separately bounded forced-cleanup calls. Public Python
+  GPG metadata is not an application secret. Detailed limits/setup are documented
+  in `apps/api/sandbox/README.md`. Image-only pytest dependencies reuse the existing
+  test framework; no application dependency or application containerization added.
+- One initial PowerShell pytest glob was not expanded (no tests ran); corrected
+  explicit file-list invocation passed. Do not count the failed command as a pass.
+
+M4–M6 and the remaining V4 acceptance evidence are outstanding.
