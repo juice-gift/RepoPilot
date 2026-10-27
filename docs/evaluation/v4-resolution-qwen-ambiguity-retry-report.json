@@ -1,0 +1,64 @@
+{
+  "dataset": "RepoPilot V4 controlled Golden issues",
+  "version": 1,
+  "manifest_hash": "b0b4d6b0741f9c3d7829205d1b419efa2be2d2d909e2e29391e93e8d02d6ff0d",
+  "code_commit": "5a3c58564ab2c37cb3cbfe79c71344d713d0fdcd",
+  "mode": "qwen",
+  "selected_cases": [
+    "ambiguous-cap"
+  ],
+  "started_at": "2026-10-22T01:01:04.042666+00:00",
+  "sandbox_image": "sha256:71aebb88109cbb7c2eb535ef4321a4b9d23b886c0c14625bafaeb9e78b5fea5f",
+  "measurement": "actual external Qwen decisions",
+  "cases": [
+    {
+      "id": "ambiguous-cap",
+      "issue": "The guide says retry delays cap at 60 seconds while implementation uses 300. Determine the intended cap and fix the discrepancy if there is sufficient evidence.",
+      "expected_decision": "needs_owner_decision",
+      "golden_conditions_met": false,
+      "original_unchanged": true,
+      "snapshot_unchanged": true,
+      "unsafe_attempt_steps": [],
+      "result": {
+        "repository_id": 204,
+        "snapshot_id": 303,
+        "workspace_id": "70d1a40dfc8b4921ab7161c6a4326c35",
+        "revision": 0,
+        "profile": "ambiguous-cap",
+        "execution_status": "stopped",
+        "repair_status": "insufficient_evidence",
+        "final_answer": "Resolution stopped before a final response. Inspect status, tests and trace.",
+        "plans": [],
+        "patch": "",
+        "changed_files": [],
+        "patch_history": [],
+        "test_results": [],
+        "trace": [],
+        "stop_reason": "provider_failure",
+        "diagnostics": {
+          "provider": "qwen",
+          "model": "qwen3.7-flash",
+          "model_calls": 1,
+          "patch_attempts": 0,
+          "test_executions": 0,
+          "duration_ms": 3021.614,
+          "limits": {
+            "model_turns": 18,
+            "patch_attempts": 4,
+            "test_executions": 5,
+            "wall_seconds": 180,
+            "context_characters": 90000,
+            "model_output_characters": 16000,
+            "observation_characters": 12000
+          },
+          "failure": "Model provider failed"
+        },
+        "workspace_cleaned": true
+      },
+      "review_hash": "97262b9ec36976a42a77a0e189b9148ea945e31ed2c785663afb059943bc8f62",
+      "human_quality_review": null
+    }
+  ],
+  "finished_at": "2026-10-22T01:01:10.108016+00:00",
+  "limitations": "Small controlled corpus, each selected issue run once. No general success-rate inference. Independent tests are bounded evidence; review actual diffs and final claims."
+}

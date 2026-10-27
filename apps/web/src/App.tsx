@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { InvestigationResult, InvestigationSources } from "./AgentResult";
+import { ResolutionChanges, ResolutionSummary } from "./ResolutionResult";
+import { resolveIssue, type ResolutionProfile, type ResolutionResult } from "./api/resolution";
 import { investigate, prepareSymbols, type AgentResult } from "./api/agent";
 import { getDatabaseHealth, getHealth } from "./api/health";
 import {
@@ -23,7 +25,7 @@ import {
 import "./App.css";
 
 type ConnectionStatus = "checking" | "connected" | "unavailable";
-type Operation = "ingest" | "retrieve" | "ask" | "agent" | "structure" | null;
+type Operation = "ingest" | "retrieve" | "ask" | "agent" | "structure" | "resolve" | null;
 
 const statusMessages: Record<ConnectionStatus, string> = {
   checking: "Checking",
@@ -60,6 +62,8 @@ function App() {
   const [retrieval, setRetrieval] = useState<RetrieveResponse | null>(null);
   const [answer, setAnswer] = useState<AskResponse | null>(null);
   const [investigation, setInvestigation] = useState<AgentResult | null>(null);
+  const [resolution, setResolution] = useState<ResolutionResult | null>(null);
+  const [resolutionProfile, setResolutionProfile] = useState<ResolutionProfile>("fee-days");
   const [structureMessage, setStructureMessage] = useState<string | null>(null);
   const [focusedChunkId, setFocusedChunkId] = useState<number | null>(null);
 
@@ -118,6 +122,7 @@ function App() {
   }, [selectedRepositoryId]);
 
   function resetQueryResults(): void {
+    setResolution(null);
     setRetrieval(null);
     setAnswer(null);
     setFocusedChunkId(null);
@@ -158,6 +163,7 @@ function App() {
     setError(null);
     setAnswer(null);
     setInvestigation(null);
+    setResolution(null);
     setFocusedChunkId(null);
     try {
       setRetrieval(
@@ -177,6 +183,7 @@ function App() {
     setError(null);
     setRetrieval(null);
     setInvestigation(null);
+    setResolution(null);
     setFocusedChunkId(null);
     try {
       setAnswer(await askQuestion(selectedRepositoryId, selectedSnapshotId, question, topK));
@@ -217,6 +224,20 @@ function App() {
     }
   }
 
+  async function handleResolve(): Promise<void> {
+    if (selectedRepositoryId === null || selectedSnapshotId === null) return;
+    setOperation("resolve");
+    setError(null);
+    resetQueryResults();
+    try {
+      setResolution(await resolveIssue(selectedRepositoryId, selectedSnapshotId, question, resolutionProfile));
+    } catch (resolveError: unknown) {
+      setError(errorMessage(resolveError));
+    } finally {
+      setOperation(null);
+    }
+  }
+
   function focusEvidence(chunkId: number): void {
     setFocusedChunkId(chunkId);
     requestAnimationFrame(() => {
@@ -236,7 +257,7 @@ function App() {
     <div className="app-shell">
       <header className="topbar">
         <div>
-          <p className="eyebrow">Repository Agent · V3</p>
+          <p className="eyebrow">Repository Intelligence · V4</p>
           <h1>RepoPilot</h1>
         </div>
         <div className="connections" role="status" aria-label="Service connections">
@@ -352,10 +373,23 @@ function App() {
             </button>
           </div>
 
+          <div className="resolution-controls">
+            <label>Resolution profile
+              <select disabled={operation !== null} value={resolutionProfile} onChange={(event) => { setResolutionProfile(event.target.value as ResolutionProfile); setResolution(null); }}>
+                <option value="fee-days">Invoice overdue days</option>
+                <option value="dispatch-preconditions">Dispatch preconditions</option>
+                <option value="ambiguous-cap">Ambiguous retry cap</option>
+              </select>
+            </label>
+            <p className="muted">Resolution supports approved Golden snapshots. Changes stay in a temporary workspace.</p>
+            <button className="primary-button" disabled={!canQuery} onClick={() => void handleResolve()}>{operation === "resolve" ? "Resolving issue…" : "Resolve issue"}</button>
+          </div>
+          {operation === "resolve" && <p className="muted" role="status">Resolution running. Plan, patch and independent test results will appear when it finishes.</p>}
+          {resolution && <ResolutionSummary result={resolution} />}
           {operation === "agent" && <p className="muted" role="status">Investigation running. The final result and tool trace will appear when it finishes.</p>}
           {investigation && <InvestigationResult result={investigation} />}
           {error && <div className="error-banner" role="alert"><strong>Request failed</strong><span>{error}</span></div>}
-          {!answer && !retrieval && !investigation && !error && operation !== "agent" && (
+          {!answer && !retrieval && !investigation && !resolution && !error && operation !== "agent" && operation !== "resolve" && (
             <div className="empty-state">
               <div className="empty-mark">RP</div>
               <h3>Evidence stays visible</h3>
@@ -403,10 +437,10 @@ function App() {
         <aside className="panel evidence-panel">
           <div className="panel-heading evidence-heading">
             <p className="step">03</p>
-            <div><h2>Evidence</h2><p>{investigation ? "Sources observed during investigation" : "Why these chunks were selected"}</p></div>
-            <span className="count-badge">{investigation?.sources.length ?? visibleEvidence.length}</span>
+            <div><h2>{resolution ? "Changes" : "Evidence"}</h2><p>{resolution ? "Original and modified source" : investigation ? "Sources observed during investigation" : "Why these chunks were selected"}</p></div>
+            <span className="count-badge">{resolution?.changed_files.length ?? investigation?.sources.length ?? visibleEvidence.length}</span>
           </div>
-          {investigation ? <InvestigationSources result={investigation} /> : <div className="evidence-list">
+          {resolution ? <ResolutionChanges result={resolution} /> : investigation ? <InvestigationSources result={investigation} /> : <div className="evidence-list">
             {visibleEvidence.length === 0 && (
               <div className="evidence-empty"><p>No evidence yet.</p><span>Ranked chunks, scores, symbols, line ranges, and source content will appear here.</span></div>
             )}

@@ -13,9 +13,7 @@ class Settings(BaseSettings):
     repository_allowed_root: Path = REPOSITORY_ROOT
     embedding_provider: Literal["openai", "qwen", "deterministic"] = "openai"
     embedding_model: str = Field(default="text-embedding-3-small", min_length=1)
-    qwen_embedding_model: str = Field(
-        default="qwen3.7-text-embedding", min_length=1
-    )
+    qwen_embedding_model: str = Field(default="qwen3.7-text-embedding", min_length=1)
     embedding_dimensions: int = Field(default=512, ge=1)
     retrieval_strategy: Literal["vector", "hybrid"] = "hybrid"
     openai_api_key: SecretStr | None = None
@@ -37,6 +35,9 @@ class Settings(BaseSettings):
     agent_observation_character_limit: int = Field(default=12_000, ge=1_000, le=30_000)
     agent_context_character_limit: int = Field(default=60_000, ge=10_000, le=200_000)
     agent_model_output_character_limit: int = Field(default=12_000, ge=1_000, le=30_000)
+    resolution_sandbox_image: str | None = Field(
+        default=None, pattern=r"^sha256:[0-9a-f]{64}$"
+    )
 
     model_config = SettingsConfigDict(
         env_file=REPOSITORY_ROOT / ".env",

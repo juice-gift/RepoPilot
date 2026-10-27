@@ -3,7 +3,14 @@
 RepoPilot is a long-term AI codebase intelligence and issue-resolution system.
 
 **Stage 0, V1 — Codebase RAG, V2 — Code Intelligence, and V3 — Read-only Repository Agent are complete.**
-The project stops at the V3 / V4 boundary until a new version goal is authorized.
+**V4 — Issue Resolution Agent is complete under its authorized goal.**
+M0–M6 deliver private workspaces, patches, Docker tests, bounded repairs and the
+API/UI. Two real Qwen positive repairs pass independent tests; the resumed
+owner-selected model passes the frozen ambiguity criterion without modifications.
+Final regressions pass. See the
+[completion report](docs/evaluation/v4-issue-resolution-status.md) and
+`docs/tasks/v4-plan.md` for evidence, earlier failures and limitations.
+Development stops at V4/V5; V5 requires a new explicit goal.
 
 ## Current functionality
 
@@ -53,8 +60,8 @@ retrieval ranking and the evidence UI retain their existing behavior.
 
 Version results are recorded in `docs/tasks/v1-plan.md`, `docs/tasks/v2-plan.md`
 and `docs/tasks/v3-plan.md`, with completion reports under `docs/evaluation/`.
-Code modification, repository execution/sandboxing, GitHub/MCP integration,
-multiple agents and production engineering belong to later versions.
+GitHub/MCP integration, multiple agents and production engineering remain outside
+V4. Code modification and controlled sandbox execution belong to the active V4 goal.
 
 V3 adds a separate read-only investigation flow:
 
@@ -76,6 +83,69 @@ indexes return safe tool failures that the model can inspect.
 Engineering and live multi-turn Qwen validation passed; observed answer-grounding
 failures remain in the small baseline. See
 [`V3 completion and evaluation`](docs/evaluation/v3-repository-agent-results.md).
+
+## V4 controlled issue resolution
+
+`POST /api/agent/resolve` accepts `repository_id`, `snapshot_id`, `profile` and
+`issue`. Profiles currently support only the frozen source in
+`apps/api/evaluation/resolution_golden/repository`: `fee-days`,
+`dispatch-preconditions`, and `ambiguous-cap`. Arbitrary repositories, commands,
+images, dependencies and edit permissions are not accepted by this endpoint.
+
+Build the test image from the repository root and configure its immutable ID
+in the API process environment before starting/restarting FastAPI:
+
+```powershell
+docker build --tag repopilot-tests:v4 apps/api/sandbox
+$env:RESOLUTION_SANDBOX_IMAGE = docker image inspect repopilot-tests:v4 --format '{{.Id}}'
+```
+
+In the UI, ingest/index `apps/api/evaluation/resolution_golden/repository`, prepare
+symbols, select the resulting snapshot/profile, describe its issue and click
+**Resolve issue**. For `fee-days`, ask to charge every overdue day while retaining
+integer cents, negative-input guards and the 30-day cap. For
+`dispatch-preconditions`, ask to authenticate first and reject authorized negative
+attempts for both permanent/transient jobs while preserving the existing cap.
+For `ambiguous-cap`, ask whether the documented 60 or implemented 300 seconds is
+intended; the expected safe outcome requires an owner decision with no changes.
+
+The server copies only verified saved source into a private temporary workspace,
+requires an accepted plan and failing baseline before writes, then permits bounded
+patch/test repair attempts. Source and independent tests are mounted read-only
+into restricted Linux Docker containers. Returned diff/changed source come from
+the actual final revision. Test observations carry their exact revision and
+expected test count. Completed execution can still mean incomplete repair or
+insufficient evidence. The UI shows original/modified code, public plans, tests,
+tool trace, diagnostics and stop reason; read-only investigation remains available.
+
+The temporary workspace is cleaned after the synchronous run. Neither original
+source nor the saved Snapshot is modified; V1/V2 indexes remain baseline-only
+after patches. No product-agent commit/push occurs. See
+[`sandbox setup and limits`](apps/api/sandbox/README.md) for isolation details and
+concrete limitations. Passing a small independent test set is bounded evidence,
+not a proof of arbitrary program correctness. External model results are evaluated
+separately from scripted orchestration.
+
+From `apps/api`, opt into actual sandbox and database regression checks:
+
+```powershell
+$env:RUN_DATABASE_TESTS = '1'
+$env:RUN_SANDBOX_TESTS = '1'
+uv run pytest
+```
+
+The small frozen repair baseline has separate scripted and real Qwen modes. With
+the same prepared image setting, run from `apps/api`:
+
+```powershell
+$env:PYTHONPATH = 'src'
+uv run python -m repopilot.evaluation.resolution --mode scripted --output ../../docs/evaluation/local-v4-scripted.json
+uv run python -m repopilot.evaluation.resolution --mode qwen --output ../../docs/evaluation/local-v4-qwen.json
+```
+
+Use `--case ambiguous-cap` for a targeted ambiguity evaluation. Reports preserve
+source/Snapshot integrity, exact tested revisions,
+actual tool decisions and review hashes; scripted patches are not model success.
 
 ## Repository structure
 
