@@ -2,7 +2,8 @@
 
 **Status:** Authorized by the project owner on 2026-10-27; local preflight complete.
 M1 read-only MCP boundary and actual official-server reads verified. Controlled
-fixture preparation failed (baseline/source/Issue mismatch); M2–M6 and V5
+fixture source and baseline now verify, but Issue body updates failed with PAT
+permission 403; M2–M6 and V5
 acceptance remain incomplete.
 **Baseline:** `0308e8ab588d8d2a15ad960325e1d062f330eb45` on clean `main`.
 **Branch:** `codex/v5-mcp-github`.

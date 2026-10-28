@@ -1,6 +1,21 @@
 # V5 私有受控仓库准备方案
 
 状态：2026-10-28，供 Owner 在 GitHub 手动准备；本文不是远程写入授权。
+后续 Owner 已明确授权仅本测试仓库的文件提交和三个 Issue 正文更新。
+五文件准备已完成并通过 MCP 哈希复核，main 为
+`b4279c8b4d862817e6778caa5f87da91d29ed2b7`；无需再次上传。
+Issue 更新被当前 PAT 的 GitHub 403 拒绝。可在 Token 中为本仓库设置
+Issues: Read and write，随后从 apps/api 执行：
+
+```powershell
+$env:PYTHONPATH = 'src'
+uv run python ../../docs/tasks/v5-update-issue-bodies.py --apply
+```
+
+省略 --apply 只进行读取校验。也可在 GitHub 页面手工将下文三个正文分别填入
+#1/#2/#3。脚本不提交文件、不创建分支或 PR、不输出 Token。
+此前仅 README 的失败状态保留如下，实际最新证据见
+[准备后审计](../evaluation/v5-fixture-prepared-audit.json)。
 Owner 已确认仓库：`juice-gift/repopilot-v5-sandbox`，Issue #1/#2/#3。
 2026-10-28 [实际只读校验](../evaluation/v5-github-readonly-audit.json)发现根目录
 只有初始 README，三个 Issue 无正文，main SHA 与提供值不同。请完成下面第 2–4

@@ -6,7 +6,7 @@ Implement the [authorized V5 goal](../goals/v5-mcp-github.md).
 Authorized 2026-10-27; branch `codex/v5-mcp-github`, clean-main baseline
 `0308e8ab588d8d2a15ad960325e1d062f330eb45`. Remote `origin/main` was independently
 checked with `git ls-remote` and matched.
-**M0/M1 complete. Actual MCP reads verified; M2 preparation gate failed.**
+**M0/M1 complete. Frozen remote source prepared; Issue updates blocked by PAT permissions.**
 Owner resumed local engineering on 2026-10-28, selected juice-gift as test repository
 owner and requested a private fixture preparation plan. Owner subsequently confirmed
 juice-gift/repopilot-v5-sandbox, Issues 1/2/3 and local Token configuration. The
@@ -18,7 +18,7 @@ remote fixture and provided SHA do not match; V5 remains incomplete.
 | --- | --- | --- |
 | M0 | Goal/plan, V4 regressions, live DB/Docker, official research, capability gaps | Complete |
 | M1 | Explicit bounded MCP Client, discovery/schema checks, allowlisted reads, actual official-server read | Complete: actual identity/repository/commit/file/Issue/PR-list reads verified |
-| M2 | Canonical repository/Issue/commit/Snapshot binding, bounded source import, migrations and integrity checks | Blocked precondition: wrong SHA, missing frozen source, missing Issue bodies |
+| M2 | Canonical repository/Issue/commit/Snapshot binding, bounded source import, migrations and integrity checks | Source/SHA verified; Issue bodies pending (actual PATCH 403) |
 | M3 | Approved controlled GitHub fixture → existing V4 repair → persisted diff/results/test evidence | Pending controlled fixture |
 | M4 | Reviewable exact publication proposal, explicit human approval, server permission gates, minimal React integration | Pending |
 | M5 | MCP branch/commit/PR publication, stale-base guards, recovery/idempotency, live approved write evidence | Pending exact proposal approval |
@@ -237,10 +237,46 @@ bodies and supply the resulting main SHA. This does not authorize remote writes.
 
 ## Blockers and resumption
 
+Owner explicitly authorized fixture-only writes on 2026-10-28: exactly five frozen
+source files on the private sandbox main, and original bodies of Issues 1/2/3.
+This is a one-time setup exception, not a product default-branch write capability.
+GitHub connector returned 404 for the private repo, so preparation used a separate
+operator MCP session with fixed push_files/issue_write arguments. Product read-only
+client and its allowlist were not broadened.
+
+Files committed once: original main 8728cea64153aa7476c8c003b47dc24402d429b2 →
+**b4279c8b4d862817e6778caa5f87da91d29ed2b7**. Independent read-only MCP audit verifies
+private repo, identity, current main, exact root paths and all five SHA256 hashes.
+Protected tests stayed local and their manifest integrity passed.
+[Preparation outcome](../evaluation/v5-fixture-preparation.json) and
+[post-write read-only audit](../evaluation/v5-fixture-prepared-audit.json).
+
+Issue #1 update failed with actual GitHub PATCH 403, Resource not accessible by
+personal access token. Readback confirmed no change; a reconciled retry produced
+the same explicit permission error. No Issue body updates succeeded; no attempts
+were made to write #2/#3 after this diagnosis. No repair branch/commit/PR, merge,
+or remote RepoPilot-source write occurred. No Token was printed or persisted.
+Initial preparation inspection incorrectly expected a tree in curated get_commit
+output; it failed before writes and was corrected without using invented metadata.
+
+Fallback helper: docs/tasks/v5-update-issue-bodies.py. It changes only bodies of
+the three fixed Issues, only after verifying this exact baseline and frozen source;
+no file push or PR tool exists in it. Default invocation is read-only. After
+granting the locally configured PAT Issues: Read and write on this repository,
+from apps/api run `$env:PYTHONPATH='src'`, then
+`uv run python ../../docs/tasks/v5-update-issue-bodies.py --apply`.
+Alternatively manually paste the three original manifest descriptions into Issue
+bodies in GitHub. The five files do not need uploading again. Resume only after
+the final source+Issue audit passes; no later repair-publication write is approved.
+Helper Ruff and its actual default read-only run passed (all source/baseline gates
+true, Issue contract gate false). Its --apply write path remains permission-blocked;
+it is not presented as successfully executed. Application code/dependencies/schema
+and frozen fixtures did not change, so the prior 288-pass regression is retained
+as historical evidence, not claimed as a newly rerun suite.
+
 - Resolved: locally configured credential and real official MCP connection/identity.
-- Required before controlled repair: correct the selected private repository source,
-  fill the three existing Issue bodies and confirm the resulting immutable SHA.
-  Current remote state fails the unchanged frozen preparation criteria above.
+- Required before controlled repair: supply Issues write permission or manually
+  fill the three existing Issue bodies. Source and actual immutable SHA now pass.
 - Required before actual writes: exact publication proposal and human approval.
   The version authorization alone is not permission to create remote fixtures,
   issues, branches, commits or PRs.

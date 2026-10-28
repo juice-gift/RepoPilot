@@ -1,0 +1,12 @@
+{
+  "repository": "juice-gift/repopilot-v5-sandbox",
+  "authorization": "Owner explicit fixture-only preparation, 2026-10-28",
+  "original_main": "8728cea64153aa7476c8c003b47dc24402d429b2",
+  "file_commit": "b4279c8b4d862817e6778caa5f87da91d29ed2b7",
+  "issue_bodies_updated": [],
+  "repair_pr_created": false,
+  "status": "blocked_issue_write_permission",
+  "failure": "GitHub PATCH issue #1 returned 403 Resource not accessible by personal access token",
+  "issue_1_reconciled_unchanged": true,
+  "source_hashes_independently_verified": true
+}
