@@ -1400,7 +1400,8 @@ M6 完整本地/数据库/Docker 测试 262 passed，两个真实 Qwen 正例修
 歧义用例首次实测安全停止但未满足决策标准；工具权限公布修正后的两次复测因
 Qwen 免费额度耗尽（403）失败，历史记录保留。Owner 改为日期版本模型后，真实
 复测达到 needs_owner_decision、零补丁尝试与零修改的冻结标准。
-V4 已完成验收，停在 V4 / V5 边界；V5 需要新的明确授权。
+V4 已完成验收。Owner 于 2026-10-27 明确授权 V5；当前 Goal 为
+`docs/goals/v5-mcp-github.md`，进度见 `docs/tasks/v5-plan.md`。
 执行计划见 `docs/tasks/v4-plan.md`，实际验收状态及失败记录见
 `docs/evaluation/v4-issue-resolution-status.md`。
 
@@ -2330,7 +2331,8 @@ RepoPilot 才真正成为我的简历项目。
 - V3 — Read-only Repository Agent 已完成
 - V4 已独立授权，M0–M6 已完成并通过验收
 - 日期版本 Qwen 复测通过冻结歧义标准；此前额度耗尽及模型错误记录保留
-- 停在 V4 / V5 边界；V5 未授权
+- V5 — MCP + GitHub Integration 已于 2026-10-27 明确授权，本地 Preflight 完成，等待 MCP 凭据
+- V5 实现及真实集成验收尚未完成；停在 V5 / V6 边界
 
 当前基础架构：
 
@@ -2379,8 +2381,8 @@ V3 在 `docs/goals/v3-repository-agent.md` 的独立授权下完成。完整实�
 但最终 Grounding / Conclusion 的实测失败仍作为 Baseline 限制公开保留。
 
 V3 的完成报告见 `docs/evaluation/v3-repository-agent-results.md`。
-以上是 V3 的历史完成状态。当前 V4 状态以其授权 Goal、执行计划和实际验收报告为准；
-不得自动进入 V5。
+以上是 V3 的历史完成状态。V4 状态以其授权 Goal、执行计划和实际验收报告为准；
+当前 V5 以独立授权 Goal 和执行计划为准，不得自动进入 V6。
 
 ---
 

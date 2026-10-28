@@ -10,7 +10,10 @@ owner-selected model passes the frozen ambiguity criterion without modifications
 Final regressions pass. See the
 [completion report](docs/evaluation/v4-issue-resolution-status.md) and
 `docs/tasks/v4-plan.md` for evidence, earlier failures and limitations.
-Development stops at V4/V5; V5 requires a new explicit goal.
+V5 — MCP + GitHub Integration was explicitly authorized on 2026-10-27.
+Local preflight passed; implementation awaits MCP credentials. No V5 product
+capability or live integration acceptance is claimed. See the [V5 goal](docs/goals/v5-mcp-github.md) and
+[execution plan](docs/tasks/v5-plan.md). Stop at V5/V6.
 
 ## Current functionality
 
