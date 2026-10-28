@@ -6,7 +6,7 @@ Implement the [authorized V5 goal](../goals/v5-mcp-github.md).
 Authorized 2026-10-27; branch `codex/v5-mcp-github`, clean-main baseline
 `0308e8ab588d8d2a15ad960325e1d062f330eb45`. Remote `origin/main` was independently
 checked with `git ls-remote` and matched.
-**M0–M4 complete. M5 publication/recovery implementation in progress.**
+**M0–M4 complete. M5 implementation and prepublication checks pass; exact remote approval required.**
 Owner resumed local engineering on 2026-10-28, selected juice-gift as test repository
 owner and requested a private fixture preparation plan. Owner subsequently confirmed
 juice-gift/repopilot-v5-sandbox, Issues 1/2/3 and local Token configuration. The
@@ -22,13 +22,15 @@ baseline is b4279c8b4d862817e6778caa5f87da91d29ed2b7; V5 remains incomplete.
 | M2 | Canonical repository/Issue/commit/Snapshot binding, bounded source import, migrations and integrity checks | Complete: real MCP→PostgreSQL import and idempotency verified |
 | M3 | Approved controlled GitHub fixture → existing V4 repair → persisted diff/results/test evidence | Complete: two actual Qwen repairs and zero-change owner decision |
 | M4 | Reviewable exact publication proposal, explicit human approval, server permission gates, minimal React integration | Complete: 300-test live regression; no remote repair writes |
-| M5 | MCP branch/commit/PR publication, stale-base guards, recovery/idempotency, live approved write evidence | Pending exact proposal approval |
-| M6 | Full V1–V4 regression, live acceptance audit, Completion Report, V5/V6 stop | Pending |
+| M5 | MCP PR publication plus exact Git object/ref supplement, stale-base guards, recovery/idempotency, live approved write evidence | Local implementation/tests complete; live publication awaits two exact proposal approvals |
+| M6 | Full V1–V4 regression, live acceptance audit, Completion Report, V5/V6 stop | Prepublication regression/security/scope checks pass; final live audit/report pending |
 
 Each milestone requires relevant tests, self-review and a meaningful commit.
 No milestone may use simulated integration as proof of actual remote success.
 
 ## M4 completion (2026-10-28)
+
+Commit: `ed8cc3a` — bind GitHub publication approval to verified repair evidence.
 
 Migration 0008 persists one immutable publication proposal per completed run.
 The server rebuilds the proposal from saved frozen source, result digest, exact
@@ -58,6 +60,47 @@ choice and immutable-object side effects in the concrete approval proposal. Sour
 [official server](https://github.com/github/github-mcp-server),
 [Git commits](https://docs.github.com/en/rest/git/commits),
 [Git references](https://docs.github.com/en/rest/git/refs).
+
+## M5 implementation and remaining approval (2026-10-28)
+
+Implementation commit: `4f0f5b6` — exact Git objects and official MCP draft PRs.
+
+Implemented fixed Git object/ref payloads and scoped official MCP PR discovery,
+schema checking, filtered reads and exact draft-PR arguments. Publishing rechecks
+the entire approved plan/result/patch-history and local write allowlist. It persists
+a crash marker, holds a PostgreSQL row lock during effects, reconciles deterministic
+remote identities before a missing step and retains safe partial outcomes. It never
+updates an existing ref. Main movement, collisions and unexpected content invalidate
+approval; transport ambiguity permits an explicit reconciled retry. Published repeats
+return historical evidence without network mutations. No new dependency.
+
+Latest full `RUN_DATABASE_TESTS=1 RUN_SANDBOX_TESTS=1 RUN_GITHUB_MCP_TESTS=1 uv run
+pytest -q`: **329 passed, zero skips**, including 35 focused proposal/publication
+regressions and disposable migration replay. Ruff, Alembic current/check (0008/no
+drift), frontend production build pass. V1 vector/hybrid, V2 structural, V3 scripted
+and V4 scripted/real-Docker CLI reruns preserve the frozen outcomes; reports are
+`docs/evaluation/v5-prepublication-*`. One existing AnyIO deprecation warning remains.
+Browser smoke confirms saved real repair/proposal and disabled unapproved publication.
+
+Actual `github.review` command exported two persisted unapproved plans from the
+saved real Qwen runs. Real MCP preflight, publication-tool discovery/argument
+validation and filtered PR reads pass. Fixed Git API GETs verify numeric identity,
+unchanged main, exact baseline tree/modes and absent target branches. PAT write
+scope remains explicitly unexercised. All actual repair-publication writes remain
+zero, and the product write allowlist remains empty.
+
+[Concentrated owner approval request](v5-publication-approval.md): one dedicated
+branch/commit/draft PR for Issue 1 and one for Issue 2, each independently based on
+b4279c8b4d862817e6778caa5f87da91d29ed2b7. Exact full branch/commit/digest, diff,
+test evidence, protocol choice and concrete risks are saved there and in
+[machine-readable plans](../evaluation/v5-publication-proposals.json). Issue 3 stays
+zero-change. No previous fixture-preparation authorization is reused for these writes.
+
+[Security/scope review](../evaluation/v5-prepublication-security-review.md) records
+implementation checks and limits. Next after explicit approval: call the existing
+product approve/publish operations for only those digests, verify actual parent/tree/
+PR/readback and repeated request behavior, perform final regressions and complete
+M5/M6 plus the V5 Completion Report. Do not mark V5 complete before this live evidence.
 
 ## Preflight evidence (2026-10-27)
 

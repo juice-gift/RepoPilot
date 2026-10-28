@@ -1,0 +1,247 @@
+{
+  "bad_cases": {
+    "importer_errors": [],
+    "missing_definitions": [],
+    "missing_imports": [],
+    "missing_or_incorrect_references": [],
+    "unexpected_definitions": [],
+    "unexpected_imports": [],
+    "unexpected_references": []
+  },
+  "dataset_version": "v2-structural-1",
+  "definitions": {
+    "actual_count": 16,
+    "correct_count": 16,
+    "expected_count": 16,
+    "precision": 1.0,
+    "recall": 1.0
+  },
+  "imports": {
+    "actual_count": 5,
+    "correct_count": 5,
+    "expected_count": 5,
+    "precision": 1.0,
+    "recall": 1.0
+  },
+  "index_version": "structural-v2",
+  "queries": [
+    {
+      "actual": [
+        [
+          "pkg/alternate.py",
+          "verify_token",
+          1,
+          2
+        ],
+        [
+          "pkg/service.py",
+          "verify_token",
+          3,
+          4
+        ]
+      ],
+      "expected": [
+        [
+          "pkg/alternate.py",
+          "verify_token",
+          1,
+          2
+        ],
+        [
+          "pkg/service.py",
+          "verify_token",
+          3,
+          4
+        ]
+      ],
+      "first_relevant_rank": 1,
+      "match": "exact",
+      "query": "verify_token"
+    },
+    {
+      "actual": [
+        [
+          "pkg/service.py",
+          "Auth.check",
+          7,
+          8
+        ]
+      ],
+      "expected": [
+        [
+          "pkg/service.py",
+          "Auth.check",
+          7,
+          8
+        ]
+      ],
+      "first_relevant_rank": 1,
+      "match": "qualified",
+      "query": "Auth.check"
+    },
+    {
+      "actual": [
+        [
+          "pkg/alternate.py",
+          "verify_token",
+          1,
+          2
+        ],
+        [
+          "pkg/service.py",
+          "verify_token",
+          3,
+          4
+        ]
+      ],
+      "expected": [
+        [
+          "pkg/alternate.py",
+          "verify_token",
+          1,
+          2
+        ],
+        [
+          "pkg/service.py",
+          "verify_token",
+          3,
+          4
+        ]
+      ],
+      "first_relevant_rank": 1,
+      "match": "normalized",
+      "query": "VerifyToken"
+    },
+    {
+      "actual": [
+        [
+          "pkg/routes.py",
+          "duplicate",
+          7,
+          8
+        ],
+        [
+          "pkg/routes.py",
+          "duplicate",
+          10,
+          11
+        ]
+      ],
+      "expected": [
+        [
+          "pkg/routes.py",
+          "duplicate",
+          7,
+          8
+        ],
+        [
+          "pkg/routes.py",
+          "duplicate",
+          10,
+          11
+        ]
+      ],
+      "first_relevant_rank": 1,
+      "match": "exact",
+      "query": "duplicate"
+    },
+    {
+      "actual": [
+        [
+          "app/shared.ts",
+          "Presenter.show",
+          6,
+          6
+        ]
+      ],
+      "expected": [
+        [
+          "app/shared.ts",
+          "Presenter.show",
+          6,
+          6
+        ]
+      ],
+      "first_relevant_rank": 1,
+      "match": "qualified",
+      "query": "Presenter.show"
+    },
+    {
+      "actual": [
+        [
+          "app/shared.ts",
+          "formatName",
+          4,
+          4
+        ]
+      ],
+      "expected": [
+        [
+          "app/shared.ts",
+          "formatName",
+          4,
+          4
+        ]
+      ],
+      "first_relevant_rank": 1,
+      "match": "normalized",
+      "query": "Format_Name"
+    },
+    {
+      "actual": [
+        [
+          "app/shared.ts",
+          "UserId",
+          2,
+          2
+        ]
+      ],
+      "expected": [
+        [
+          "app/shared.ts",
+          "UserId",
+          2,
+          2
+        ]
+      ],
+      "first_relevant_rank": 1,
+      "match": "exact",
+      "query": "UserId"
+    }
+  ],
+  "query_count": 7,
+  "reference_counts": {
+    "ambiguous": 1,
+    "resolved": 8,
+    "unresolved": 12
+  },
+  "reference_occurrences_and_status": {
+    "actual_count": 21,
+    "correct_count": 21,
+    "expected_count": 21,
+    "precision": 1.0,
+    "recall": 1.0
+  },
+  "reference_resolution": {
+    "actual_count": 8,
+    "correct_count": 8,
+    "expected_count": 8,
+    "precision": 1.0,
+    "recall": 1.0
+  },
+  "symbol_count": 16,
+  "symbol_retrieval": {
+    "k=1": {
+      "hit_at_k": 1.0,
+      "mrr_at_k": 1.0
+    },
+    "k=3": {
+      "hit_at_k": 1.0,
+      "mrr_at_k": 1.0
+    },
+    "k=5": {
+      "hit_at_k": 1.0,
+      "mrr_at_k": 1.0
+    }
+  }
+}
