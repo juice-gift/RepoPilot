@@ -190,7 +190,10 @@ class GitHubReadClient:
                     schema = tool.input_schema
                     # No remote schema references: validation must not fetch URLs.
                     encoded = json.dumps(schema)
-                    if len(encoded) > 24_000 or '"$ref"' in encoded:
+                    if len(encoded) > 24_000 or any(
+                        key in encoded
+                        for key in ('"$ref"', '"$dynamicRef"', '"$recursiveRef"')
+                    ):
                         raise GitHubMCPError("schema_denied")
                     Draft202012Validator.check_schema(schema)
                     if schema.get("type") != "object":

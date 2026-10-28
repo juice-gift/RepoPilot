@@ -24,3 +24,4 @@ export const resolveBinding = (binding_id: number) => requestJson("/api/github/r
 export const prepareProposal = (run_id: string) => requestJson("/api/github/proposals", proposal, { method: "POST", body: JSON.stringify({ run_id }) });
 export const approveProposal = (p: Proposal) => requestJson(`/api/github/proposals/${p.id}/approve`, proposal, { method: "POST", body: JSON.stringify({ expected_hash: p.plan_hash, confirmation: `APPROVE ${p.id}:${p.plan_hash}` }) });
 export const revokeProposal = (id: string) => requestJson(`/api/github/proposals/${id}/revoke`, proposal, { method: "POST" });
+export const publishProposal = (id: string) => requestJson(`/api/github/proposals/${id}/publish`, proposal, { method: "POST" });

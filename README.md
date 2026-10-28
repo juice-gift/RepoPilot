@@ -16,7 +16,10 @@ The selected private repository's source, baseline and all three Issue bodies no
 verify. Actual MCP reads have been persisted as immutable Issue/commit/Snapshot
 bindings (migration 0006). Bound controlled repairs and complete results are now
 persisted (migration 0007): two actual Qwen repairs pass independent Docker tests,
-and the ambiguous case makes no changes. Approval/UI/publication remains incomplete. See the
+and the ambiguous case makes no changes. M4 now persists exact publication proposals
+and human approvals (migration 0008) and exposes the React review flow. M5 publication
+and recovery are implemented locally; actual repair publication is awaiting separate
+owner approval. V5 acceptance remains incomplete. See the
 [actual read-only audit](docs/evaluation/v5-github-readonly-audit.json),
 [V5 goal](docs/goals/v5-mcp-github.md) and
 [execution plan](docs/tasks/v5-plan.md). Stop at V5/V6.
@@ -25,7 +28,36 @@ V5 setup: follow the [private fixture preparation plan](docs/tasks/v5-github-fix
 Put `GITHUB_MCP_TOKEN` only in the ignored root `.env`; it maps to the official
 remote Server's Bearer header, not to a Sandbox environment variable. Initially
 grant read-only access to the selected private repository and set the exact local
-`GITHUB_MCP_ALLOWED_REPOSITORIES` JSON list. No remote write path is implemented.
+`GITHUB_MCP_ALLOWED_REPOSITORIES` JSON list. The separate
+`GITHUB_WRITE_ALLOWED_REPOSITORIES` list defaults empty. Do not enable it or approve
+an actual proposal without the owner's explicit authorization of that proposal.
+
+The GitHub panel lists imported Issue versions and saved repairs. Only completed,
+independently tested repairs can produce a publication proposal. Review the exact
+repository, baseline, branch, full diff, test revision, expected commit and draft-PR
+description before approving. Approval binds the complete proposal digest. Changed
+source, result, destination or baseline requires new approval; remote content and
+model prose cannot grant permission. POST workflow controls require a loopback
+client and the configured frontend Origin. Run the API on 127.0.0.1; this local
+single-owner boundary is not production authentication.
+
+GitHub endpoints under `/api/github`: GET `bindings` and `runs`; POST `import`,
+`runs` and `proposals`; GET `proposals/{id}`; POST `proposals/{id}/approve`,
+`revoke` or `publish`. Import accepts only an authorized exact frozen fixture and
+its SHA/three Issue numbers. Repair accepts only a saved binding id; proposal
+creation accepts only a saved run id. Callers cannot supply source, test profiles,
+branch names, patches or approval evidence in those requests. Approval requires the
+exact plan digest plus `APPROVE {id}:{digest}`. Errors and partial publication state
+are persisted, with no automatic background retries.
+
+Publication uses official MCP reads and draft-PR creation/verification. A fixed Git
+Data API supplement creates deterministic immutable trees/commits and a create-only
+dedicated branch ref because official MCP branch/file writes lack an expected-parent
+SHA parameter. It cannot update refs, write main or merge. Repeated publication
+requests reconcile deterministic remote identities before any missing step; already
+published requests return the historical verified outcome without additional writes.
+If main moves during publication, partial remote objects can remain and the approval
+is invalidated; RepoPilot never automatically deletes them or updates the PR branch.
 
 From `apps/api`, check the actual official MCP connection and identity:
 

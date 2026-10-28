@@ -258,7 +258,7 @@ function App() {
     <div className="app-shell">
       <header className="topbar">
         <div>
-          <p className="eyebrow">Repository Intelligence · V4</p>
+          <p className="eyebrow">Repository Intelligence · V5</p>
           <h1>RepoPilot</h1>
         </div>
         <div className="connections" role="status" aria-label="Service connections">

@@ -1,14 +1,17 @@
 """Thin local-owner GitHub workflow API. No LLM can approve a publication."""
 
+from collections.abc import Callable, Coroutine
 from functools import partial
 from typing import Annotated
 
 import anyio
 from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.routing import APIRoute
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
+from starlette.responses import Response
 
 from repopilot.api.dependencies import get_database_session
 from repopilot.db.models import (
@@ -25,12 +28,38 @@ from repopilot.github.proposals import (
     checked_plan,
     prepare_proposal,
 )
+from repopilot.github.publication import publish_proposal
 from repopilot.github.resolution import resolve_bound_issue
 from repopilot.rag.generation import create_agent_provider
 from repopilot.resolution.models import ResolutionResult
 from repopilot.resolution.sandbox import SandboxExecutor
+from repopilot.resolution.workspace import WorkspaceError
 
-router = APIRouter(prefix="/api/github", tags=["github"])
+
+class GitHubRoute(APIRoute):
+    def get_route_handler(
+        self,
+    ) -> Callable[[Request], Coroutine[object, object, Response]]:
+        handler = super().get_route_handler()
+
+        async def safe_handler(request: Request) -> Response:
+            try:
+                return await handler(request)
+            except GitHubMCPError as exc:
+                raise HTTPException(409, exc.code) from None
+            except (WorkspaceError, ValueError):
+                raise HTTPException(
+                    409, "GitHub evidence or configuration invalid"
+                ) from None
+            except SQLAlchemyError:
+                raise HTTPException(
+                    503, "GitHub workflow database unavailable"
+                ) from None
+
+        return safe_handler
+
+
+router = APIRouter(prefix="/api/github", tags=["github"], route_class=GitHubRoute)
 DB = Annotated[Session, Depends(get_database_session)]
 
 
@@ -238,3 +267,20 @@ def revoke(identifier: str, request: Request, session: DB):
     row.approved_hash, row.state = None, "awaiting_approval"
     session.commit()
     return proposal_view(row, session, request)
+
+
+@router.post("/proposals/{identifier}/publish", response_model=ProposalView)
+def publish(identifier: str, request: Request, session: DB):
+    owner_control(request)
+    try:
+        row = anyio.run(
+            publish_proposal, session, request.app.state.settings, identifier
+        )
+        return proposal_view(row, session, request)
+    except GitHubMCPError as exc:
+        raise HTTPException(409, exc.code) from None
+    except SQLAlchemyError:
+        session.rollback()
+        raise HTTPException(
+            503, "Publication database unavailable; reconcile before retry"
+        ) from None

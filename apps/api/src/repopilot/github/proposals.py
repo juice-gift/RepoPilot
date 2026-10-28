@@ -59,6 +59,7 @@ class PublicationPlan(BaseModel):
     head_branch: str
     files: dict[str, str]
     baseline_hashes: dict[str, str]
+    baseline_tree_sha: str
     changed_paths: list[str]
     diff: str
     tree_sha: str
@@ -172,6 +173,31 @@ def verified_run(
         modified[file.path] = file.modified
     if source_diff(source, modified) != result.patch:
         raise GitHubMCPError("diff_mismatch")
+    # Bind the final tested revision to the actual file bytes, including every
+    # intermediate patch revision retained by V4.
+    hashes = {
+        path: hashlib.sha256(text.encode()).hexdigest() for path, text in source.items()
+    }
+    revision = 0
+    for record in result.patch_history:
+        paths = set(record.changed_paths)
+        if (
+            record.base_revision != revision
+            or record.revision != revision + 1
+            or not paths
+            or len(paths) != len(record.changed_paths)
+            or not paths <= profile.editable_paths
+            or record.before_hashes != {path: hashes[path] for path in paths}
+            or set(record.after_hashes) != paths
+        ):
+            raise GitHubMCPError("patch_revision_mismatch")
+        hashes.update(record.after_hashes)
+        revision = record.revision
+    if revision != result.revision or hashes != {
+        path: hashlib.sha256(text.encode()).hexdigest()
+        for path, text in modified.items()
+    }:
+        raise GitHubMCPError("patch_revision_mismatch")
     return run, binding, source, result
 
 
@@ -205,6 +231,7 @@ def build_plan(
         baseline_hashes={
             p: hashlib.sha256(t.encode()).hexdigest() for p, t in source.items()
         },
+        baseline_tree_sha=tree_hash(source),
         changed_paths=sorted(f.path for f in result.changed_files),
         diff=result.patch,
         tree_sha=tree,

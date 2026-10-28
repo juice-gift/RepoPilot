@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ResolutionChanges, ResolutionSummary } from "./ResolutionResult";
-import { approveProposal, importGitHub, listBindings, listBoundRuns, prepareProposal, resolveBinding, revokeProposal, type Binding, type BoundRun, type Proposal } from "./api/github";
+import { approveProposal, importGitHub, listBindings, listBoundRuns, prepareProposal, publishProposal, resolveBinding, revokeProposal, type Binding, type BoundRun, type Proposal } from "./api/github";
 
 export function GitHubWorkflow() {
   const [bindings, setBindings] = useState<Binding[]>([]);
@@ -43,6 +43,7 @@ export function GitHubWorkflow() {
       <p>Creates one commit, a new dedicated branch and a draft PR. The default branch is not changed. No merge is authorized. A changed baseline or repair invalidates approval.</p>
       <label><input type="checkbox" checked={confirm} onChange={e => setConfirm(e.target.checked)} />I reviewed this repository, baseline, diff, tests, commit and PR and approve this exact proposal.</label>
       <button disabled={busy || !confirm || proposal.state !== "awaiting_approval"} onClick={() => void act(async () => { setProposal(await approveProposal(proposal)); setConfirm(false); })}>Approve exact proposal</button>
+      <button disabled={busy || !proposal.approved || !["approved", "publishing", "retry_needed", "published"].includes(proposal.state)} onClick={() => void act(async () => setProposal(await publishProposal(proposal.id)))}>Publish or reconcile approved proposal</button>
       <button disabled={busy || !["awaiting_approval", "approved"].includes(proposal.state)} onClick={() => void act(async () => { setProposal(await revokeProposal(proposal.id)); setConfirm(false); })}>Revoke approval</button>
       {proposal.last_error && <p role="alert">{proposal.last_error}. Inspect the saved outcome before retrying.</p>}
       {safePr && <a href={safePr} target="_blank" rel="noreferrer">Open verified draft PR</a>}

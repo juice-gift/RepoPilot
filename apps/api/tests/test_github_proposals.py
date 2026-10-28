@@ -131,7 +131,8 @@ def test_proposal_idempotent_approval_exact_and_tamper_denied(saved_repair):
 
 
 @pytest.mark.parametrize(
-    "change", ["ambiguous", "untested", "baseline", "source", "result_hash"]
+    "change",
+    ["ambiguous", "untested", "baseline", "source", "result_hash", "patch_hash"],
 )
 def test_unverified_results_cannot_be_proposed(saved_repair, change):
     session, config, run = saved_repair
@@ -144,6 +145,8 @@ def test_unverified_results_cannot_be_proposed(saved_repair, change):
         result["test_results"][0]["workspace_id"] = "other-workspace"
     elif change == "source":
         result["changed_files"][0]["original"] += "bad"
+    elif change == "patch_hash":
+        result["patch_history"][-1]["after_hashes"]["fees.py"] = "0" * 64
     run.result = result
     run.result_hash = result_hash(result) if change != "result_hash" else "0" * 64
     session.flush()

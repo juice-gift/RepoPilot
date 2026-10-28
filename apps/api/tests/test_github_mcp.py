@@ -202,7 +202,12 @@ def test_discovery_denies_writes_even_with_readonly_annotation():
 
 @pytest.mark.parametrize(
     "schema",
-    [{"type": "object", "$ref": "https://example.com/schema"}, {"type": "string"}],
+    [
+        {"type": "object", "$ref": "https://example.com/schema"},
+        {"type": "object", "$dynamicRef": "https://example.com/schema"},
+        {"type": "object", "$recursiveRef": "https://example.com/schema"},
+        {"type": "string"},
+    ],
 )
 def test_remote_schema_references_and_invalid_roots_denied(schema):
     async def run():
