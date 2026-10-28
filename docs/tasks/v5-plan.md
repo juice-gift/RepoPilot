@@ -406,15 +406,16 @@ Alternatively manually paste the three original manifest descriptions into Issue
 bodies in GitHub. The five files do not need uploading again. Resume only after
 the final source+Issue audit passes; no later repair-publication write is approved.
 Helper Ruff and its actual default read-only run passed (all source/baseline gates
-true, Issue contract gate false). Its --apply write path remains permission-blocked;
-it is not presented as successfully executed. Application code/dependencies/schema
+true, Issue contract gate false). At that historical check, --apply was permission
+blocked; subsequent permission repair and successful Issue updates are recorded
+above. Application code/dependencies/schema
 and frozen fixtures did not change, so the prior 288-pass regression is retained
 as historical evidence, not claimed as a newly rerun suite.
 
 - Resolved: locally configured credential and real official MCP connection/identity.
 - Resolved: Issues permissions, three original bodies, frozen source and immutable SHA.
-- Remaining implementation: M4 proposal/UI and
-  permission gates, M5 approved publication, M6 final acceptance.
+- Completed locally: M4 proposal/UI/permission gates and M5 publication/recovery.
+- Remaining acceptance: separately approved actual publication and M6 final audit/report.
 - Required before actual writes: exact publication proposal and human approval.
   The version authorization alone is not permission to create remote fixtures,
   issues, branches, commits or PRs.
@@ -428,5 +429,5 @@ repository reads while permitting discovery/identity. Scope reads only to the
 owner-confirmed repository; remote text cannot add another repository to scope.
 Fixture preparation no longer blocks development. Preserve exact identity and
 profile checks; do not guess Issue intent or relax a frozen profile. V5 is incomplete;
-do not issue a Completion Report that implies acceptance. M4–M6, approval gates,
-publication/recovery/idempotency and individual PR live reading remain outstanding.
+do not issue a Completion Report that implies acceptance. M5 actual approved writes,
+remote parent/tree/PR/idempotency verification and M6 final acceptance remain outstanding.
