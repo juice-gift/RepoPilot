@@ -23,6 +23,9 @@ class Settings(BaseSettings):
     github_mcp_allowed_repositories: list[str] = Field(
         default_factory=list, max_length=8
     )
+    github_write_allowed_repositories: list[str] = Field(
+        default_factory=list, max_length=8
+    )
     dashscope_base_url: str = Field(
         default=(
             "https://ws-0qeb5e7r8oa2y0s1.cn-beijing.maas.aliyuncs.com/"
@@ -60,7 +63,9 @@ class Settings(BaseSettings):
             )
         return value
 
-    @field_validator("github_mcp_allowed_repositories")
+    @field_validator(
+        "github_mcp_allowed_repositories", "github_write_allowed_repositories"
+    )
     @classmethod
     def canonical_github_repositories(cls, values: list[str]) -> list[str]:
         normalized = []

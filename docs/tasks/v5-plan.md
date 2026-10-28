@@ -6,7 +6,7 @@ Implement the [authorized V5 goal](../goals/v5-mcp-github.md).
 Authorized 2026-10-27; branch `codex/v5-mcp-github`, clean-main baseline
 `0308e8ab588d8d2a15ad960325e1d062f330eb45`. Remote `origin/main` was independently
 checked with `git ls-remote` and matched.
-**M0–M3 complete. Preparation blocker resolved; M4 next.**
+**M0–M4 complete. M5 publication/recovery implementation in progress.**
 Owner resumed local engineering on 2026-10-28, selected juice-gift as test repository
 owner and requested a private fixture preparation plan. Owner subsequently confirmed
 juice-gift/repopilot-v5-sandbox, Issues 1/2/3 and local Token configuration. The
@@ -21,12 +21,43 @@ baseline is b4279c8b4d862817e6778caa5f87da91d29ed2b7; V5 remains incomplete.
 | M1 | Explicit bounded MCP Client, discovery/schema checks, allowlisted reads, actual official-server read | Complete: actual identity/repository/commit/file/Issue/PR-list reads verified |
 | M2 | Canonical repository/Issue/commit/Snapshot binding, bounded source import, migrations and integrity checks | Complete: real MCP→PostgreSQL import and idempotency verified |
 | M3 | Approved controlled GitHub fixture → existing V4 repair → persisted diff/results/test evidence | Complete: two actual Qwen repairs and zero-change owner decision |
-| M4 | Reviewable exact publication proposal, explicit human approval, server permission gates, minimal React integration | Pending |
+| M4 | Reviewable exact publication proposal, explicit human approval, server permission gates, minimal React integration | Complete: 300-test live regression; no remote repair writes |
 | M5 | MCP branch/commit/PR publication, stale-base guards, recovery/idempotency, live approved write evidence | Pending exact proposal approval |
 | M6 | Full V1–V4 regression, live acceptance audit, Completion Report, V5/V6 stop | Pending |
 
 Each milestone requires relevant tests, self-review and a meaningful commit.
 No milestone may use simulated integration as proof of actual remote success.
+
+## M4 completion (2026-10-28)
+
+Migration 0008 persists one immutable publication proposal per completed run.
+The server rebuilds the proposal from saved frozen source, result digest, exact
+diff, baseline failure and isolated final test evidence. It computes the complete
+Git tree and commit identity before approval. Approval binds all destination,
+content, tests and PR metadata through a canonical SHA256 digest. It can be revoked
+before publication. No model tool can approve or publish. A separate repository
+write allowlist defaults empty. React exposes saved bindings/results, diff, tests,
+commit, PR description and a deliberate approval checkbox. POST workflow controls
+require a loopback peer and the configured frontend Origin; this is the existing
+single-owner local application boundary, not production or multi-user authentication.
+
+Validation: 8 new proposal/API regressions pass; full real DB/Docker/official-MCP
+suite **300 passed, no skips**. Ruff check passes; Alembic current/check confirms
+0008 with no drift, including disposable migration replay in the full suite.
+Frontend TypeScript/Vite build passes. No new dependency or remote repair write.
+Test fixtures reuse saved live result evidence only as unit-test input; they do
+not substitute for the pending actual approved publication.
+
+M5 engineering decision: actual official MCP discovery/source inspection confirms
+create_branch resolves a mutable from_branch; push_files lacks an expected-parent
+parameter and updates a branch after reading it. Use a narrow GitHub Git Data API
+supplement for immutable tree/commit creation and a **create-only** dedicated ref;
+keep real official MCP for reads and draft-PR creation/verification. No update-ref,
+force, merge, default-branch or generic REST tool is exposed. Document this protocol
+choice and immutable-object side effects in the concrete approval proposal. Sources:
+[official server](https://github.com/github/github-mcp-server),
+[Git commits](https://docs.github.com/en/rest/git/commits),
+[Git references](https://docs.github.com/en/rest/git/refs).
 
 ## Preflight evidence (2026-10-27)
 

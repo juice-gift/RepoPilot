@@ -135,6 +135,29 @@ class GitHubResolutionRun(Base):
     )
 
 
+class GitHubPublication(Base):
+    __tablename__ = "github_publications"
+    __table_args__ = (
+        CheckConstraint(
+            "state IN ('awaiting_approval','approved','publishing','retry_needed','published','stale')",
+            name="ck_github_publication_state",
+        ),
+    )
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    run_id: Mapped[str] = mapped_column(
+        ForeignKey("github_resolution_runs.id", ondelete="RESTRICT"), unique=True
+    )
+    plan: Mapped[dict[str, object]] = mapped_column(JSON)
+    plan_hash: Mapped[str] = mapped_column(String(64))
+    approved_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state: Mapped[str] = mapped_column(String(24))
+    outcome: Mapped[dict[str, object]] = mapped_column(JSON, default=dict)
+    last_error: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+
+
 class SnapshotFile(Base):
     __tablename__ = "snapshot_files"
     __table_args__ = (

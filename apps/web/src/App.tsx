@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { GitHubWorkflow } from "./GitHubWorkflow";
 
 import { InvestigationResult, InvestigationSources } from "./AgentResult";
 import { ResolutionChanges, ResolutionSummary } from "./ResolutionResult";
@@ -462,6 +463,7 @@ function App() {
           </div>}
         </aside>
       </main>
+      <GitHubWorkflow />
     </div>
   );
 }
