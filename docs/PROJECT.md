@@ -2332,7 +2332,7 @@ RepoPilot 才真正成为我的简历项目。
 - V4 已独立授权，M0–M6 已完成并通过验收
 - 日期版本 Qwen 复测通过冻结歧义标准；此前额度耗尽及模型错误记录保留
 - V5 — MCP + GitHub Integration 已于 2026-10-27 明确授权，本地 Preflight 和只读 MCP Client 实现测试通过
-- 真实 MCP 身份、只读调用和测试仓库冻结源码/基线已验证；Issue 正文更新因 PAT 权限 403 阻塞
+- 真实 MCP 身份、源码/基线/三个 Issue 正文已验证，权限阻塞已解除；M2 已完成 commit/Issue/Snapshot 持久化绑定
 - V5 实现及真实集成验收尚未完成；停在 V5 / V6 边界
 
 当前基础架构：

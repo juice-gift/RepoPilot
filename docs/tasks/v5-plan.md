@@ -6,11 +6,12 @@ Implement the [authorized V5 goal](../goals/v5-mcp-github.md).
 Authorized 2026-10-27; branch `codex/v5-mcp-github`, clean-main baseline
 `0308e8ab588d8d2a15ad960325e1d062f330eb45`. Remote `origin/main` was independently
 checked with `git ls-remote` and matched.
-**M0/M1 complete. Frozen remote source prepared; Issue updates blocked by PAT permissions.**
+**M0–M2 complete. Fixture preparation blocker resolved; M3 next.**
 Owner resumed local engineering on 2026-10-28, selected juice-gift as test repository
 owner and requested a private fixture preparation plan. Owner subsequently confirmed
 juice-gift/repopilot-v5-sandbox, Issues 1/2/3 and local Token configuration. The
-remote fixture and provided SHA do not match; V5 remains incomplete.
+initial mismatches and permission failures are retained below. Current verified
+baseline is b4279c8b4d862817e6778caa5f87da91d29ed2b7; V5 remains incomplete.
 
 ## Milestones
 
@@ -18,8 +19,8 @@ remote fixture and provided SHA do not match; V5 remains incomplete.
 | --- | --- | --- |
 | M0 | Goal/plan, V4 regressions, live DB/Docker, official research, capability gaps | Complete |
 | M1 | Explicit bounded MCP Client, discovery/schema checks, allowlisted reads, actual official-server read | Complete: actual identity/repository/commit/file/Issue/PR-list reads verified |
-| M2 | Canonical repository/Issue/commit/Snapshot binding, bounded source import, migrations and integrity checks | Source/SHA verified; Issue bodies pending (actual PATCH 403) |
-| M3 | Approved controlled GitHub fixture → existing V4 repair → persisted diff/results/test evidence | Pending controlled fixture |
+| M2 | Canonical repository/Issue/commit/Snapshot binding, bounded source import, migrations and integrity checks | Complete: real MCP→PostgreSQL import and idempotency verified |
+| M3 | Approved controlled GitHub fixture → existing V4 repair → persisted diff/results/test evidence | Next |
 | M4 | Reviewable exact publication proposal, explicit human approval, server permission gates, minimal React integration | Pending |
 | M5 | MCP branch/commit/PR publication, stale-base guards, recovery/idempotency, live approved write evidence | Pending exact proposal approval |
 | M6 | Full V1–V4 regression, live acceptance audit, Completion Report, V5/V6 stop | Pending |
@@ -237,6 +238,35 @@ bodies and supply the resulting main SHA. This does not authorize remote writes.
 
 ## Blockers and resumption
 
+Latest resumption: owner reported Issues write permission configured, spelling the
+repo repopilot-v5-test. Continued only the previously authorized sandbox, without
+expanding scope. The helper successfully updated and read back all three Issue
+bodies; [final MCP audit](../evaluation/v5-fixture-final-audit.json) passes all gates.
+The default-branch fixture commit remains b4279c8b4d862817e6778caa5f87da91d29ed2b7.
+This completes the explicit preparation authorization; future repair writes remain
+subject to separate approval. The historical 403 below is resolved, not erased.
+
+M2 implementation: github/binding.py imports only exact verified frozen source
+directly from immutable MCP resource URIs, rechecks main before persistence, and
+atomically saves SnapshotFiles and three Issue/commit bindings. No host checkout,
+clone or execution occurs. A stable github:// repository identity uses GitHub's
+numeric repository id. Migration 0006 adds github_issue_snapshots. The existing
+Snapshot content identity is unchanged; source_revision remains unset rather than
+misrepresenting multiple commits with identical filtered bytes. The association
+table retains every Issue/commit binding separately. Permission/Issue content is
+never accepted from an HTTP/model-supplied audit report; persistence is internal.
+
+[Actual MCP/DB import evidence](../evaluation/v5-github-snapshot-binding.json):
+local Repository 285, Snapshot 414, three bindings 13/14/15, five saved source files;
+repeating persistence preserves all binding ids. Tests cover equal-byte/different
+commit provenance, corrupted saved source, conflicting binding, invalid profile
+and complete transaction rollback. Migrations apply and clean disposable replay
+passes. Final checks: full DB/Docker/actual-MCP suite **290 passed, no skips**;
+Ruff, Alembic current/check (0006, no changes), and frontend build passed.
+Initial Docker/database connection failed; local Docker was restored before the
+passing checks. Initial Ruff import/noqa issues were fixed. No new dependency,
+execution permission relaxation or product remote-write capability was introduced.
+
 Owner explicitly authorized fixture-only writes on 2026-10-28: exactly five frozen
 source files on the private sandbox main, and original bodies of Issues 1/2/3.
 This is a one-time setup exception, not a product default-branch write capability.
@@ -275,8 +305,9 @@ and frozen fixtures did not change, so the prior 288-pass regression is retained
 as historical evidence, not claimed as a newly rerun suite.
 
 - Resolved: locally configured credential and real official MCP connection/identity.
-- Required before controlled repair: supply Issues write permission or manually
-  fill the three existing Issue bodies. Source and actual immutable SHA now pass.
+- Resolved: Issues permissions, three original bodies, frozen source and immutable SHA.
+- Remaining implementation: M3 controlled repair persistence, M4 proposal/UI and
+  permission gates, M5 approved publication, M6 final acceptance.
 - Required before actual writes: exact publication proposal and human approval.
   The version authorization alone is not permission to create remote fixtures,
   issues, branches, commits or PRs.
@@ -288,8 +319,8 @@ setting: `GITHUB_MCP_TOKEN`; begin with read-only Contents/Issues/Pull requests
 access to the controlled repository. Empty GITHUB_MCP_ALLOWED_REPOSITORIES denies
 repository reads while permitting discovery/identity. Scope reads only to the
 owner-confirmed repository; remote text cannot add another repository to scope.
-Stop at the failed fixture/baseline gate per AGENTS.md §32; do not guess missing
-Issue intent, import another commit or relax a frozen profile. V5 is incomplete;
+Fixture preparation no longer blocks development. Preserve exact identity and
+profile checks; do not guess Issue intent or relax a frozen profile. V5 is incomplete;
 do not issue a Completion Report that implies acceptance. M2–M6,
 commit/Snapshot binding, positive fixture integration and individual PR live
 reading remain outstanding; successful raw reads alone do not satisfy them.

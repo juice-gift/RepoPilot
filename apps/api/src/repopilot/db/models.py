@@ -2,6 +2,7 @@ from datetime import datetime
 
 from pgvector.sqlalchemy import Vector
 from sqlalchemy import (
+    JSON,
     BigInteger,
     CheckConstraint,
     DateTime,
@@ -74,6 +75,43 @@ class RepositorySnapshot(Base):
     repository: Mapped[Repository] = relationship(back_populates="snapshots")
     files: Mapped[list["SnapshotFile"]] = relationship(
         back_populates="snapshot", cascade="all, delete-orphan"
+    )
+
+
+class GitHubIssueSnapshot(Base):
+    """Immutable external provenance; identical source at two commits stays distinct."""
+
+    __tablename__ = "github_issue_snapshots"
+    __table_args__ = (
+        UniqueConstraint(
+            "remote_repository_id",
+            "commit_sha",
+            "issue_number",
+            name="uq_github_issue_commit",
+        ),
+        CheckConstraint(
+            "remote_repository_id > 0 AND issue_number > 0",
+            name="ck_github_issue_identity",
+        ),
+        CheckConstraint(
+            "length(commit_sha) = 40 AND length(issue_body_hash) = 64",
+            name="ck_github_binding_hashes",
+        ),
+    )
+    id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
+    remote_repository_id: Mapped[int] = mapped_column(BigInteger)
+    repository_full_name: Mapped[str] = mapped_column(String(255))
+    commit_sha: Mapped[str] = mapped_column(String(40))
+    issue_number: Mapped[int] = mapped_column(Integer)
+    profile: Mapped[str] = mapped_column(String(32))
+    issue_body: Mapped[str] = mapped_column(Text)
+    issue_body_hash: Mapped[str] = mapped_column(String(64))
+    snapshot_id: Mapped[int] = mapped_column(
+        ForeignKey("repository_snapshots.id", ondelete="CASCADE"), index=True
+    )
+    audit: Mapped[dict[str, object]] = mapped_column(JSON)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
     )
 
 
