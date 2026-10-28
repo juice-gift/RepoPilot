@@ -58,7 +58,7 @@ def test_clean_v1_to_v2_migration_and_reversible_schema() -> None:
                     )
                 )
             alembic("upgrade", "head")
-            assert "0006_github_issue_snapshots (head)" in alembic("current")
+            assert "0007_github_resolution_runs (head)" in alembic("current")
             assert "No new upgrade operations" in alembic("check")
             with temporary.connect() as connection:
                 assert (

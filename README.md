@@ -14,7 +14,9 @@ V5 — MCP + GitHub Integration was explicitly authorized on 2026-10-27.
 Local preflight and actual read-only MCP/GitHub connection/identity checks passed.
 The selected private repository's source, baseline and all three Issue bodies now
 verify. Actual MCP reads have been persisted as immutable Issue/commit/Snapshot
-bindings (migration 0006). Controlled repair/publication integration remains incomplete. See the
+bindings (migration 0006). Bound controlled repairs and complete results are now
+persisted (migration 0007): two actual Qwen repairs pass independent Docker tests,
+and the ambiguous case makes no changes. Approval/UI/publication remains incomplete. See the
 [actual read-only audit](docs/evaluation/v5-github-readonly-audit.json),
 [V5 goal](docs/goals/v5-mcp-github.md) and
 [execution plan](docs/tasks/v5-plan.md). Stop at V5/V6.

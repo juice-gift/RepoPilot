@@ -35,5 +35,5 @@ def test_migrated_database_connectivity_and_pgvector() -> None:
 
     assert response.status_code == 200
     assert response.json() == {"status": "ok", "database": "postgresql"}
-    assert migration_revision == "0006_github_issue_snapshots"
+    assert migration_revision == "0007_github_resolution_runs"
     assert pgvector_version

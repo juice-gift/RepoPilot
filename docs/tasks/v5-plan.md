@@ -6,7 +6,7 @@ Implement the [authorized V5 goal](../goals/v5-mcp-github.md).
 Authorized 2026-10-27; branch `codex/v5-mcp-github`, clean-main baseline
 `0308e8ab588d8d2a15ad960325e1d062f330eb45`. Remote `origin/main` was independently
 checked with `git ls-remote` and matched.
-**M0–M2 complete. Fixture preparation blocker resolved; M3 next.**
+**M0–M3 complete. Preparation blocker resolved; M4 next.**
 Owner resumed local engineering on 2026-10-28, selected juice-gift as test repository
 owner and requested a private fixture preparation plan. Owner subsequently confirmed
 juice-gift/repopilot-v5-sandbox, Issues 1/2/3 and local Token configuration. The
@@ -20,7 +20,7 @@ baseline is b4279c8b4d862817e6778caa5f87da91d29ed2b7; V5 remains incomplete.
 | M0 | Goal/plan, V4 regressions, live DB/Docker, official research, capability gaps | Complete |
 | M1 | Explicit bounded MCP Client, discovery/schema checks, allowlisted reads, actual official-server read | Complete: actual identity/repository/commit/file/Issue/PR-list reads verified |
 | M2 | Canonical repository/Issue/commit/Snapshot binding, bounded source import, migrations and integrity checks | Complete: real MCP→PostgreSQL import and idempotency verified |
-| M3 | Approved controlled GitHub fixture → existing V4 repair → persisted diff/results/test evidence | Next |
+| M3 | Approved controlled GitHub fixture → existing V4 repair → persisted diff/results/test evidence | Complete: two actual Qwen repairs and zero-change owner decision |
 | M4 | Reviewable exact publication proposal, explicit human approval, server permission gates, minimal React integration | Pending |
 | M5 | MCP branch/commit/PR publication, stale-base guards, recovery/idempotency, live approved write evidence | Pending exact proposal approval |
 | M6 | Full V1–V4 regression, live acceptance audit, Completion Report, V5/V6 stop | Pending |
@@ -238,6 +238,39 @@ bodies and supply the resulting main SHA. This does not authorize remote writes.
 
 ## Blockers and resumption
 
+M3: github/resolution.py accepts a persisted binding id, checks the configured exact
+repository allowlist and frozen Issue/source integrity, then reuses V1/V2 indexing
+and V4 resolution in a private workspace. Snapshot input and issue are derived
+server-side. Migration 0007 persists synchronous run state, complete typed result,
+canonical result hash and safe failure codes. No jobs/queues or product write tools.
+Completed results retain exact patch history, tests/revisions, trace and cleanup;
+source equality is checked again before saving. Unexpected failures persist a
+failed record; a running record alone is not evidence of a live process or success.
+
+Actual owner-configured qwen3.7-flash-2026-07-15 ran against bindings 13/14/15:
+fee-days baseline 4 failing/4 passing → 8 passing, one patch/7 model calls;
+dispatch baseline 2 failing/9 passing → 11 passing, one patch/9 calls;
+ambiguous-cap needs_owner_decision, zero patch attempts/tests, 7 calls. All private
+workspaces cleaned. Three full result hashes were recomputed from PostgreSQL and
+matched exported evidence. Retrieval used the labeled deterministic baseline;
+model decisions were actual external Qwen. Trusted immutable Docker image was
+selected by the operator, not the model. No remote write occurred in these runs.
+
+Evidence: [full bound runs](../evaluation/v5-bound-qwen-resolution.json),
+[exact-result reviews](../evaluation/v5-bound-qwen-reviews.json) and
+[post-resolution MCP audit](../evaluation/v5-post-resolution-readonly-audit.json).
+The latter verifies remote main, five source hashes and three Issue bodies are
+unchanged. Preserve the dispatch final-prose error: it claims negative attempts
+raise ValueError regardless of token validity, while actual source authenticates
+first and invalid tokens raise PermissionError. The independently tested patch
+meets the frozen contract; model explanations remain fallible. No general success
+rate is inferred from these three cases.
+
+M3 checks: two focused real DB/Docker run tests pass; full DB/Docker/actual-MCP
+suite **292 passed**, no skips; Ruff and Alembic check pass at head 0007. The web
+build passed in M2 and no frontend code changed in M3. No new dependency. Initial
+Ruff broad-boundary/noqa and dict-style findings were corrected before passing.
+
 Latest resumption: owner reported Issues write permission configured, spelling the
 repo repopilot-v5-test. Continued only the previously authorized sandbox, without
 expanding scope. The helper successfully updated and read back all three Issue
@@ -306,7 +339,7 @@ as historical evidence, not claimed as a newly rerun suite.
 
 - Resolved: locally configured credential and real official MCP connection/identity.
 - Resolved: Issues permissions, three original bodies, frozen source and immutable SHA.
-- Remaining implementation: M3 controlled repair persistence, M4 proposal/UI and
+- Remaining implementation: M4 proposal/UI and
   permission gates, M5 approved publication, M6 final acceptance.
 - Required before actual writes: exact publication proposal and human approval.
   The version authorization alone is not permission to create remote fixtures,
@@ -321,6 +354,5 @@ repository reads while permitting discovery/identity. Scope reads only to the
 owner-confirmed repository; remote text cannot add another repository to scope.
 Fixture preparation no longer blocks development. Preserve exact identity and
 profile checks; do not guess Issue intent or relax a frozen profile. V5 is incomplete;
-do not issue a Completion Report that implies acceptance. M2–M6,
-commit/Snapshot binding, positive fixture integration and individual PR live
-reading remain outstanding; successful raw reads alone do not satisfy them.
+do not issue a Completion Report that implies acceptance. M4–M6, approval gates,
+publication/recovery/idempotency and individual PR live reading remain outstanding.

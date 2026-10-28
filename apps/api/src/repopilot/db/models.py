@@ -115,6 +115,26 @@ class GitHubIssueSnapshot(Base):
     )
 
 
+class GitHubResolutionRun(Base):
+    __tablename__ = "github_resolution_runs"
+    __table_args__ = (
+        CheckConstraint(
+            "state IN ('running', 'completed', 'failed')", name="ck_github_run_state"
+        ),
+    )
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    binding_id: Mapped[int] = mapped_column(
+        ForeignKey("github_issue_snapshots.id", ondelete="RESTRICT"), index=True
+    )
+    state: Mapped[str] = mapped_column(String(16))
+    result: Mapped[dict[str, object] | None] = mapped_column(JSON, nullable=True)
+    result_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    failure: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+
+
 class SnapshotFile(Base):
     __tablename__ = "snapshot_files"
     __table_args__ = (
