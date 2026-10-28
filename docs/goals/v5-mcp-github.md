@@ -1,7 +1,8 @@
 # RepoPilot V5 — MCP + GitHub Integration
 
-**Status:** Authorized by the project owner on 2026-10-27; local preflight complete,
-implementation awaiting MCP credentials.
+**Status:** Authorized by the project owner on 2026-10-27; local preflight complete.
+M1 read-only MCP boundary implemented locally; actual official-server verification
+awaits a locally configured credential. V5 acceptance is incomplete.
 **Baseline:** `0308e8ab588d8d2a15ad960325e1d062f330eb45` on clean `main`.
 **Branch:** `codex/v5-mcp-github`.
 **Execution plan:** [V5 plan](../tasks/v5-plan.md).

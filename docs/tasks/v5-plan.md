@@ -5,16 +5,18 @@
 Implement the [authorized V5 goal](../goals/v5-mcp-github.md).
 Authorized 2026-10-27; branch `codex/v5-mcp-github`, clean-main baseline
 `0308e8ab588d8d2a15ad960325e1d062f330eb45`. Remote `origin/main` was independently
-checked with `git ls-remote` and matched. No V5 product implementation exists yet.
-**M0 complete. M1 cannot start its real integration check: credentials unavailable.**
-Stopped under the owner's credential escalation rule; V5 remains incomplete.
+checked with `git ls-remote` and matched.
+**M0 complete. M1 local implementation tested; actual MCP verification awaits Token.**
+Owner resumed local engineering on 2026-10-28, selected juice-gift as test repository
+owner and requested a private fixture preparation plan. No repository name/Issue
+has yet been confirmed; V5 remains incomplete.
 
 ## Milestones
 
 | Milestone | Deliverable and required verification | State |
 | --- | --- | --- |
 | M0 | Goal/plan, V4 regressions, live DB/Docker, official research, capability gaps | Complete |
-| M1 | Explicit bounded MCP Client, discovery/schema checks, allowlisted reads, actual official-server read | Pending MCP credential |
+| M1 | Explicit bounded MCP Client, discovery/schema checks, allowlisted reads, actual official-server read | Local implementation passed; live check unverified: credential_missing |
 | M2 | Canonical repository/Issue/commit/Snapshot binding, bounded source import, migrations and integrity checks | Pending |
 | M3 | Approved controlled GitHub fixture → existing V4 repair → persisted diff/results/test evidence | Pending controlled fixture |
 | M4 | Reviewable exact publication proposal, explicit human approval, server permission gates, minimal React integration | Pending |
@@ -122,6 +124,49 @@ official Git tools for exact-parent commit and safe ref creation capabilities.
 If the required publication guarantee cannot be enforced, escalate before writes;
 do not substitute a pre-read alone for a concurrency guard.
 
+## M1 implementation and current evidence (2026-10-28)
+
+- `github/client.py`: explicit official SDK v2 connection/discovery and allowlisted
+  reads. Fixed HTTPS endpoint and transport guard prevent credential-bearing
+  redirects to other paths/hosts. Explicit read-only server header plus independent
+  local repository/operation/path/SHA/argument-schema gates; no write capability.
+  Responses/schema/pages/calls/time are bounded; resource URLs are not followed.
+- Settings loads root `.env` or overriding process environment. GITHUB_MCP_TOKEN
+  uses SecretStr and is excluded from repr/export. Validation messages hide inputs.
+  Mapping: in-memory Bearer header for remote Server; local Server's separate
+  GITHUB_PERSONAL_ACCESS_TOKEN is not set. Existing Sandbox environment allowlist
+  excludes both. SDK/network logs are suppressed within the MCP async context;
+  only application-owned failure codes cross the boundary.
+- `github/probe.py`: real connection/discovery/get_me identity check, safe metadata
+  only, no raw tool result or Token. CLI actual attempt returned credential_missing
+  before opening transport. This is **unverified**, not a successful connection.
+- Added local protocol/policy tests plus a separately opted-in live identity test.
+  In-process and local ASGI HTTP tests use the actual SDK but are not GitHub evidence.
+- Runtime dependencies: mcp==2.3.0 for protocol; jsonschema for discovered argument
+  schemas; anyio for bounded async cancellation/timeouts. Existing httpx2 moved
+  from dev to runtime for explicit authenticated HTTP transport. uv.lock updated.
+- [Private fixture preparation plan](v5-github-fixture-preparation.md) contains
+  exact five-file root/hashes, three Issue titles/bodies, initial PAT read scopes,
+  proposed repository name and information the owner must return. No fixture,
+  Issue, branch, commit or PR was created remotely. Frozen V4 files are unchanged.
+
+Actual checks after these changes:
+
+| Check | Result |
+| --- | --- |
+| `uv run pytest -q tests/test_github_mcp.py tests/test_config.py` | 26 passed |
+| Full suite with RUN_DATABASE_TESTS=1 and RUN_SANDBOX_TESTS=1 | 282 passed / 1 live-MCP opt-in skip; existing AnyIO warning |
+| Ruff src/tests/migrations | Passed |
+| Alembic current/check | Head 0005; no new operations |
+| npm run build | Passed |
+| `PYTHONPATH=src uv run python -m repopilot.github.probe --expected-login juice-gift` (PowerShell env assignment) | Exit 1, credential_missing; no real MCP connection made |
+
+Initial SDK inspection used the wrong MCPServer import; corrected to mcp.server.
+Initial Ruff broad-exception findings were resolved with narrowly documented
+third-party trust-boundary suppression; no raw failure logging was added.
+Self-review: no remote writes, no model-controlled authority, no V4 profile/sandbox
+relaxation, no database migration/architecture change or later-version capability.
+
 ## Verified V4 → GitHub capability gaps
 
 | Existing behavior | V5 responsibility |
@@ -144,8 +189,8 @@ remote setup scripts. No multi-agent work is authorized.
 - Required: a credential usable by RepoPilot itself with the official GitHub MCP
   Server. The app's connected GitHub tools do not expose reusable credentials and
   cannot establish that RepoPilot's MCP Client works. Do not extract app secrets.
-- Required before controlled integration: owner-selected test repository and Issue
-  with an approved frozen executable fixture. No target has been named; do not
+- Required before controlled integration: owner-selected private test repository
+  under juice-gift and three Issues using the preparation plan. No name has been confirmed; do not
   assume the RepoPilot source repository is an authorized repair target.
 - Required before actual writes: exact publication proposal and human approval.
   The version authorization alone is not permission to create remote fixtures,
@@ -153,8 +198,11 @@ remote setup scripts. No multi-agent work is authorized.
 - Docker/DB startup and full live regression are now resolved as recorded above.
 
 Do not ask for raw tokens in chat. Credentials should be configured locally in
-ignored environment configuration with minimal repository scope. Proposed M1
-setting: `GITHUB_MCP_TOKEN` (not consumed by existing code yet); begin with read-only
-Contents/Issues/Pull requests access to the controlled repository. Until available,
-stop per AGENTS.md §32 and the owner's explicit escalation instruction. V5 is
-incomplete; do not issue a Completion Report that implies acceptance.
+ignored environment configuration with minimal repository scope. Implemented M1
+setting: `GITHUB_MCP_TOKEN`; begin with read-only Contents/Issues/Pull requests
+access to the controlled repository. Empty GITHUB_MCP_ALLOWED_REPOSITORIES denies
+repository reads while permitting discovery/identity. Do not use the suggested
+repository name as actual authority before Owner creates/confirms and configures it.
+Until the credential is available, stop live validation per AGENTS.md §32. V5 is
+incomplete; do not issue a Completion Report that implies acceptance. M2–M6,
+commit/Snapshot binding and repository/Issue/PR live tests remain outstanding.

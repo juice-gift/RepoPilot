@@ -11,9 +11,28 @@ Final regressions pass. See the
 [completion report](docs/evaluation/v4-issue-resolution-status.md) and
 `docs/tasks/v4-plan.md` for evidence, earlier failures and limitations.
 V5 — MCP + GitHub Integration was explicitly authorized on 2026-10-27.
-Local preflight passed; implementation awaits MCP credentials. No V5 product
-capability or live integration acceptance is claimed. See the [V5 goal](docs/goals/v5-mcp-github.md) and
+Local preflight passed; a bounded read-only MCP Client is implemented and locally
+tested. Actual MCP/GitHub verification awaits credentials and a controlled private
+repository. See the [V5 goal](docs/goals/v5-mcp-github.md) and
 [execution plan](docs/tasks/v5-plan.md). Stop at V5/V6.
+
+V5 setup: follow the [private fixture preparation plan](docs/tasks/v5-github-fixture-preparation.md).
+Put `GITHUB_MCP_TOKEN` only in the ignored root `.env`; it maps to the official
+remote Server's Bearer header, not to a Sandbox environment variable. Initially
+grant read-only access to the selected private repository and set the exact local
+`GITHUB_MCP_ALLOWED_REPOSITORIES` JSON list. No remote write path is implemented.
+
+From `apps/api`, check the actual official MCP connection and identity:
+
+```powershell
+$env:PYTHONPATH = 'src'
+uv run python -m repopilot.github.probe --expected-login juice-gift
+```
+
+The probe prints only safe connection metadata or an application-owned error code.
+`credential_missing` means no connection was attempted. Local protocol tests do
+not satisfy actual GitHub verification. The separate live test requires explicit
+`RUN_GITHUB_MCP_TESTS=1`; never pass a Token on the command line.
 
 ## Current functionality
 

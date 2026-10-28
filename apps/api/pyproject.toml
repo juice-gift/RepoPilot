@@ -5,7 +5,11 @@ description = "RepoPilot FastAPI backend"
 requires-python = ">=3.13,<3.14"
 dependencies = [
     "alembic>=1.16,<2.0",
+    "anyio>=4.12,<5",
     "fastapi>=0.116.1,<1.0.0",
+    "httpx2>=2.12,<3.0",
+    "jsonschema>=4.26,<5",
+    "mcp==2.3.0",
     "openai>=2,<3",
     "pgvector>=0.4,<1",
     "psycopg[binary]>=3.2,<4.0",
@@ -19,7 +23,6 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "httpx2>=2.12,<3.0",
     "pytest>=8.4.1,<9.0.0",
     "ruff>=0.12,<1.0",
 ]
