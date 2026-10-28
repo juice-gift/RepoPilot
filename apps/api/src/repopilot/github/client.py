@@ -28,6 +28,7 @@ READ_TOOLS = frozenset(
         "issue_read",
         "pull_request_read",
         "list_pull_requests",
+        "search_repositories",
     }
 )
 MAX_RESPONSE_BYTES = 1_048_576
@@ -215,7 +216,14 @@ class GitHubReadClient:
     async def _call(self, name: str, arguments: dict[str, object]) -> ToolData:
         if name not in READ_TOOLS or name not in self._schemas:
             raise GitHubMCPError("operation_denied")
-        if name != "get_me":
+        if name == "search_repositories":
+            query = arguments.get("query")
+            if not isinstance(query, str) or not query.startswith("repo:"):
+                raise GitHubMCPError("repository_denied")
+            scope = self._repository(query.removeprefix("repo:"))
+            if query != f"repo:{scope['owner']}/{scope['repo']}":
+                raise GitHubMCPError("repository_denied")
+        elif name != "get_me":
             repository = f"{arguments.get('owner', '')}/{arguments.get('repo', '')}"
             self._repository(repository)
         if (
@@ -246,6 +254,18 @@ class GitHubReadClient:
 
     async def identity(self) -> ToolData:
         return await self._call("get_me", {})
+
+    async def repository(self, repository: str) -> ToolData:
+        scope = self._repository(repository)
+        return await self._call(
+            "search_repositories",
+            {
+                "query": f"repo:{scope['owner']}/{scope['repo']}",
+                "minimal_output": False,
+                "perPage": 1,
+                "page": 1,
+            },
+        )
 
     async def commit(self, repository: str, ref: str) -> ToolData:
         if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._/-]{0,199}", ref) or ".." in ref:

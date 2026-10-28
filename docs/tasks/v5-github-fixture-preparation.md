@@ -1,7 +1,10 @@
 # V5 私有受控仓库准备方案
 
 状态：2026-10-28，供 Owner 在 GitHub 手动准备；本文不是远程写入授权。
-建议仓库名称：`juice-gift/repopilot-v5-controlled`（最终名称由 Owner 确认）。
+Owner 已确认仓库：`juice-gift/repopilot-v5-sandbox`，Issue #1/#2/#3。
+2026-10-28 [实际只读校验](../evaluation/v5-github-readonly-audit.json)发现根目录
+只有初始 README，三个 Issue 无正文，main SHA 与提供值不同。请完成下面第 2–4
+步：上传五个冻结文件并替换初始 README，补正文，然后提供新 main SHA。
 
 ## 需要在 GitHub 创建的内容
 
@@ -74,10 +77,10 @@ Contents / Issues / Pull requests 均为 Read-only，Metadata 按 GitHub 自动�
 不需要 Actions、Workflows、Administration 或 Secrets 权限。配置到期时间。
 不要将 Token 放进 Issue、命令行参数、聊天、报告或仓库文件。
 
-确认最终仓库名后，配置单仓库本地读取授权（下面名称是建议值）：
+配置已确认仓库的本地读取授权：
 
 ```dotenv
-GITHUB_MCP_ALLOWED_REPOSITORIES=["juice-gift/repopilot-v5-controlled"]
+GITHUB_MCP_ALLOWED_REPOSITORIES=["juice-gift/repopilot-v5-sandbox"]
 ```
 
 空列表默认拒绝所有仓库读取，但仍允许连接/工具发现和本人身份验证。

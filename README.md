@@ -11,9 +11,11 @@ Final regressions pass. See the
 [completion report](docs/evaluation/v4-issue-resolution-status.md) and
 `docs/tasks/v4-plan.md` for evidence, earlier failures and limitations.
 V5 — MCP + GitHub Integration was explicitly authorized on 2026-10-27.
-Local preflight passed; a bounded read-only MCP Client is implemented and locally
-tested. Actual MCP/GitHub verification awaits credentials and a controlled private
-repository. See the [V5 goal](docs/goals/v5-mcp-github.md) and
+Local preflight and actual read-only MCP/GitHub connection/identity checks passed.
+The selected private repository currently fails the frozen fixture/baseline/Issue
+preparation gate; controlled repair integration remains incomplete. See the
+[actual read-only audit](docs/evaluation/v5-github-readonly-audit.json),
+[V5 goal](docs/goals/v5-mcp-github.md) and
 [execution plan](docs/tasks/v5-plan.md). Stop at V5/V6.
 
 V5 setup: follow the [private fixture preparation plan](docs/tasks/v5-github-fixture-preparation.md).

@@ -6,18 +6,19 @@ Implement the [authorized V5 goal](../goals/v5-mcp-github.md).
 Authorized 2026-10-27; branch `codex/v5-mcp-github`, clean-main baseline
 `0308e8ab588d8d2a15ad960325e1d062f330eb45`. Remote `origin/main` was independently
 checked with `git ls-remote` and matched.
-**M0 complete. M1 local implementation tested; actual MCP verification awaits Token.**
+**M0/M1 complete. Actual MCP reads verified; M2 preparation gate failed.**
 Owner resumed local engineering on 2026-10-28, selected juice-gift as test repository
-owner and requested a private fixture preparation plan. No repository name/Issue
-has yet been confirmed; V5 remains incomplete.
+owner and requested a private fixture preparation plan. Owner subsequently confirmed
+juice-gift/repopilot-v5-sandbox, Issues 1/2/3 and local Token configuration. The
+remote fixture and provided SHA do not match; V5 remains incomplete.
 
 ## Milestones
 
 | Milestone | Deliverable and required verification | State |
 | --- | --- | --- |
 | M0 | Goal/plan, V4 regressions, live DB/Docker, official research, capability gaps | Complete |
-| M1 | Explicit bounded MCP Client, discovery/schema checks, allowlisted reads, actual official-server read | Local implementation passed; live check unverified: credential_missing |
-| M2 | Canonical repository/Issue/commit/Snapshot binding, bounded source import, migrations and integrity checks | Pending |
+| M1 | Explicit bounded MCP Client, discovery/schema checks, allowlisted reads, actual official-server read | Complete: actual identity/repository/commit/file/Issue/PR-list reads verified |
+| M2 | Canonical repository/Issue/commit/Snapshot binding, bounded source import, migrations and integrity checks | Blocked precondition: wrong SHA, missing frozen source, missing Issue bodies |
 | M3 | Approved controlled GitHub fixture → existing V4 repair → persisted diff/results/test evidence | Pending controlled fixture |
 | M4 | Reviewable exact publication proposal, explicit human approval, server permission gates, minimal React integration | Pending |
 | M5 | MCP branch/commit/PR publication, stale-base guards, recovery/idempotency, live approved write evidence | Pending exact proposal approval |
@@ -184,14 +185,62 @@ Keep V1 indexing and V3 investigation independent. Do not relax frozen V4
 manifest/profile permissions to accommodate unrelated GitHub files or execute
 remote setup scripts. No multi-agent work is authorized.
 
+## Actual MCP read-only audit and new blocker (2026-10-28)
+
+Owner selected `juice-gift/repopilot-v5-sandbox`, Issues 1/2/3 and supplied SHA
+`6a9359843eb56ecbd3a569e63c93a2d747ac64c1`. This is a fresh audit after resumption;
+the previous credential blocker is resolved. Reads were explicitly limited to
+that repository using the Settings constructor allowlist; no .env value was
+printed or modified. No connector/REST substitute was used for this evidence.
+
+[Actual report](../evaluation/v5-github-readonly-audit.json), observed
+2026-10-28 12:52 Asia/Shanghai:
+
+- Official remote MCP Server, SDK 2.3.0, negotiated protocol 2026-07-28.
+  get_me matches juice-gift. Repository id 1436602856, private, default main,
+  reported pull permission true; successful scoped reads confirm read access.
+  Role flags are not proof of PAT write scopes; no write authorization or test.
+- Actual main SHA: `8728cea64153aa7476c8c003b47dc24402d429b2`, different from the
+  supplied SHA (which is the local RepoPilot development commit).
+- At that exact remote SHA the root contains only README.md. Its embedded source
+  is `# repopilot-v5-sandbox`, not the frozen README. auth.py, fees.py, policy.py
+  and workflow.py are missing. All source comparisons fail. No code was executed.
+- Issues 1/2/3 exist with the expected case titles, but MCP responses contain no
+  body. None matches its frozen contract. The observed response uses an explicit
+  issue/method wrapper; parsing validates the exact repository URL and number.
+- First PR list page is empty. A specific PR read remains unverified until one
+  exists after separately approved publication; no artificial PR was created.
+- Local frozen manifest and independent test integrity pass. As specified by the
+  preparation plan, independent tests stay in RepoPilot, not in the remote repo.
+
+Added only the required exact-repository search tool for metadata. Its query is
+constructed and independently checked against the local allowlist; broader search
+cannot expand access. Added a read-only fixture auditor: immutable resource URI,
+source SHA256, issue contract and baseline checks. A failed gate produces a report,
+never a partial executable workspace or silently substituted baseline. No M2
+Snapshot/import/repair was started because the owner's preparation gate failed.
+
+Validation: Ruff passed; focused config/MCP/audit tests **32 passed**, including
+the opted-in actual official-server identity test. The fixture auditor itself
+performed actual remote reads and returned blocked_fixture_mismatch; this failure
+is retained, not presented as successful fixture integration. Full regression
+with RUN_DATABASE_TESTS=1, RUN_SANDBOX_TESTS=1 and RUN_GITHUB_MCP_TESTS=1:
+**288 passed, no skips**, including actual identity, database, migration replay and
+Docker isolation tests. Existing AnyIO deprecation warning remains. No new
+dependency/schema/migration/UI change; prior frontend build remains applicable.
+
+Generated a local upload kit in an OS temporary directory: ZIP contains exactly
+five original source files (each hash rechecked); separate text file contains all
+three frozen Issue bodies. No protected validation tests or credentials in the ZIP.
+Owner must extract/upload the five files, replace the initial README, fill Issue
+bodies and supply the resulting main SHA. This does not authorize remote writes.
+
 ## Blockers and resumption
 
-- Required: a credential usable by RepoPilot itself with the official GitHub MCP
-  Server. The app's connected GitHub tools do not expose reusable credentials and
-  cannot establish that RepoPilot's MCP Client works. Do not extract app secrets.
-- Required before controlled integration: owner-selected private test repository
-  under juice-gift and three Issues using the preparation plan. No name has been confirmed; do not
-  assume the RepoPilot source repository is an authorized repair target.
+- Resolved: locally configured credential and real official MCP connection/identity.
+- Required before controlled repair: correct the selected private repository source,
+  fill the three existing Issue bodies and confirm the resulting immutable SHA.
+  Current remote state fails the unchanged frozen preparation criteria above.
 - Required before actual writes: exact publication proposal and human approval.
   The version authorization alone is not permission to create remote fixtures,
   issues, branches, commits or PRs.
@@ -201,8 +250,10 @@ Do not ask for raw tokens in chat. Credentials should be configured locally in
 ignored environment configuration with minimal repository scope. Implemented M1
 setting: `GITHUB_MCP_TOKEN`; begin with read-only Contents/Issues/Pull requests
 access to the controlled repository. Empty GITHUB_MCP_ALLOWED_REPOSITORIES denies
-repository reads while permitting discovery/identity. Do not use the suggested
-repository name as actual authority before Owner creates/confirms and configures it.
-Until the credential is available, stop live validation per AGENTS.md §32. V5 is
-incomplete; do not issue a Completion Report that implies acceptance. M2–M6,
-commit/Snapshot binding and repository/Issue/PR live tests remain outstanding.
+repository reads while permitting discovery/identity. Scope reads only to the
+owner-confirmed repository; remote text cannot add another repository to scope.
+Stop at the failed fixture/baseline gate per AGENTS.md §32; do not guess missing
+Issue intent, import another commit or relax a frozen profile. V5 is incomplete;
+do not issue a Completion Report that implies acceptance. M2–M6,
+commit/Snapshot binding, positive fixture integration and individual PR live
+reading remain outstanding; successful raw reads alone do not satisfy them.
