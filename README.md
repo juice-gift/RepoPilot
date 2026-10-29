@@ -18,8 +18,11 @@ bindings (migration 0006). Bound controlled repairs and complete results are now
 persisted (migration 0007): two actual Qwen repairs pass independent Docker tests,
 and the ambiguous case makes no changes. M4 now persists exact publication proposals
 and human approvals (migration 0008) and exposes the React review flow. M5 publication
-and recovery are implemented locally; actual repair publication is awaiting separate
-owner approval. V5 acceptance remains incomplete. See the
+and recovery are verified against actual GitHub writes. **V5 is complete (2026-10-29):**
+owner-approved [Draft PR #4](https://github.com/juice-gift/repopilot-v5-sandbox/pull/4)
+and [Draft PR #5](https://github.com/juice-gift/repopilot-v5-sandbox/pull/5) match the
+exact tested commits. Final regression: 330 passed; remote-source Docker retests: 8/11
+passed. See the [V5 Completion Report](docs/evaluation/v5-mcp-github-completion.md),
 [actual read-only audit](docs/evaluation/v5-github-readonly-audit.json),
 [V5 goal](docs/goals/v5-mcp-github.md) and
 [execution plan](docs/tasks/v5-plan.md). Stop at V5/V6.

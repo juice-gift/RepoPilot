@@ -30,10 +30,11 @@ For the complete long-term product scope, architecture direction, and version ro
 
 Current stage:
 
-**V4 is complete. V5 — MCP + GitHub Integration was explicitly authorized on 2026-10-27.**
+**V5 — MCP + GitHub Integration is complete (2026-10-29). V6 is not authorized.**
 
-The active goal is `docs/goals/v5-mcp-github.md`; progress and preflight blockers
-are recorded in `docs/tasks/v5-plan.md`. Stop at the V5 / V6 boundary. Remote
+The completed goal is `docs/goals/v5-mcp-github.md`; execution history is recorded
+in `docs/tasks/v5-plan.md` and completion evidence in
+`docs/evaluation/v5-mcp-github-completion.md`. Stop at the V5 / V6 boundary. Remote
 writes still require explicit human approval of a concrete publication proposal.
 
 V4 M0–M6 are complete. Local/database/Docker regressions pass, two real Qwen positive

@@ -1,6 +1,7 @@
 # V5 远程发布集中审批方案
 
-状态：待 Owner 单独批准；本文件不是授权，也不是 V5 Completion Report。
+状态：Owner 已于 2026-10-28 在本对话明确批准两份精确方案，2026-10-29 完成发布与核验。
+原方案、摘要与限制保留不变；结果见 [V5 Completion Report](../evaluation/v5-mcp-github-completion.md)。
 
 目标仅限私有仓库 `juice-gift/repopilot-v5-sandbox`，GitHub 仓库 ID `1436602856`。
 两份独立修复均以远程 main `b4279c8b4d862817e6778caa5f87da91d29ed2b7` 为唯一父提交，

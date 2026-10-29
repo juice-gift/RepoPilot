@@ -1,9 +1,9 @@
 # RepoPilot V5 — MCP + GitHub Integration
 
-**Status:** Authorized by the project owner on 2026-10-27; local preflight complete.
-M1 read-only MCP boundary and actual official-server reads verified. Controlled
-fixture source, baseline and Issue bodies verify; M2 persistence is complete.
-M3 bound controlled repair and M4 approval/UI are complete; M5–M6 and V5 acceptance remain incomplete.
+**Status:** Complete on 2026-10-29. M0–M6 and all eight acceptance criteria verified.
+Actual owner-approved Draft PRs #4/#5 match the exact tested commits; final 330-test
+regression and remote source/Docker retests pass.
+[Completion Report](../evaluation/v5-mcp-github-completion.md). Stop at V5/V6.
 **Baseline:** `0308e8ab588d8d2a15ad960325e1d062f330eb45` on clean `main`.
 **Branch:** `codex/v5-mcp-github`.
 **Execution plan:** [V5 plan](../tasks/v5-plan.md).

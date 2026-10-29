@@ -6,12 +6,12 @@ Implement the [authorized V5 goal](../goals/v5-mcp-github.md).
 Authorized 2026-10-27; branch `codex/v5-mcp-github`, clean-main baseline
 `0308e8ab588d8d2a15ad960325e1d062f330eb45`. Remote `origin/main` was independently
 checked with `git ls-remote` and matched.
-**M0–M4 complete. M5 implementation and prepublication checks pass; exact remote approval required.**
+**M0–M6 complete (2026-10-29). Stop at V5/V6; V6 is not authorized.**
 Owner resumed local engineering on 2026-10-28, selected juice-gift as test repository
 owner and requested a private fixture preparation plan. Owner subsequently confirmed
 juice-gift/repopilot-v5-sandbox, Issues 1/2/3 and local Token configuration. The
 initial mismatches and permission failures are retained below. Current verified
-baseline is b4279c8b4d862817e6778caa5f87da91d29ed2b7; V5 remains incomplete.
+baseline is b4279c8b4d862817e6778caa5f87da91d29ed2b7; V5 acceptance is complete.
 
 ## Milestones
 
@@ -22,11 +22,30 @@ baseline is b4279c8b4d862817e6778caa5f87da91d29ed2b7; V5 remains incomplete.
 | M2 | Canonical repository/Issue/commit/Snapshot binding, bounded source import, migrations and integrity checks | Complete: real MCP→PostgreSQL import and idempotency verified |
 | M3 | Approved controlled GitHub fixture → existing V4 repair → persisted diff/results/test evidence | Complete: two actual Qwen repairs and zero-change owner decision |
 | M4 | Reviewable exact publication proposal, explicit human approval, server permission gates, minimal React integration | Complete: 300-test live regression; no remote repair writes |
-| M5 | MCP PR publication plus exact Git object/ref supplement, stale-base guards, recovery/idempotency, live approved write evidence | Local implementation/tests complete; live publication awaits two exact proposal approvals |
-| M6 | Full V1–V4 regression, live acceptance audit, Completion Report, V5/V6 stop | Prepublication regression/security/scope checks pass; final live audit/report pending |
+| M5 | MCP PR publication plus exact Git object/ref supplement, stale-base guards, recovery/idempotency, live approved write evidence | Complete: explicit owner approval, actual Draft PRs 4/5, exact source/parent/tree and recovery/idempotency verified |
+| M6 | Full V1–V4 regression, live acceptance audit, Completion Report, V5/V6 stop | Complete: final 330 tests, remote-source Docker retests, security/scope audit and Completion Report |
 
 Each milestone requires relevant tests, self-review and a meaningful commit.
 No milestone may use simulated integration as proof of actual remote success.
+
+## Final closure (2026-10-29)
+
+Owner approved both exact proposals on 2026-10-28. Actual official MCP Draft PRs
+[4](https://github.com/juice-gift/repopilot-v5-sandbox/pull/4) and
+[5](https://github.com/juice-gift/repopilot-v5-sandbox/pull/5) match the approved
+commit SHAs, sole parent, trees and every file byte. Main/Issues are unchanged.
+A controlled client interruption after actual branch creation recovered without
+repeating Git mutations. Published repeats return saved outcomes. Final tests:
+330 passed/no skips; Ruff, migration 0008/check, frontend build pass. Read-only
+remote-source/frozen-workspace Docker retests pass 8/11 with cleanup. Write allowlist
+is empty; no Token leak or frozen fixture changes. Historical false stale errors,
+Docker startup failure and fixes are retained in the completion evidence.
+
+[Completion Report](../evaluation/v5-mcp-github-completion.md),
+[final actual audit](../evaluation/v5-final-live-audit.json).
+Code fix: ed2246b; live evidence: 1d2339f. No required V5 work remains.
+All pending/blocker descriptions below are historical checkpoints, superseded by
+this closure. Do not start V6 without a new explicitly authorized goal.
 
 ## M4 completion (2026-10-28)
 
