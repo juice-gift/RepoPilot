@@ -1,6 +1,7 @@
 """Explicit exact-output reviews and verified historical provenance."""
 
 import json
+from pathlib import Path
 
 from repopilot.config import REPOSITORY_ROOT
 from repopilot.evaluation.contracts import CaseResult, digest, file_digest
@@ -37,6 +38,11 @@ def apply_reviews(report: dict, reviews: list[dict]) -> dict:
         elif case["status"] == "unverified" and not case["failures"]:
             case["status"] = "passed"
     report["review_policy"] = digest(reviews)
+    report["review_fingerprints"] = {
+        name: file_digest(Path(__file__).parent / name)
+        for name in ("reviews.py", "grading.py")
+    }
+
     # Reviews are preserved as extra report metadata, not CaseResult schema fields.
     report["aggregate"] = aggregate(
         [

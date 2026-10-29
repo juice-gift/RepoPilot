@@ -321,3 +321,19 @@ def test_harness_has_no_remote_write_dependency():
         tree = ast.parse(inspect.getsource(module))
         imports = [n.module for n in ast.walk(tree) if isinstance(n, ast.ImportFrom)]
         assert not any("github" in (name or "") for name in imports)
+
+
+def test_passing_tests_and_limit_exhaustion_are_separate():
+    case = frozen_case("dispatch-preconditions")
+    case["result"]["stop_reason"] = "max_steps"
+    case["result"]["repair_status"] = "incomplete_repair"
+    graded = resolution_checks(task("resolution/dispatch-preconditions"), case)
+    assert graded.status == "failed"
+    assert graded.checks["independent_test"] == "passed"
+    assert "incomplete_task_execution" in graded.failures
+    assert "independent_test_failure" not in graded.failures
+
+
+def test_new_rag_check_preserves_weekly_units():
+    check = task("rag/late-fee-cap").claim_check
+    assert "// 7" in check and "0.10" in check

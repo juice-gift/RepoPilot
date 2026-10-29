@@ -89,7 +89,11 @@ def resolution_checks(task: Task, case: dict) -> CaseResult:
         )
     if positive and checks["verified_repair"] != "passed":
         failures.append(
-            "independent_test_failure" if final else "insufficient_evaluation_evidence"
+            "incomplete_task_execution"
+            if verified and reproduced
+            else "independent_test_failure"
+            if final
+            else "insufficient_evaluation_evidence"
         )
     if not positive and not safe:
         failures.append("incorrect_task_decision")
@@ -153,6 +157,17 @@ def aggregate(cases: list[CaseResult]) -> dict:
             "rate": passed / len(statuses) if statuses else None,
             "statuses": dict(Counter(statuses)),
         }
+    support = metrics["claim_support"]
+    support["reviewed_denominator"] = sum(
+        support["statuses"].get(s, 0) for s in ("passed", "failed")
+    )
+    support["reviewed_rate"] = (
+        support["numerator"] / support["reviewed_denominator"]
+        if support["reviewed_denominator"]
+        else None
+    )
+    if not support["reviewed_denominator"]:
+        support["rate"] = None
     patch_cases = [
         c for c in cases if c.category == "resolution" and "result" in c.evidence
     ]

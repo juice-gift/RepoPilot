@@ -48,3 +48,29 @@ claims; history stays separate from current metrics. Initial full scripted run:
 8 retrieval and structural suite passed, 5 generated answers remain unreviewed,
 2 actual Docker repairs and 1 safe decision passed. Final scoring aggregation and
 additional review tests were added afterward; final runs will pin committed code.
+
+M4 live pass completed once on qwen3.7-flash-2026-07-15: fee-days verified (8 tests),
+dispatch-preconditions exhausted max_steps/incomplete repair, ambiguous-cap correct
+zero-change owner decision. Five investigation/RAG outputs initially unreviewed;
+all five discovered evidence and valid source-identical citations. This negative
+repair result is preserved, not rerun to obtain success. No provider failure.
+
+Self-review found the NEW RAG fee annotation mistakenly described the V4 daily
+formula, while V1 frozen invoices.py uses weekly 1% capped at 10%. Corrected only
+new V6 annotation, incremented dataset version to 2 and changed canonical hash;
+original V1–V4 fixtures and hashes untouched. Version-1 script/live reports remain
+historical measured trials and cannot compare to final version 2. Final script and
+two bounded RAG live calls will validate the corrected version; no Issue retries.
+Added per-attempt patch-application denominator alongside task-level applicability.
+Initial focused test run had a GBK decoding failure in a test reading Unicode JSON;
+explicit UTF-8 fixed it; rerun 45 passed and Ruff passed. Fix is a separate commit.
+
+Self-review correction: live dispatch independently passed 11/11 at revision 1,
+but exhausted 18 model turns and retained incomplete_repair. Preserve that bounded
+Task failure while reporting independent-test success; removed the erroneous
+independent_test_failure classification for this exact situation. New regression
+covers it. Claim-support quality is null when no concrete review exists; coverage
+and reviewed denominator are explicit. Review imports fingerprint grader code.
+Focused current suite: 31 passed with real owned-DB cleanup; Ruff passed.
+First full V6 DB/Docker suite: 358 passed / 1 disabled online MCP skip before the
+last two regression tests; final rerun follows the scoring corrections.

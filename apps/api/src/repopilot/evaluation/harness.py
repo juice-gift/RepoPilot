@@ -14,7 +14,7 @@ from repopilot.evaluation.contracts import CaseResult, digest, file_digest, load
 from repopilot.evaluation.grading import aggregate
 from repopilot.evaluation.reviews import apply_reviews, historical_evidence
 
-DEFINITIONS = "v6-evidence-grading-2"
+DEFINITIONS = "v6-evidence-grading-3"
 
 
 def save_report(report: dict, output: Path) -> None:
@@ -172,6 +172,9 @@ def run(
                     "evaluation/grading.py",
                     "evaluation/adapters.py",
                     "evaluation/harness.py",
+                    "evaluation/reviews.py",
+                    "evaluation/contracts.py",
+                    "evaluation/metrics.py",
                 )
             },
         },
@@ -208,6 +211,10 @@ def run(
 
 
 def compare(left: dict, right: dict) -> dict:
+    if any(
+        r.get("schema_version") != 1 or not r.get("definitions") for r in (left, right)
+    ):
+        raise ValueError("Unknown report schema or grading definition")
     for key in (
         "schema_version",
         "definitions",
@@ -216,6 +223,7 @@ def compare(left: dict, right: dict) -> dict:
         "mode",
         "runtime",
         "review_policy",
+        "review_fingerprints",
     ):
         if left.get(key) != right.get(key):
             raise ValueError(f"Incompatible runs: {key}")
