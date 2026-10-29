@@ -227,7 +227,7 @@ def test_runner_retains_errors_and_never_live_falls_back(tmp_path, monkeypatch):
     assert modes == ["live"] * 3
     assert len(value["cases"]) == 3
     assert all(c["status"] == "infrastructure_error" for c in value["cases"])
-    assert "DO NOT PERSIST" not in output.read_text()
+    assert "DO NOT PERSIST" not in output.read_text(encoding="utf-8")
     assert output.with_suffix(".md").exists()
 
 
