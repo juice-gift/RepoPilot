@@ -1,0 +1,99 @@
+{
+  "measurement": "actual owner-approved GitHub publication",
+  "authorization": "批准这两份精确方案，继续完成 V5",
+  "authorization_date_Asia_Shanghai": "2026-10-28",
+  "proposal_id": "ac87b554e57e4a9181116fb36cf66811",
+  "plan_hash": "a9226eacdab8fc949a604f291f4d63c4022f4cab75f3a70b8b9d76828cc4161b",
+  "started_at": "2026-10-29T03:10:40.861038+00:00",
+  "preflight": {
+    "endpoint": "https://api.githubcopilot.com/mcp/",
+    "protocol": "2026-07-28",
+    "server_name": "github-mcp-server",
+    "server_version": "github-mcp-server/remote-59427b793443f88795375c20cd01d8e035ecca69",
+    "tools": {
+      "get_commit": "f95666ef940c7191c683d26875a1c53074121158a5b8055318d49ac1a3df93a3",
+      "get_file_contents": "9c2f0944bfb2574ca6c795d3c9e9d18157e017f6ef3d54a262b829d147996406",
+      "get_me": "9e2fcd061b033258d31fc0f42563ff024009ee9307c7cb2bb3f9911422010efb",
+      "issue_read": "eee2681d3262d3357b19b0696f0e3308938a5732b689d85dddc41d538fdc1a93",
+      "list_pull_requests": "7b17ee3fc8cc63fd9c96d445eff03251c7cb8681d93e6d25c5f71c0b469213bc",
+      "pull_request_read": "1baa610eb0d11d3d3d7047c33de2fd2c2f9eeddc1dd10216be77587198fe5c93",
+      "search_repositories": "6cc54b7ffaf8d45b71eecf4e74dcf43f0d99667a1f55e470ec39c42167adff79"
+    },
+    "readonly": true
+  },
+  "local_state_correction": "Correct previous unavailable-object read misclassified as content mismatch; original approved plan/digest unchanged, main unchanged, head absent.",
+  "state": "stale",
+  "last_error": "remote_commit_mismatch",
+  "outcome": {
+    "readonly_preflight": {
+      "endpoint": "https://api.githubcopilot.com/mcp/",
+      "protocol": "2026-07-28",
+      "server_name": "github-mcp-server",
+      "server_version": "github-mcp-server/remote-59427b793443f88795375c20cd01d8e035ecca69",
+      "tools": {
+        "get_commit": "f95666ef940c7191c683d26875a1c53074121158a5b8055318d49ac1a3df93a3",
+        "get_file_contents": "9c2f0944bfb2574ca6c795d3c9e9d18157e017f6ef3d54a262b829d147996406",
+        "get_me": "9e2fcd061b033258d31fc0f42563ff024009ee9307c7cb2bb3f9911422010efb",
+        "issue_read": "eee2681d3262d3357b19b0696f0e3308938a5732b689d85dddc41d538fdc1a93",
+        "list_pull_requests": "7b17ee3fc8cc63fd9c96d445eff03251c7cb8681d93e6d25c5f71c0b469213bc",
+        "pull_request_read": "1baa610eb0d11d3d3d7047c33de2fd2c2f9eeddc1dd10216be77587198fe5c93",
+        "search_repositories": "6cc54b7ffaf8d45b71eecf4e74dcf43f0d99667a1f55e470ec39c42167adff79"
+      },
+      "readonly": true
+    },
+    "observed_tree_sha": "d536b419d771851c609625cef7e595f2ce8ca80c",
+    "tree_sha": "d536b419d771851c609625cef7e595f2ce8ca80c",
+    "observed_commit_sha": "1abc169665e9a6b6d6e56a2e096f251eefe46bd2"
+  },
+  "git_requests": [
+    {
+      "method": "GET",
+      "resource": ""
+    },
+    {
+      "method": "GET",
+      "resource": "git/ref/heads/main"
+    },
+    {
+      "method": "GET",
+      "resource": "git/commits/b4279c8b4d862817e6778caa5f87da91d29ed2b7"
+    },
+    {
+      "method": "GET",
+      "resource": "git/ref/heads/codex/issue-1-ac87b554e57e4a9181116fb36cf66811"
+    },
+    {
+      "method": "GET",
+      "resource": ""
+    },
+    {
+      "method": "GET",
+      "resource": "git/ref/heads/main"
+    },
+    {
+      "method": "GET",
+      "resource": "git/commits/b4279c8b4d862817e6778caa5f87da91d29ed2b7"
+    },
+    {
+      "method": "GET",
+      "resource": "git/ref/heads/codex/issue-1-ac87b554e57e4a9181116fb36cf66811"
+    },
+    {
+      "method": "GET",
+      "resource": "git/trees/d536b419d771851c609625cef7e595f2ce8ca80c"
+    },
+    {
+      "method": "GET",
+      "resource": "git/commits/1abc169665e9a6b6d6e56a2e096f251eefe46bd2"
+    },
+    {
+      "method": "GET",
+      "resource": "git/ref/heads/main"
+    },
+    {
+      "method": "POST",
+      "resource": "git/commits"
+    }
+  ],
+  "finished_at": "2026-10-29T03:11:33.309027+00:00"
+}

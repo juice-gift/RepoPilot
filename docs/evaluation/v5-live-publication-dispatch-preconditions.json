@@ -1,0 +1,231 @@
+{
+  "measurement": "actual owner-approved GitHub publication",
+  "authorization": "批准这两份精确方案，继续完成 V5",
+  "authorization_date_Asia_Shanghai": "2026-10-28",
+  "proposal_id": "c37153f84a904aa09cb1228f30f7f298",
+  "plan_hash": "f382eda4a3d97a97693868c9135e5f083fd505e7a27e4e4c897b8da46309cce0",
+  "started_at": "2026-10-29T03:15:00.986486+00:00",
+  "preflight": {
+    "endpoint": "https://api.githubcopilot.com/mcp/",
+    "protocol": "2026-07-28",
+    "server_name": "github-mcp-server",
+    "server_version": "github-mcp-server/remote-59427b793443f88795375c20cd01d8e035ecca69",
+    "tools": {
+      "get_commit": "f95666ef940c7191c683d26875a1c53074121158a5b8055318d49ac1a3df93a3",
+      "get_file_contents": "9c2f0944bfb2574ca6c795d3c9e9d18157e017f6ef3d54a262b829d147996406",
+      "get_me": "9e2fcd061b033258d31fc0f42563ff024009ee9307c7cb2bb3f9911422010efb",
+      "issue_read": "eee2681d3262d3357b19b0696f0e3308938a5732b689d85dddc41d538fdc1a93",
+      "list_pull_requests": "7b17ee3fc8cc63fd9c96d445eff03251c7cb8681d93e6d25c5f71c0b469213bc",
+      "pull_request_read": "1baa610eb0d11d3d3d7047c33de2fd2c2f9eeddc1dd10216be77587198fe5c93",
+      "search_repositories": "6cc54b7ffaf8d45b71eecf4e74dcf43f0d99667a1f55e470ec39c42167adff79"
+    },
+    "readonly": true
+  },
+  "recovery_first_attempt": {
+    "state": "retry_needed",
+    "error": "controlled_client_fault_after_real_branch",
+    "outcome": {
+      "readonly_preflight": {
+        "endpoint": "https://api.githubcopilot.com/mcp/",
+        "protocol": "2026-07-28",
+        "server_name": "github-mcp-server",
+        "server_version": "github-mcp-server/remote-59427b793443f88795375c20cd01d8e035ecca69",
+        "tools": {
+          "get_commit": "f95666ef940c7191c683d26875a1c53074121158a5b8055318d49ac1a3df93a3",
+          "get_file_contents": "9c2f0944bfb2574ca6c795d3c9e9d18157e017f6ef3d54a262b829d147996406",
+          "get_me": "9e2fcd061b033258d31fc0f42563ff024009ee9307c7cb2bb3f9911422010efb",
+          "issue_read": "eee2681d3262d3357b19b0696f0e3308938a5732b689d85dddc41d538fdc1a93",
+          "list_pull_requests": "7b17ee3fc8cc63fd9c96d445eff03251c7cb8681d93e6d25c5f71c0b469213bc",
+          "pull_request_read": "1baa610eb0d11d3d3d7047c33de2fd2c2f9eeddc1dd10216be77587198fe5c93",
+          "search_repositories": "6cc54b7ffaf8d45b71eecf4e74dcf43f0d99667a1f55e470ec39c42167adff79"
+        },
+        "readonly": true
+      },
+      "observed_tree_sha": "55162c85dab76096402500d1d091725993830586",
+      "tree_sha": "55162c85dab76096402500d1d091725993830586",
+      "observed_commit_sha": "114a173431c0ff68f1368615096c24284a5af25d",
+      "commit_sha": "114a173431c0ff68f1368615096c24284a5af25d"
+    },
+    "fault": "injected client interruption after successful actual GitHub create-ref, not a claimed real network outage"
+  },
+  "state": "published",
+  "last_error": null,
+  "outcome": {
+    "readonly_preflight": {
+      "endpoint": "https://api.githubcopilot.com/mcp/",
+      "protocol": "2026-07-28",
+      "server_name": "github-mcp-server",
+      "server_version": "github-mcp-server/remote-59427b793443f88795375c20cd01d8e035ecca69",
+      "tools": {
+        "get_commit": "f95666ef940c7191c683d26875a1c53074121158a5b8055318d49ac1a3df93a3",
+        "get_file_contents": "9c2f0944bfb2574ca6c795d3c9e9d18157e017f6ef3d54a262b829d147996406",
+        "get_me": "9e2fcd061b033258d31fc0f42563ff024009ee9307c7cb2bb3f9911422010efb",
+        "issue_read": "eee2681d3262d3357b19b0696f0e3308938a5732b689d85dddc41d538fdc1a93",
+        "list_pull_requests": "7b17ee3fc8cc63fd9c96d445eff03251c7cb8681d93e6d25c5f71c0b469213bc",
+        "pull_request_read": "1baa610eb0d11d3d3d7047c33de2fd2c2f9eeddc1dd10216be77587198fe5c93",
+        "search_repositories": "6cc54b7ffaf8d45b71eecf4e74dcf43f0d99667a1f55e470ec39c42167adff79"
+      },
+      "readonly": true
+    },
+    "observed_tree_sha": "55162c85dab76096402500d1d091725993830586",
+    "tree_sha": "55162c85dab76096402500d1d091725993830586",
+    "observed_commit_sha": "114a173431c0ff68f1368615096c24284a5af25d",
+    "commit_sha": "114a173431c0ff68f1368615096c24284a5af25d",
+    "branch": "codex/issue-2-c37153f84a904aa09cb1228f30f7f298",
+    "pr_connection": {
+      "endpoint": "https://api.githubcopilot.com/mcp/",
+      "protocol": "2026-07-28",
+      "tools": {
+        "create_pull_request": "08f1edbe5e9ef6f669c848a6b5d308f2ac2e396ded329c029f174c6cf82a52cc",
+        "list_pull_requests": "7b17ee3fc8cc63fd9c96d445eff03251c7cb8681d93e6d25c5f71c0b469213bc",
+        "pull_request_read": "1baa610eb0d11d3d3d7047c33de2fd2c2f9eeddc1dd10216be77587198fe5c93"
+      },
+      "write_operation": "create_pull_request"
+    },
+    "observed_pr_number": 5,
+    "observed_pr_url": "https://github.com/juice-gift/repopilot-v5-sandbox/pull/5",
+    "pr_number": 5,
+    "pr_url": "https://github.com/juice-gift/repopilot-v5-sandbox/pull/5",
+    "pr_transport": "official GitHub MCP",
+    "requested_maintainer_can_modify": false,
+    "parent_sha": "b4279c8b4d862817e6778caa5f87da91d29ed2b7",
+    "exact_content_verified": true,
+    "default_branch_unchanged": true
+  },
+  "repeat": {
+    "state": "published",
+    "same_outcome": true,
+    "additional_git_requests": 0
+  },
+  "git_requests": [
+    {
+      "method": "GET",
+      "resource": ""
+    },
+    {
+      "method": "GET",
+      "resource": "git/ref/heads/main"
+    },
+    {
+      "method": "GET",
+      "resource": "git/commits/b4279c8b4d862817e6778caa5f87da91d29ed2b7"
+    },
+    {
+      "method": "GET",
+      "resource": "git/ref/heads/codex/issue-2-c37153f84a904aa09cb1228f30f7f298"
+    },
+    {
+      "method": "GET",
+      "resource": ""
+    },
+    {
+      "method": "GET",
+      "resource": "git/ref/heads/main"
+    },
+    {
+      "method": "GET",
+      "resource": "git/commits/b4279c8b4d862817e6778caa5f87da91d29ed2b7"
+    },
+    {
+      "method": "GET",
+      "resource": "git/ref/heads/codex/issue-2-c37153f84a904aa09cb1228f30f7f298"
+    },
+    {
+      "method": "GET",
+      "resource": "git/trees/55162c85dab76096402500d1d091725993830586"
+    },
+    {
+      "method": "GET",
+      "resource": "git/ref/heads/main"
+    },
+    {
+      "method": "POST",
+      "resource": "git/trees"
+    },
+    {
+      "method": "GET",
+      "resource": "git/commits/114a173431c0ff68f1368615096c24284a5af25d"
+    },
+    {
+      "method": "GET",
+      "resource": "git/ref/heads/main"
+    },
+    {
+      "method": "POST",
+      "resource": "git/commits"
+    },
+    {
+      "method": "GET",
+      "resource": "git/ref/heads/main"
+    },
+    {
+      "method": "POST",
+      "resource": "git/refs"
+    },
+    {
+      "method": "GET",
+      "resource": ""
+    },
+    {
+      "method": "GET",
+      "resource": "git/ref/heads/main"
+    },
+    {
+      "method": "GET",
+      "resource": "git/commits/b4279c8b4d862817e6778caa5f87da91d29ed2b7"
+    },
+    {
+      "method": "GET",
+      "resource": "git/ref/heads/codex/issue-2-c37153f84a904aa09cb1228f30f7f298"
+    },
+    {
+      "method": "GET",
+      "resource": "git/trees/55162c85dab76096402500d1d091725993830586"
+    },
+    {
+      "method": "GET",
+      "resource": "git/commits/114a173431c0ff68f1368615096c24284a5af25d"
+    },
+    {
+      "method": "GET",
+      "resource": "git/ref/heads/codex/issue-2-c37153f84a904aa09cb1228f30f7f298"
+    },
+    {
+      "method": "GET",
+      "resource": "git/commits/114a173431c0ff68f1368615096c24284a5af25d"
+    },
+    {
+      "method": "GET",
+      "resource": "git/trees/55162c85dab76096402500d1d091725993830586"
+    },
+    {
+      "method": "GET",
+      "resource": "git/ref/heads/main"
+    },
+    {
+      "method": "GET",
+      "resource": "git/ref/heads/main"
+    },
+    {
+      "method": "GET",
+      "resource": "git/ref/heads/codex/issue-2-c37153f84a904aa09cb1228f30f7f298"
+    },
+    {
+      "method": "GET",
+      "resource": "git/ref/heads/main"
+    },
+    {
+      "method": "GET",
+      "resource": "git/ref/heads/codex/issue-2-c37153f84a904aa09cb1228f30f7f298"
+    },
+    {
+      "method": "GET",
+      "resource": "git/commits/114a173431c0ff68f1368615096c24284a5af25d"
+    },
+    {
+      "method": "GET",
+      "resource": "git/trees/55162c85dab76096402500d1d091725993830586"
+    }
+  ],
+  "finished_at": "2026-10-29T03:16:24.951460+00:00"
+}

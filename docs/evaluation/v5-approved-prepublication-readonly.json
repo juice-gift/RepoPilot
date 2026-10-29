@@ -1,0 +1,181 @@
+{
+  "measurement": "actual MCP prepublication reads; no remote writes or approval",
+  "repository": "juice-gift/repopilot-v5-sandbox",
+  "remote_writes": 0,
+  "proposals": [
+    {
+      "id": "ac87b554e57e4a9181116fb36cf66811",
+      "plan_hash": "a9226eacdab8fc949a604f291f4d63c4022f4cab75f3a70b8b9d76828cc4161b",
+      "state": "awaiting_approval",
+      "approved": false,
+      "git_readonly": {
+        "baseline_tree_sha": "24256b0719543d6711d4b5c019b9297a1859e3ac",
+        "exact_baseline_tree_verified": true,
+        "head_absent": true,
+        "reported_push_role": true,
+        "pat_write_permission": "not exercised before explicit approval",
+        "remote_writes": 0
+      },
+      "plan": {
+        "proposal_id": "ac87b554e57e4a9181116fb36cf66811",
+        "run_id": "4c4aa94783034a44bc97be73c6fc2b3f",
+        "result_hash": "14c79da3dfdd5a26c92b176f49a376961f1bdc9d9eb519350c8a98bac7f443dc",
+        "repository": "juice-gift/repopilot-v5-sandbox",
+        "remote_repository_id": 1436602856,
+        "issue_number": 1,
+        "profile": "fee-days",
+        "snapshot_id": 414,
+        "base_branch": "main",
+        "base_sha": "b4279c8b4d862817e6778caa5f87da91d29ed2b7",
+        "head_branch": "codex/issue-1-ac87b554e57e4a9181116fb36cf66811",
+        "files": {
+          "README.md": "# Dispatch and billing fixture, version 1\n\nControlled Python source for RepoPilot's V4 repair baseline. No external packages.\nInvoice overdue charges are one percent of the balance per overdue day, with a\n30-day cap. Negative balances/days are invalid. Zero days incurs no fee.\n\nJob submission must authenticate first, before any policy validation. Authorized\nnegative attempts must raise ValueError for both permanent and transient jobs.\nAuthorized permanent jobs with nonnegative attempts are rejected. Transient jobs\nuse exponential retry delays. The operations guide says delays cap at 60 seconds;\nthe implementation currently caps at 300 seconds. Product intent for this cap has\nnot been established. Do not choose either cap without an owner decision.\n",
+          "auth.py": "def verify_token(token: str) -> None:\n    if token != \"fixture-authorized\":\n        raise PermissionError(\"Invalid token\")\n",
+          "fees.py": "\"\"\"Invoice charges in integer cents; each overdue day is charged, capped at 30 days.\"\"\"\n\n\ndef late_fee(balance_cents: int, overdue_days: int) -> int:\n    if balance_cents < 0 or overdue_days < 0:\n        raise ValueError(\"Values must be nonnegative\")\n    return balance_cents * min(max(overdue_days, 0), 30) // 100\n",
+          "policy.py": "def retry_delay(attempt: int, transient: bool) -> int | None:\n    if not transient:\n        return None\n    if attempt < 0:\n        raise ValueError(\"Attempt must be nonnegative\")\n    return min(2 ** min(attempt, 9), 300)\n",
+          "workflow.py": "from auth import verify_token\nfrom policy import retry_delay\n\n\ndef submit_job(token: str, attempt: int, transient: bool) -> dict:\n    delay = retry_delay(attempt, transient)\n    verify_token(token)\n    if delay is None:\n        return {\"status\": \"rejected\"}\n    return {\"status\": \"scheduled\", \"delay\": delay}\n"
+        },
+        "baseline_hashes": {
+          "README.md": "ec62401c5e6dd72bb21de2d1f92ae30f4cbb09a2d5d43990a5d8da52a794b04f",
+          "auth.py": "8ab1241692a053cc9c8132d938f00e51920386d2f50ddac3127dfefc4289b870",
+          "fees.py": "4a9b96b0b83d3ddb08d84ffeddea7006047d23c448927e9e56cfa8d51bb04d27",
+          "policy.py": "9656f43b32ba52edf9a5165475819d964f1d6043cb5fd2d666918253c9ce89df",
+          "workflow.py": "51465beab2d3598b49296bc6928321c5cd76316bbda2f9cff066883c881425e6"
+        },
+        "baseline_tree_sha": "24256b0719543d6711d4b5c019b9297a1859e3ac",
+        "changed_paths": [
+          "fees.py"
+        ],
+        "diff": "--- a/fees.py\n+++ b/fees.py\n@@ -4,4 +4,4 @@\n def late_fee(balance_cents: int, overdue_days: int) -> int:\n     if balance_cents < 0 or overdue_days < 0:\n         raise ValueError(\"Values must be nonnegative\")\n-    return balance_cents * min(max(overdue_days - 1, 0), 30) // 100\n+    return balance_cents * min(max(overdue_days, 0), 30) // 100\n",
+        "tree_sha": "d536b419d771851c609625cef7e595f2ce8ca80c",
+        "commit_sha": "1abc169665e9a6b6d6e56a2e096f251eefe46bd2",
+        "commit_message": "fix: resolve issue #1 (fee-days)\n\nRepoPilot proposal ac87b554e57e4a9181116fb36cf66811\n",
+        "commit_date": "2026-10-28T07:55:25+00:00",
+        "author_name": "RepoPilot",
+        "author_email": "repopilot@users.noreply.github.com",
+        "pr_title": "Fix issue #1: fee-days",
+        "pr_body": "Controlled repair for #1.\n\nBase: `b4279c8b4d862817e6778caa5f87da91d29ed2b7`\nSnapshot: `414`\nResult: `14c79da3dfdd5a26c92b176f49a376961f1bdc9d9eb519350c8a98bac7f443dc`\nIndependent tests: 8 passed at revision 1.\n\nRepoPilot-Proposal: ac87b554e57e4a9181116fb36cf66811\n\nHuman review required. No merge is authorized.\n",
+        "draft": true,
+        "test_passed": 8,
+        "tested_revision": 1
+      },
+      "readonly_preflight": {
+        "endpoint": "https://api.githubcopilot.com/mcp/",
+        "protocol": "2026-07-28",
+        "server_name": "github-mcp-server",
+        "server_version": "github-mcp-server/remote-59427b793443f88795375c20cd01d8e035ecca69",
+        "tools": {
+          "get_commit": "f95666ef940c7191c683d26875a1c53074121158a5b8055318d49ac1a3df93a3",
+          "get_file_contents": "9c2f0944bfb2574ca6c795d3c9e9d18157e017f6ef3d54a262b829d147996406",
+          "get_me": "9e2fcd061b033258d31fc0f42563ff024009ee9307c7cb2bb3f9911422010efb",
+          "issue_read": "eee2681d3262d3357b19b0696f0e3308938a5732b689d85dddc41d538fdc1a93",
+          "list_pull_requests": "7b17ee3fc8cc63fd9c96d445eff03251c7cb8681d93e6d25c5f71c0b469213bc",
+          "pull_request_read": "1baa610eb0d11d3d3d7047c33de2fd2c2f9eeddc1dd10216be77587198fe5c93",
+          "search_repositories": "6cc54b7ffaf8d45b71eecf4e74dcf43f0d99667a1f55e470ec39c42167adff79"
+        },
+        "readonly": true
+      },
+      "pr_support": {
+        "connection": {
+          "endpoint": "https://api.githubcopilot.com/mcp/",
+          "protocol": "2026-07-28",
+          "tools": {
+            "create_pull_request": "08f1edbe5e9ef6f669c848a6b5d308f2ac2e396ded329c029f174c6cf82a52cc",
+            "list_pull_requests": "7b17ee3fc8cc63fd9c96d445eff03251c7cb8681d93e6d25c5f71c0b469213bc",
+            "pull_request_read": "1baa610eb0d11d3d3d7047c33de2fd2c2f9eeddc1dd10216be77587198fe5c93"
+          },
+          "write_operation": "create_pull_request"
+        },
+        "matching_pr_count": 0,
+        "remote_writes": 0
+      }
+    },
+    {
+      "id": "c37153f84a904aa09cb1228f30f7f298",
+      "plan_hash": "f382eda4a3d97a97693868c9135e5f083fd505e7a27e4e4c897b8da46309cce0",
+      "state": "awaiting_approval",
+      "approved": false,
+      "git_readonly": {
+        "baseline_tree_sha": "24256b0719543d6711d4b5c019b9297a1859e3ac",
+        "exact_baseline_tree_verified": true,
+        "head_absent": true,
+        "reported_push_role": true,
+        "pat_write_permission": "not exercised before explicit approval",
+        "remote_writes": 0
+      },
+      "plan": {
+        "proposal_id": "c37153f84a904aa09cb1228f30f7f298",
+        "run_id": "cdfcf6191d4440c4816fd6318fda7470",
+        "result_hash": "16d3b8ab11d65a869421e948572400899e921bbe097f2dcac2ad6f2d4ac77546",
+        "repository": "juice-gift/repopilot-v5-sandbox",
+        "remote_repository_id": 1436602856,
+        "issue_number": 2,
+        "profile": "dispatch-preconditions",
+        "snapshot_id": 414,
+        "base_branch": "main",
+        "base_sha": "b4279c8b4d862817e6778caa5f87da91d29ed2b7",
+        "head_branch": "codex/issue-2-c37153f84a904aa09cb1228f30f7f298",
+        "files": {
+          "README.md": "# Dispatch and billing fixture, version 1\n\nControlled Python source for RepoPilot's V4 repair baseline. No external packages.\nInvoice overdue charges are one percent of the balance per overdue day, with a\n30-day cap. Negative balances/days are invalid. Zero days incurs no fee.\n\nJob submission must authenticate first, before any policy validation. Authorized\nnegative attempts must raise ValueError for both permanent and transient jobs.\nAuthorized permanent jobs with nonnegative attempts are rejected. Transient jobs\nuse exponential retry delays. The operations guide says delays cap at 60 seconds;\nthe implementation currently caps at 300 seconds. Product intent for this cap has\nnot been established. Do not choose either cap without an owner decision.\n",
+          "auth.py": "def verify_token(token: str) -> None:\n    if token != \"fixture-authorized\":\n        raise PermissionError(\"Invalid token\")\n",
+          "fees.py": "\"\"\"Invoice charges in integer cents; each overdue day is charged, capped at 30 days.\"\"\"\n\n\ndef late_fee(balance_cents: int, overdue_days: int) -> int:\n    if balance_cents < 0 or overdue_days < 0:\n        raise ValueError(\"Values must be nonnegative\")\n    return balance_cents * min(max(overdue_days - 1, 0), 30) // 100\n",
+          "policy.py": "def retry_delay(attempt: int, transient: bool) -> int | None:\n    if not transient:\n        return None\n    if attempt < 0:\n        raise ValueError(\"Attempt must be nonnegative\")\n    return min(2 ** min(attempt, 9), 300)\n",
+          "workflow.py": "from auth import verify_token\nfrom policy import retry_delay\n\n\ndef submit_job(token: str, attempt: int, transient: bool) -> dict:\n    verify_token(token)\n    if not transient and attempt < 0:\n        raise ValueError(\"Attempt must be nonnegative\")\n    delay = retry_delay(attempt, transient)\n    if delay is None:\n        return {\"status\": \"rejected\"}\n    return {\"status\": \"scheduled\", \"delay\": delay}\n"
+        },
+        "baseline_hashes": {
+          "README.md": "ec62401c5e6dd72bb21de2d1f92ae30f4cbb09a2d5d43990a5d8da52a794b04f",
+          "auth.py": "8ab1241692a053cc9c8132d938f00e51920386d2f50ddac3127dfefc4289b870",
+          "fees.py": "4a9b96b0b83d3ddb08d84ffeddea7006047d23c448927e9e56cfa8d51bb04d27",
+          "policy.py": "9656f43b32ba52edf9a5165475819d964f1d6043cb5fd2d666918253c9ce89df",
+          "workflow.py": "51465beab2d3598b49296bc6928321c5cd76316bbda2f9cff066883c881425e6"
+        },
+        "baseline_tree_sha": "24256b0719543d6711d4b5c019b9297a1859e3ac",
+        "changed_paths": [
+          "workflow.py"
+        ],
+        "diff": "--- a/workflow.py\n+++ b/workflow.py\n@@ -3,8 +3,10 @@\n \n \n def submit_job(token: str, attempt: int, transient: bool) -> dict:\n+    verify_token(token)\n+    if not transient and attempt < 0:\n+        raise ValueError(\"Attempt must be nonnegative\")\n     delay = retry_delay(attempt, transient)\n-    verify_token(token)\n     if delay is None:\n         return {\"status\": \"rejected\"}\n     return {\"status\": \"scheduled\", \"delay\": delay}\n",
+        "tree_sha": "55162c85dab76096402500d1d091725993830586",
+        "commit_sha": "114a173431c0ff68f1368615096c24284a5af25d",
+        "commit_message": "fix: resolve issue #2 (dispatch-preconditions)\n\nRepoPilot proposal c37153f84a904aa09cb1228f30f7f298\n",
+        "commit_date": "2026-10-28T07:55:48+00:00",
+        "author_name": "RepoPilot",
+        "author_email": "repopilot@users.noreply.github.com",
+        "pr_title": "Fix issue #2: dispatch-preconditions",
+        "pr_body": "Controlled repair for #2.\n\nBase: `b4279c8b4d862817e6778caa5f87da91d29ed2b7`\nSnapshot: `414`\nResult: `16d3b8ab11d65a869421e948572400899e921bbe097f2dcac2ad6f2d4ac77546`\nIndependent tests: 11 passed at revision 1.\n\nRepoPilot-Proposal: c37153f84a904aa09cb1228f30f7f298\n\nHuman review required. No merge is authorized.\n",
+        "draft": true,
+        "test_passed": 11,
+        "tested_revision": 1
+      },
+      "readonly_preflight": {
+        "endpoint": "https://api.githubcopilot.com/mcp/",
+        "protocol": "2026-07-28",
+        "server_name": "github-mcp-server",
+        "server_version": "github-mcp-server/remote-59427b793443f88795375c20cd01d8e035ecca69",
+        "tools": {
+          "get_commit": "f95666ef940c7191c683d26875a1c53074121158a5b8055318d49ac1a3df93a3",
+          "get_file_contents": "9c2f0944bfb2574ca6c795d3c9e9d18157e017f6ef3d54a262b829d147996406",
+          "get_me": "9e2fcd061b033258d31fc0f42563ff024009ee9307c7cb2bb3f9911422010efb",
+          "issue_read": "eee2681d3262d3357b19b0696f0e3308938a5732b689d85dddc41d538fdc1a93",
+          "list_pull_requests": "7b17ee3fc8cc63fd9c96d445eff03251c7cb8681d93e6d25c5f71c0b469213bc",
+          "pull_request_read": "1baa610eb0d11d3d3d7047c33de2fd2c2f9eeddc1dd10216be77587198fe5c93",
+          "search_repositories": "6cc54b7ffaf8d45b71eecf4e74dcf43f0d99667a1f55e470ec39c42167adff79"
+        },
+        "readonly": true
+      },
+      "pr_support": {
+        "connection": {
+          "endpoint": "https://api.githubcopilot.com/mcp/",
+          "protocol": "2026-07-28",
+          "tools": {
+            "create_pull_request": "08f1edbe5e9ef6f669c848a6b5d308f2ac2e396ded329c029f174c6cf82a52cc",
+            "list_pull_requests": "7b17ee3fc8cc63fd9c96d445eff03251c7cb8681d93e6d25c5f71c0b469213bc",
+            "pull_request_read": "1baa610eb0d11d3d3d7047c33de2fd2c2f9eeddc1dd10216be77587198fe5c93"
+          },
+          "write_operation": "create_pull_request"
+        },
+        "matching_pr_count": 0,
+        "remote_writes": 0
+      }
+    }
+  ]
+}

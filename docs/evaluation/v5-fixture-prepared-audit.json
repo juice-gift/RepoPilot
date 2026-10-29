@@ -1,0 +1,105 @@
+{
+  "observed_at": "2026-10-28T06:20:21.915564+00:00",
+  "measurement": "actual official GitHub MCP read-only fixture audit",
+  "status": "blocked_fixture_mismatch",
+  "connection": {
+    "endpoint": "https://api.githubcopilot.com/mcp/",
+    "protocol": "2026-07-28",
+    "server_name": "github-mcp-server",
+    "server_version": "github-mcp-server/remote-59427b793443f88795375c20cd01d8e035ecca69",
+    "tools": {
+      "get_commit": "f95666ef940c7191c683d26875a1c53074121158a5b8055318d49ac1a3df93a3",
+      "get_file_contents": "9c2f0944bfb2574ca6c795d3c9e9d18157e017f6ef3d54a262b829d147996406",
+      "get_me": "9e2fcd061b033258d31fc0f42563ff024009ee9307c7cb2bb3f9911422010efb",
+      "issue_read": "eee2681d3262d3357b19b0696f0e3308938a5732b689d85dddc41d538fdc1a93",
+      "list_pull_requests": "7b17ee3fc8cc63fd9c96d445eff03251c7cb8681d93e6d25c5f71c0b469213bc",
+      "pull_request_read": "1baa610eb0d11d3d3d7047c33de2fd2c2f9eeddc1dd10216be77587198fe5c93",
+      "search_repositories": "6cc54b7ffaf8d45b71eecf4e74dcf43f0d99667a1f55e470ec39c42167adff79"
+    },
+    "readonly": true
+  },
+  "identity_matches_expected": true,
+  "repository": "juice-gift/repopilot-v5-sandbox",
+  "repository_id": 1436602856,
+  "default_branch": "main",
+  "expected_commit": "b4279c8b4d862817e6778caa5f87da91d29ed2b7",
+  "actual_commit": "b4279c8b4d862817e6778caa5f87da91d29ed2b7",
+  "checks": {
+    "private_repository": true,
+    "reported_read_permission": true,
+    "baseline_matches_owner_sha": true,
+    "exact_root_paths": true,
+    "source_hashes_match": true,
+    "issue_contracts_match": false
+  },
+  "files": [
+    {
+      "path": "README.md",
+      "present": true,
+      "expected_sha256": "ec62401c5e6dd72bb21de2d1f92ae30f4cbb09a2d5d43990a5d8da52a794b04f",
+      "observed_sha256": "ec62401c5e6dd72bb21de2d1f92ae30f4cbb09a2d5d43990a5d8da52a794b04f",
+      "matches": true
+    },
+    {
+      "path": "auth.py",
+      "present": true,
+      "expected_sha256": "8ab1241692a053cc9c8132d938f00e51920386d2f50ddac3127dfefc4289b870",
+      "observed_sha256": "8ab1241692a053cc9c8132d938f00e51920386d2f50ddac3127dfefc4289b870",
+      "matches": true
+    },
+    {
+      "path": "fees.py",
+      "present": true,
+      "expected_sha256": "4a9b96b0b83d3ddb08d84ffeddea7006047d23c448927e9e56cfa8d51bb04d27",
+      "observed_sha256": "4a9b96b0b83d3ddb08d84ffeddea7006047d23c448927e9e56cfa8d51bb04d27",
+      "matches": true
+    },
+    {
+      "path": "policy.py",
+      "present": true,
+      "expected_sha256": "9656f43b32ba52edf9a5165475819d964f1d6043cb5fd2d666918253c9ce89df",
+      "observed_sha256": "9656f43b32ba52edf9a5165475819d964f1d6043cb5fd2d666918253c9ce89df",
+      "matches": true
+    },
+    {
+      "path": "workflow.py",
+      "present": true,
+      "expected_sha256": "51465beab2d3598b49296bc6928321c5cd76316bbda2f9cff066883c881425e6",
+      "observed_sha256": "51465beab2d3598b49296bc6928321c5cd76316bbda2f9cff066883c881425e6",
+      "matches": true
+    }
+  ],
+  "issues": [
+    {
+      "case": "fee-days",
+      "number": 1,
+      "url": "https://github.com/juice-gift/repopilot-v5-sandbox/issues/1",
+      "body_present": false,
+      "body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches_frozen_contract": false
+    },
+    {
+      "case": "dispatch-preconditions",
+      "number": 2,
+      "url": "https://github.com/juice-gift/repopilot-v5-sandbox/issues/2",
+      "body_present": false,
+      "body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches_frozen_contract": false
+    },
+    {
+      "case": "ambiguous-cap",
+      "number": 3,
+      "url": "https://github.com/juice-gift/repopilot-v5-sandbox/issues/3",
+      "body_present": false,
+      "body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches_frozen_contract": false
+    }
+  ],
+  "pr_first_page_count": 0,
+  "pr_page_limit": 10,
+  "frozen_manifest_sha256": "b0b4d6b0741f9c3d7829205d1b419efa2be2d2d909e2e29391e93e8d02d6ff0d",
+  "local_independent_validation_integrity": true,
+  "remote_test_execution": false,
+  "remote_writes": 0,
+  "write_permission": "This audit is read-only. Separately authorized fixture file commit succeeded; Issue PATCH failed with PAT permission 403. No repair publication is authorized."
+}

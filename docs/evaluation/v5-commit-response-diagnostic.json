@@ -1,0 +1,27 @@
+{
+  "sha": "1abc169665e9a6b6d6e56a2e096f251eefe46bd2",
+  "tree": {
+    "sha": "d536b419d771851c609625cef7e595f2ce8ca80c",
+    "url": "https://api.github.com/repos/juice-gift/repopilot-v5-sandbox/git/trees/d536b419d771851c609625cef7e595f2ce8ca80c"
+  },
+  "parents": [
+    {
+      "sha": "b4279c8b4d862817e6778caa5f87da91d29ed2b7",
+      "url": "https://api.github.com/repos/juice-gift/repopilot-v5-sandbox/git/commits/b4279c8b4d862817e6778caa5f87da91d29ed2b7",
+      "html_url": "https://github.com/juice-gift/repopilot-v5-sandbox/commit/b4279c8b4d862817e6778caa5f87da91d29ed2b7"
+    }
+  ],
+  "message": "fix: resolve issue #1 (fee-days)\n\nRepoPilot proposal ac87b554e57e4a9181116fb36cf66811",
+  "expected_message": "fix: resolve issue #1 (fee-days)\n\nRepoPilot proposal ac87b554e57e4a9181116fb36cf66811\n",
+  "author": {
+    "name": "RepoPilot",
+    "email": "repopilot@users.noreply.github.com",
+    "date": "2026-10-28T07:55:25Z"
+  },
+  "committer": {
+    "name": "RepoPilot",
+    "email": "repopilot@users.noreply.github.com",
+    "date": "2026-10-28T07:55:25Z"
+  },
+  "expected_date": "2026-10-28T07:55:25+00:00"
+}

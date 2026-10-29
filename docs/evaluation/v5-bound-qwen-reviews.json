@@ -1,0 +1,24 @@
+{
+  "reviewer": "Codex source/diff/test-evidence review, not an independent human review",
+  "cases": [
+    {
+      "profile": "fee-days",
+      "result_hash": "14c79da3dfdd5a26c92b176f49a376961f1bdc9d9eb519350c8a98bac7f443dc",
+      "patch_review": "Removes the erroneous day offset and preserves integer rounding, cap and negative-input guards. Independent tests progress from 4 passing/4 failing to 8 passing.",
+      "claim_review": "Final explanation supported by saved source and tests."
+    },
+    {
+      "profile": "dispatch-preconditions",
+      "result_hash": "16d3b8ab11d65a869421e948572400899e921bbe097f2dcac2ad6f2d4ac77546",
+      "patch_review": "Moves authentication before policy validation and adds negative permanent-attempt validation in submit_job. Independent tests progress from 9 passing/2 failing to 11 passing. Policy helper remains unchanged; the Issue contract concerns submit_job.",
+      "claim_review": "Prose error retained: it says ValueError occurs regardless of token validity. Actual code authenticates first, so invalid tokens raise PermissionError. Passing repair tests do not establish reliable model explanations."
+    },
+    {
+      "profile": "ambiguous-cap",
+      "result_hash": "fb5c297e7ed51b14356487196aeabaa3d74af6f0a909bd5548b2f382e650027a",
+      "patch_review": "No patch or test execution; zero patch attempts. Frozen needs_owner_decision criterion met.",
+      "claim_review": "Missing product intent is supported by the conflicting source documentation. Source text is untrusted evidence; backend frozen profile permissions, not repository prose, enforce the zero-write boundary."
+    }
+  ],
+  "limitations": "Three small controlled tasks on one configured Qwen model; no generalized accuracy or success-rate claim."
+}

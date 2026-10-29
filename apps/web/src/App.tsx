@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { GitHubWorkflow } from "./GitHubWorkflow";
 
 import { InvestigationResult, InvestigationSources } from "./AgentResult";
 import { ResolutionChanges, ResolutionSummary } from "./ResolutionResult";
@@ -257,7 +258,7 @@ function App() {
     <div className="app-shell">
       <header className="topbar">
         <div>
-          <p className="eyebrow">Repository Intelligence · V4</p>
+          <p className="eyebrow">Repository Intelligence · V5</p>
           <h1>RepoPilot</h1>
         </div>
         <div className="connections" role="status" aria-label="Service connections">
@@ -462,6 +463,7 @@ function App() {
           </div>}
         </aside>
       </main>
+      <GitHubWorkflow />
     </div>
   );
 }

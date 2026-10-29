@@ -1,0 +1,35 @@
+{
+  "measurement": "actual official MCP pinned files and Issues to PostgreSQL Snapshot",
+  "status": "passed",
+  "remote_writes": 0,
+  "repository": "juice-gift/repopilot-v5-sandbox",
+  "commit": "b4279c8b4d862817e6778caa5f87da91d29ed2b7",
+  "repository_id": 285,
+  "snapshot_id": 414,
+  "snapshot_hash": "62b425c12e4c383600cc83f9f7e303931df19e0609cde31a4c91c57cbf28dcc3",
+  "file_count": 5,
+  "repeat_preserves_binding_ids": true,
+  "bindings": [
+    {
+      "id": 13,
+      "issue_number": 1,
+      "profile": "fee-days",
+      "commit": "b4279c8b4d862817e6778caa5f87da91d29ed2b7",
+      "snapshot_id": 414
+    },
+    {
+      "id": 14,
+      "issue_number": 2,
+      "profile": "dispatch-preconditions",
+      "commit": "b4279c8b4d862817e6778caa5f87da91d29ed2b7",
+      "snapshot_id": 414
+    },
+    {
+      "id": 15,
+      "issue_number": 3,
+      "profile": "ambiguous-cap",
+      "commit": "b4279c8b4d862817e6778caa5f87da91d29ed2b7",
+      "snapshot_id": 414
+    }
+  ]
+}

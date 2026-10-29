@@ -1,0 +1,301 @@
+{
+  "cases": [
+    {
+      "expected": [
+        {
+          "file_path": "src/settings.py",
+          "symbol_name": "require_database_url"
+        }
+      ],
+      "first_relevant_rank": 1,
+      "id": "missing-database-url",
+      "query": "Where does startup reject a missing database connection URL?",
+      "retrieved": [
+        {
+          "file_path": "src/settings.py",
+          "symbol_name": "require_database_url"
+        },
+        {
+          "file_path": "src/settings.py",
+          "symbol_name": "MissingDatabaseUrlError"
+        },
+        {
+          "file_path": "src/report-status.tsx",
+          "symbol_name": "ReportStatus"
+        },
+        {
+          "file_path": "src/cache.ts",
+          "symbol_name": "buildCacheKey"
+        },
+        {
+          "file_path": "README.md",
+          "symbol_name": "Harbor Reports"
+        }
+      ]
+    },
+    {
+      "expected": [
+        {
+          "file_path": "src/invoices.py",
+          "symbol_name": "calculate_late_fee"
+        }
+      ],
+      "first_relevant_rank": 1,
+      "id": "late-fee-cap",
+      "query": "How is the overdue invoice fee calculated and capped?",
+      "retrieved": [
+        {
+          "file_path": "src/invoices.py",
+          "symbol_name": "calculate_late_fee"
+        },
+        {
+          "file_path": "docs/operations.md",
+          "symbol_name": "Retry Policy"
+        },
+        {
+          "file_path": "src/invoices.py",
+          "symbol_name": "format_invoice_number"
+        },
+        {
+          "file_path": "docs/operations.md",
+          "symbol_name": "Database Recovery"
+        },
+        {
+          "file_path": "src/invoices.py",
+          "symbol_name": null
+        }
+      ]
+    },
+    {
+      "expected": [
+        {
+          "file_path": "src/delivery.py",
+          "symbol_name": "verify_webhook_signature"
+        }
+      ],
+      "first_relevant_rank": 1,
+      "id": "webhook-authentication",
+      "query": "Which function authenticates webhook payload signatures with HMAC?",
+      "retrieved": [
+        {
+          "file_path": "src/delivery.py",
+          "symbol_name": "verify_webhook_signature"
+        },
+        {
+          "file_path": "src/delivery.py",
+          "symbol_name": null
+        },
+        {
+          "file_path": "src/audit.js",
+          "symbol_name": "appendAuditTimestamp"
+        },
+        {
+          "file_path": "src/cache.ts",
+          "symbol_name": "buildCacheKey"
+        },
+        {
+          "file_path": "src/delivery.py",
+          "symbol_name": "create_delivery_key"
+        }
+      ]
+    },
+    {
+      "expected": [
+        {
+          "file_path": "src/delivery.py",
+          "symbol_name": "create_delivery_key"
+        }
+      ],
+      "first_relevant_rank": 5,
+      "id": "duplicate-delivery",
+      "query": "What prevents the same event from being delivered twice?",
+      "retrieved": [
+        {
+          "file_path": "src/invoices.py",
+          "symbol_name": null
+        },
+        {
+          "file_path": "src/audit.js",
+          "symbol_name": "appendAuditTimestamp"
+        },
+        {
+          "file_path": "src/audit.js",
+          "symbol_name": "redactAuditFields"
+        },
+        {
+          "file_path": "docs/operations.md",
+          "symbol_name": "Database Recovery"
+        },
+        {
+          "file_path": "src/delivery.py",
+          "symbol_name": "create_delivery_key"
+        }
+      ]
+    },
+    {
+      "expected": [
+        {
+          "file_path": "src/cache.ts",
+          "symbol_name": "buildCacheKey"
+        }
+      ],
+      "first_relevant_rank": 1,
+      "id": "tenant-cache-isolation",
+      "query": "How are cached reports isolated for each tenant?",
+      "retrieved": [
+        {
+          "file_path": "src/cache.ts",
+          "symbol_name": "buildCacheKey"
+        },
+        {
+          "file_path": "README.md",
+          "symbol_name": "Harbor Reports"
+        },
+        {
+          "file_path": "src/settings.py",
+          "symbol_name": null
+        },
+        {
+          "file_path": "docs/operations.md",
+          "symbol_name": "Retry Policy"
+        },
+        {
+          "file_path": "src/invoices.py",
+          "symbol_name": null
+        }
+      ]
+    },
+    {
+      "expected": [
+        {
+          "file_path": "src/report-status.tsx",
+          "symbol_name": "ReportStatus"
+        }
+      ],
+      "first_relevant_rank": 1,
+      "id": "report-progress",
+      "query": "Which UI component displays report loading progress?",
+      "retrieved": [
+        {
+          "file_path": "src/report-status.tsx",
+          "symbol_name": "ReportStatus"
+        },
+        {
+          "file_path": "src/report-status.tsx",
+          "symbol_name": null
+        },
+        {
+          "file_path": "src/cache.ts",
+          "symbol_name": "buildCacheKey"
+        },
+        {
+          "file_path": "src/settings.py",
+          "symbol_name": "MissingDatabaseUrlError"
+        },
+        {
+          "file_path": "src/settings.py",
+          "symbol_name": "require_database_url"
+        }
+      ]
+    },
+    {
+      "expected": [
+        {
+          "file_path": "src/audit.js",
+          "symbol_name": "redactAuditFields"
+        }
+      ],
+      "first_relevant_rank": 2,
+      "id": "audit-redaction",
+      "query": "Where are passwords and access tokens removed before audit logging?",
+      "retrieved": [
+        {
+          "file_path": "src/audit.js",
+          "symbol_name": "appendAuditTimestamp"
+        },
+        {
+          "file_path": "src/audit.js",
+          "symbol_name": "redactAuditFields"
+        },
+        {
+          "file_path": "docs/operations.md",
+          "symbol_name": "Retry Policy"
+        },
+        {
+          "file_path": "docs/operations.md",
+          "symbol_name": "Database Recovery"
+        },
+        {
+          "file_path": "README.md",
+          "symbol_name": "Harbor Reports"
+        }
+      ]
+    },
+    {
+      "expected": [
+        {
+          "file_path": "docs/operations.md",
+          "symbol_name": "Retry Policy"
+        }
+      ],
+      "first_relevant_rank": 1,
+      "id": "delivery-backoff",
+      "query": "What is the retry delay policy for failed outbound deliveries?",
+      "retrieved": [
+        {
+          "file_path": "docs/operations.md",
+          "symbol_name": "Retry Policy"
+        },
+        {
+          "file_path": "src/settings.py",
+          "symbol_name": null
+        },
+        {
+          "file_path": "docs/operations.md",
+          "symbol_name": "Database Recovery"
+        },
+        {
+          "file_path": "src/invoices.py",
+          "symbol_name": null
+        },
+        {
+          "file_path": "src/delivery.py",
+          "symbol_name": null
+        }
+      ]
+    }
+  ],
+  "chunk_count": 19,
+  "dataset": "RepoPilot V1 Golden Repository",
+  "dataset_version": 1,
+  "dimensions": 512,
+  "metrics": {
+    "k=1": {
+      "hit_rate": 0.75,
+      "k": 1,
+      "mean_reciprocal_rank": 0.75,
+      "query_count": 8,
+      "recall": 0.75
+    },
+    "k=3": {
+      "hit_rate": 0.875,
+      "k": 3,
+      "mean_reciprocal_rank": 0.8125,
+      "query_count": 8,
+      "recall": 0.875
+    },
+    "k=5": {
+      "hit_rate": 1.0,
+      "k": 5,
+      "mean_reciprocal_rank": 0.8375,
+      "query_count": 8,
+      "recall": 1.0
+    }
+  },
+  "model": "deterministic-token-hash-v1",
+  "provider": "deterministic",
+  "query_count": 8,
+  "repository_file_count": 8,
+  "strategy": "exact-vector-only",
+  "top_k": 5
+}

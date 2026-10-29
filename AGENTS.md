@@ -30,9 +30,14 @@ For the complete long-term product scope, architecture direction, and version ro
 
 Current stage:
 
-**V4 — Issue Resolution Agent is complete. Stop at the V4 / V5 boundary.**
+**V5 — MCP + GitHub Integration is complete (2026-10-29). V6 is not authorized.**
 
-M0–M6 are complete. Local/database/Docker regressions pass, two real Qwen positive
+The completed goal is `docs/goals/v5-mcp-github.md`; execution history is recorded
+in `docs/tasks/v5-plan.md` and completion evidence in
+`docs/evaluation/v5-mcp-github-completion.md`. Stop at the V5 / V6 boundary. Remote
+writes still require explicit human approval of a concrete publication proposal.
+
+V4 M0–M6 are complete. Local/database/Docker regressions pass, two real Qwen positive
 repairs pass independent tests, and resumed ambiguity validation with the owner's
 dated Qwen model meets the frozen zero-change owner-decision criterion. See
 `docs/tasks/v4-plan.md` and `docs/evaluation/v4-issue-resolution-status.md`.
@@ -69,10 +74,10 @@ engineering completion does not imply general agent accuracy.
 
 V4 adds bounded plans/patches/current reads and Docker test execution only for
 approved frozen profiles in private temporary workspaces. Original repositories
-and saved Snapshots remain unchanged. Investigation stays read-only. The active
-goal is `docs/goals/v4-issue-resolution-agent.md`; it does not authorize arbitrary
-repository execution, MCP, GitHub integration, multiple agents or later versions.
-V4 acceptance is complete. V5 requires a new explicit goal; do not begin it automatically.
+and saved Snapshots remain unchanged. Investigation stays read-only. The completed
+V4 goal is `docs/goals/v4-issue-resolution-agent.md`. V4 acceptance is complete.
+The separately authorized V5 goal now permits scoped MCP/GitHub integration;
+arbitrary repository execution, multiple agents and later versions remain forbidden.
 
 ---
 

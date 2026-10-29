@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 from typing import Literal
 
@@ -18,6 +19,13 @@ class Settings(BaseSettings):
     retrieval_strategy: Literal["vector", "hybrid"] = "hybrid"
     openai_api_key: SecretStr | None = None
     dashscope_api_key: SecretStr | None = None
+    github_mcp_token: SecretStr | None = Field(default=None, repr=False, exclude=True)
+    github_mcp_allowed_repositories: list[str] = Field(
+        default_factory=list, max_length=8
+    )
+    github_write_allowed_repositories: list[str] = Field(
+        default_factory=list, max_length=8
+    )
     dashscope_base_url: str = Field(
         default=(
             "https://ws-0qeb5e7r8oa2y0s1.cn-beijing.maas.aliyuncs.com/"
@@ -43,6 +51,7 @@ class Settings(BaseSettings):
         env_file=REPOSITORY_ROOT / ".env",
         env_file_encoding="utf-8",
         extra="ignore",
+        hide_input_in_errors=True,
     )
 
     @field_validator("database_url")
@@ -53,6 +62,22 @@ class Settings(BaseSettings):
                 "DATABASE_URL must use the postgresql+psycopg:// SQLAlchemy scheme"
             )
         return value
+
+    @field_validator(
+        "github_mcp_allowed_repositories", "github_write_allowed_repositories"
+    )
+    @classmethod
+    def canonical_github_repositories(cls, values: list[str]) -> list[str]:
+        normalized = []
+        for value in values:
+            if not re.fullmatch(
+                r"[A-Za-z0-9][A-Za-z0-9-]{0,38}/[A-Za-z0-9_.-]{1,100}", value
+            ):
+                raise ValueError("GitHub repositories must be exact owner/repo names")
+            if value.split("/")[1] in {".", ".."}:
+                raise ValueError("Invalid GitHub repository name")
+            normalized.append(value.lower())
+        return sorted(set(normalized))
 
     @field_validator("repository_allowed_root")
     @classmethod
