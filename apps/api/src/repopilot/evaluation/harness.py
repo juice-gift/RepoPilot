@@ -14,7 +14,7 @@ from repopilot.evaluation.contracts import CaseResult, digest, file_digest, load
 from repopilot.evaluation.grading import aggregate
 from repopilot.evaluation.reviews import apply_reviews, historical_evidence
 
-DEFINITIONS = "v6-evidence-grading-1"
+DEFINITIONS = "v6-evidence-grading-2"
 
 
 def save_report(report: dict, output: Path) -> None:

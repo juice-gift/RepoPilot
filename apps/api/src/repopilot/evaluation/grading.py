@@ -28,6 +28,9 @@ def resolution_checks(task: Task, case: dict) -> CaseResult:
         and not t.infrastructure_error
         and t.isolation_confirmed
         and t.cleanup_confirmed
+        and t.profile == profile.case_id
+        and t.workspace_id == result["workspace_id"]
+        and t.expected_tests == profile.expected_tests
         and t.observed_passed == profile.expected_tests - profile.baseline_failures
         for t in baseline
     )
@@ -150,6 +153,23 @@ def aggregate(cases: list[CaseResult]) -> dict:
             "rate": passed / len(statuses) if statuses else None,
             "statuses": dict(Counter(statuses)),
         }
+    patch_cases = [
+        c for c in cases if c.category == "resolution" and "result" in c.evidence
+    ]
+    attempts = sum(
+        c.evidence["result"]["diagnostics"]["patch_attempts"] for c in patch_cases
+    )
+    applied = sum(len(c.evidence["result"]["patch_history"]) for c in patch_cases)
+    metrics["patch_apply_attempts"] = {
+        "numerator": applied,
+        "denominator": attempts,
+        "rate": applied / attempts if attempts else None,
+        "statuses": {
+            "not_run_cases": sum(
+                "result" not in c.evidence for c in cases if c.category == "resolution"
+            )
+        },
+    }
     retrieval = [c for c in cases if c.category == "retrieval"]
     if retrieval:
         expected, retrieved = [], []

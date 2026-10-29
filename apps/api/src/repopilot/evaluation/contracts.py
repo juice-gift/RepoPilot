@@ -52,7 +52,7 @@ class Task(Contract):
 
 class Dataset(Contract):
     name: str
-    version: Literal[1]
+    version: Literal[2]
     files: dict[str, str]
     tasks: list[Task] = Field(min_length=1)
 

@@ -1,6 +1,6 @@
 {
   "name": "RepoPilot frozen evaluation suite",
-  "version": 1,
+  "version": 2,
   "files": {
     "golden_repository/docs/operations.md": "1339c322e37d831a4d30488e4b48d081645925635be8bce934179ee2ca156470",
     "golden_repository/README.md": "e26ce591e269dbe6345d3ed38c99b78cbdf52c6fd1be117ce9b17b4e265cd4f7",
@@ -225,7 +225,7 @@
         }
       ],
       "question": "How is the overdue invoice fee calculated and capped?",
-      "claim_check": "Fee uses nonnegative days and is capped at thirty days; verify units and formula against source."
+      "claim_check": "Fee is balance times min(0.01 * (max(days_overdue, 0) // 7), 0.10), quantized to Decimal 0.01. Verify weekly units, zero floor and ten-percent rate cap."
     },
     {
       "id": "resolution/fee-days",
