@@ -1,0 +1,261 @@
+{
+  "name": "RepoPilot frozen evaluation suite",
+  "version": 1,
+  "files": {
+    "golden_repository/docs/operations.md": "1339c322e37d831a4d30488e4b48d081645925635be8bce934179ee2ca156470",
+    "golden_repository/README.md": "e26ce591e269dbe6345d3ed38c99b78cbdf52c6fd1be117ce9b17b4e265cd4f7",
+    "golden_repository/src/audit.js": "7524b6db3273f04d24e20e2f129c480e58e79219f1d24a5f579a57fc82279362",
+    "golden_repository/src/cache.ts": "2aed4c01c1970eff4e43883a2993d244e135abc8e942a2fcbcedd1c559e15e81",
+    "golden_repository/src/delivery.py": "1af35321829f98102fef733933382128d3e724e1ea9ea162c46d451046e6181b",
+    "golden_repository/src/invoices.py": "78e8e71e8f0ae4b0e4092974f6b49dc054193ed34b3d6a45fb009d989703a82f",
+    "golden_repository/src/report-status.tsx": "57c22abccb3da9d0a4f56b8f98e6a409e086b09eaf3e49377b0927271a99c729",
+    "golden_repository/src/settings.py": "8a29c281a24fb34708d7a984a8310475a428b369a4669c9f69c87684cecccb22",
+    "structural_golden/app/main.ts": "dd948c8e0dbc5c91e40454e42ced2f021bb4ee4524e3bdbb5cbfe32d57951e0e",
+    "structural_golden/app/shared.ts": "434ebd26694f946493b2498af4a6ff578d51943dfa48604cf2e2a733b976740e",
+    "structural_golden/pkg/__init__.py": "3302e42de96dd04f96a228ee125ead8b0dc5d8ed4f961aaac625c88465e7f747",
+    "structural_golden/pkg/alternate.py": "198b0338920ab14b47ea41b1b873b9e395181374539f5a1c94aaee2e8798df1e",
+    "structural_golden/pkg/routes.py": "575e723c39b0c97fcd5e5a797541d800e6672ad2b29d865822764fdd023a52d3",
+    "structural_golden/pkg/service.py": "3d9dc3b7245aa792743e9daf09ec01adde61f12cde3fb64b7ad40e6b367c8b57",
+    "structural_golden/README.md": "5ad40c6e3414d7b477c97c23680917b8bc5e3c5a27ebc5ac0fca60a8fd12725c",
+    "agent_golden/auth.py": "517bdb395ba3f85fae06b242db53faad20d3079df39153bf0a352b2f0d18b2f2",
+    "agent_golden/policy.py": "2b5b177834313af6c8d4212a64fe3ecb916cc0513fdf270edf80ce2831fe29da",
+    "agent_golden/README.md": "b6c1515523d07dc23fe4ad4cc729c1e87857d60b4aff620a6c646908bd5ab548",
+    "agent_golden/workflow.py": "e229be1c8432770818e01e92fb5d5dd86e57c77c04cd7892d4d93c692d0d2ebd",
+    "resolution_golden/.gitattributes": "a79691a93b46e49ce460c26ef22afcc03d6eca1e63bf2edbc20e96159510f6c9",
+    "resolution_golden/manifest.json": "69f6a105301f36437a0a5f0a015345f828ca4b79765fbd00c6273bbec23bbbd1",
+    "resolution_golden/repository/auth.py": "8ab1241692a053cc9c8132d938f00e51920386d2f50ddac3127dfefc4289b870",
+    "resolution_golden/repository/fees.py": "4a9b96b0b83d3ddb08d84ffeddea7006047d23c448927e9e56cfa8d51bb04d27",
+    "resolution_golden/repository/policy.py": "9656f43b32ba52edf9a5165475819d964f1d6043cb5fd2d666918253c9ce89df",
+    "resolution_golden/repository/README.md": "ec62401c5e6dd72bb21de2d1f92ae30f4cbb09a2d5d43990a5d8da52a794b04f",
+    "resolution_golden/repository/workflow.py": "51465beab2d3598b49296bc6928321c5cd76316bbda2f9cff066883c881425e6",
+    "resolution_golden/validation/test_dispatch.py": "cc56647c22d16bcce4c7e6a5c899a0589893a31bf796e7b678e3ba0512cd255d",
+    "resolution_golden/validation/test_fees.py": "ea2675ab24d7f080044b68cf51e8bf60064af34f5a973e79427dc8005e3c9808",
+    "dataset.json": "2c6331b31538b3b812cdde89525cf157bde782aa9345238b2cb288eb41ca2979",
+    "structural_dataset.json": "ac7b677d55206f840b23f3a7aaea7f14be28813c55b4c3b98fb8e6e3742d5bf2",
+    "structural_manifest.json": "b43e54c0dd47d1d1bdef82409b9c04371fa6e13e7e46f0c5d2283ec17ccd1da2",
+    "agent_dataset.json": "2b3be55cc884cca3173565f26ce31fe177858f92523d7bed59c19b13108522db",
+    "agent_manifest.json": "42be51ce695564126c0fd93304bb68ce1835fbab783163f283263594fbae1969"
+  },
+  "tasks": [
+    {
+      "id": "retrieval/missing-database-url",
+      "category": "retrieval",
+      "source_id": "v1-frozen",
+      "expected": "evidence",
+      "legacy_id": "missing-database-url",
+      "evidence": [
+        {
+          "file_path": "src/settings.py",
+          "symbol_name": "require_database_url"
+        }
+      ],
+      "question": null,
+      "claim_check": null
+    },
+    {
+      "id": "retrieval/late-fee-cap",
+      "category": "retrieval",
+      "source_id": "v1-frozen",
+      "expected": "evidence",
+      "legacy_id": "late-fee-cap",
+      "evidence": [
+        {
+          "file_path": "src/invoices.py",
+          "symbol_name": "calculate_late_fee"
+        }
+      ],
+      "question": null,
+      "claim_check": null
+    },
+    {
+      "id": "retrieval/webhook-authentication",
+      "category": "retrieval",
+      "source_id": "v1-frozen",
+      "expected": "evidence",
+      "legacy_id": "webhook-authentication",
+      "evidence": [
+        {
+          "file_path": "src/delivery.py",
+          "symbol_name": "verify_webhook_signature"
+        }
+      ],
+      "question": null,
+      "claim_check": null
+    },
+    {
+      "id": "retrieval/duplicate-delivery",
+      "category": "retrieval",
+      "source_id": "v1-frozen",
+      "expected": "evidence",
+      "legacy_id": "duplicate-delivery",
+      "evidence": [
+        {
+          "file_path": "src/delivery.py",
+          "symbol_name": "create_delivery_key"
+        }
+      ],
+      "question": null,
+      "claim_check": null
+    },
+    {
+      "id": "retrieval/tenant-cache-isolation",
+      "category": "retrieval",
+      "source_id": "v1-frozen",
+      "expected": "evidence",
+      "legacy_id": "tenant-cache-isolation",
+      "evidence": [
+        {
+          "file_path": "src/cache.ts",
+          "symbol_name": "buildCacheKey"
+        }
+      ],
+      "question": null,
+      "claim_check": null
+    },
+    {
+      "id": "retrieval/report-progress",
+      "category": "retrieval",
+      "source_id": "v1-frozen",
+      "expected": "evidence",
+      "legacy_id": "report-progress",
+      "evidence": [
+        {
+          "file_path": "src/report-status.tsx",
+          "symbol_name": "ReportStatus"
+        }
+      ],
+      "question": null,
+      "claim_check": null
+    },
+    {
+      "id": "retrieval/audit-redaction",
+      "category": "retrieval",
+      "source_id": "v1-frozen",
+      "expected": "evidence",
+      "legacy_id": "audit-redaction",
+      "evidence": [
+        {
+          "file_path": "src/audit.js",
+          "symbol_name": "redactAuditFields"
+        }
+      ],
+      "question": null,
+      "claim_check": null
+    },
+    {
+      "id": "retrieval/delivery-backoff",
+      "category": "retrieval",
+      "source_id": "v1-frozen",
+      "expected": "evidence",
+      "legacy_id": "delivery-backoff",
+      "evidence": [
+        {
+          "file_path": "docs/operations.md",
+          "symbol_name": "Retry Policy"
+        }
+      ],
+      "question": null,
+      "claim_check": null
+    },
+    {
+      "id": "structure/frozen",
+      "category": "structure",
+      "source_id": "v2-frozen",
+      "expected": "structure",
+      "legacy_id": "frozen",
+      "evidence": [],
+      "question": null,
+      "claim_check": null
+    },
+    {
+      "id": "investigation/authorization-before-policy",
+      "category": "investigation",
+      "source_id": "v3-frozen",
+      "expected": "review",
+      "legacy_id": "authorization-before-policy",
+      "evidence": [],
+      "question": null,
+      "claim_check": null
+    },
+    {
+      "id": "investigation/permanent-versus-transient",
+      "category": "investigation",
+      "source_id": "v3-frozen",
+      "expected": "review",
+      "legacy_id": "permanent-versus-transient",
+      "evidence": [],
+      "question": null,
+      "claim_check": null
+    },
+    {
+      "id": "investigation/documentation-policy-mismatch",
+      "category": "investigation",
+      "source_id": "v3-frozen",
+      "expected": "review",
+      "legacy_id": "documentation-policy-mismatch",
+      "evidence": [],
+      "question": null,
+      "claim_check": null
+    },
+    {
+      "id": "rag/missing-database-url",
+      "category": "rag",
+      "source_id": "v1-frozen",
+      "expected": "review",
+      "legacy_id": "missing-database-url",
+      "evidence": [
+        {
+          "file_path": "src/settings.py",
+          "symbol_name": "require_database_url"
+        }
+      ],
+      "question": "Where does startup reject a missing database connection URL?",
+      "claim_check": "Startup requires a nonempty database URL."
+    },
+    {
+      "id": "rag/late-fee-cap",
+      "category": "rag",
+      "source_id": "v1-frozen",
+      "expected": "review",
+      "legacy_id": "late-fee-cap",
+      "evidence": [
+        {
+          "file_path": "src/invoices.py",
+          "symbol_name": "calculate_late_fee"
+        }
+      ],
+      "question": "How is the overdue invoice fee calculated and capped?",
+      "claim_check": "Fee uses nonnegative days and is capped at thirty days; verify units and formula against source."
+    },
+    {
+      "id": "resolution/fee-days",
+      "category": "resolution",
+      "source_id": "v4-frozen",
+      "expected": "verified_repair",
+      "legacy_id": "fee-days",
+      "evidence": [],
+      "question": null,
+      "claim_check": null
+    },
+    {
+      "id": "resolution/dispatch-preconditions",
+      "category": "resolution",
+      "source_id": "v4-frozen",
+      "expected": "verified_repair",
+      "legacy_id": "dispatch-preconditions",
+      "evidence": [],
+      "question": null,
+      "claim_check": null
+    },
+    {
+      "id": "resolution/ambiguous-cap",
+      "category": "resolution",
+      "source_id": "v4-frozen",
+      "expected": "needs_owner_decision",
+      "legacy_id": "ambiguous-cap",
+      "evidence": [],
+      "question": null,
+      "claim_check": null
+    }
+  ]
+}

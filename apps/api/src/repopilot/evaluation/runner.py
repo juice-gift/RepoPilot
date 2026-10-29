@@ -32,8 +32,14 @@ def evaluate_retrieval(
     dataset_path: Path,
     top_k: int = 5,
     strategy: RetrievalStrategy = "vector",
+    selected_cases: tuple[str, ...] | None = None,
 ) -> dict[str, Any]:
     dataset = load_evaluation_dataset(dataset_path)
+    if selected_cases is not None and (
+        not selected_cases
+        or not set(selected_cases) <= {c.case_id for c in dataset.cases}
+    ):
+        raise ValueError("Unknown or empty retrieval selection")
     provider = DeterministicEmbeddingProvider()
     engine = create_database_engine(database_url)
     session_factory = create_database_session_factory(engine)
@@ -55,6 +61,8 @@ def evaluate_retrieval(
                 provider=provider,
             )
             for case in dataset.cases:
+                if selected_cases is not None and case.case_id not in selected_cases:
+                    continue
                 retrieved = _retrieve_case(
                     session=session,
                     case=case,
@@ -80,9 +88,7 @@ def evaluate_retrieval(
 
             metrics = {
                 f"k={k}": asdict(
-                    calculate_metrics(
-                        expected_rankings, retrieved_rankings, k=k
-                    )
+                    calculate_metrics(expected_rankings, retrieved_rankings, k=k)
                 )
                 for k in sorted({1, min(3, top_k), top_k})
             }
@@ -133,7 +139,9 @@ def _retrieve_case(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Run RepoPilot V1 retrieval evaluation")
+    parser = argparse.ArgumentParser(
+        description="Run RepoPilot V1 retrieval evaluation"
+    )
     parser.add_argument(
         "--repository",
         type=Path,

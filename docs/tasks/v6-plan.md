@@ -28,3 +28,23 @@ npm run build: pass. Docker Linux and healthy Compose DB, immutable prepared ima
 71aebb88109cbb7c2eb535ef4321a4b9d23b886c0c14625bafaeb9e78b5fea5f available.
 Database/sandbox full suite, Ruff and migrations running. Read goal/plan/report
 for V4/V5 and inspected provider, evaluation, source, test and Git contracts.
+
+M0 completed: database/sandbox suite 329 passed / 1 explicitly disabled live MCP
+skip; Ruff passed; Alembic 0008 head/check no drift, disposable migration replay
+covered by tests. No live MCP enabled for V6. Initial RAG harness smoke exposed a
+scripted citation header parser mismatch (E999 rejected); fixed the adapter to
+parse the actual context format. This was evaluator wiring, not model evidence.
+M1/M2 implemented: 17 pinned tasks (8 retrieval, 1 structural suite, 3 investigation,
+2 RAG source checks, 3 issues); historical fixtures/hashes unchanged. M3/M5 initial
+runner and reporting implemented, pending regression/self-review before commit.
+
+M1–M3/M5 engineering review: typed 17-task manifest; pinned normalized input bytes,
+source file-set checks, legacy entry-point selection without ground-truth changes,
+actual RAG pipeline adapter, independent exact-revision/count/isolation test grader,
+separate safe-decision score, nullable usage/cost, JSON/Markdown and strict compatible
+run comparison. Exact-evidence review import records provenance. Nine historical
+V3/V4 reviews verified against saved output hashes, including two unsupported V3
+claims; history stays separate from current metrics. Initial full scripted run:
+8 retrieval and structural suite passed, 5 generated answers remain unreviewed,
+2 actual Docker repairs and 1 safe decision passed. Final scoring aggregation and
+additional review tests were added afterward; final runs will pin committed code.
