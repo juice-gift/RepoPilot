@@ -6,13 +6,13 @@ verified origin/main after read-only fetch and clean fast-forward. Branch:
 
 | Milestone | State | Work |
 | --- | --- | --- |
-| M0 | In progress | Inventory V1 retrieval, V2 structure, V3 investigation, V4 repair; baseline checks |
-| M1 | Pending | Typed versioned manifest linking unchanged frozen datasets; small RAG checks |
-| M2 | Pending | Independent grading, applicability/denominators, missing measurements |
-| M3 | Pending | CLI adapters, actual pipelines, per-case errors and owned cleanup |
-| M4 | Pending | Scripted DB/Docker and bounded live Qwen pass; failure evidence |
-| M5 | Pending | JSON/Markdown and guarded comparison |
-| M6 | Pending | Full regressions, security review, completion evidence |
+| M0 | Complete | Inventory V1 retrieval, V2 structure, V3 investigation, V4 repair; baseline checks |
+| M1 | Complete | Typed versioned manifest linking unchanged frozen datasets; small RAG checks |
+| M2 | Complete | Independent grading, applicability/denominators, missing measurements |
+| M3 | Complete | CLI adapters, actual pipelines, per-case errors and owned cleanup |
+| M4 | Complete | Scripted DB/Docker and bounded live Qwen pass; failure evidence |
+| M5 | Complete | JSON/Markdown and guarded comparison |
+| M6 | Complete | Full regressions, security review, completion evidence |
 
 Inventory: evaluation/{runner,structural,agent,resolution}.py already implement
 actual pipelines. V1 metrics must be reused. V2/V3 frozen manifests already verify
@@ -74,3 +74,22 @@ and reviewed denominator are explicit. Review imports fingerprint grader code.
 Focused current suite: 31 passed with real owned-DB cleanup; Ruff passed.
 First full V6 DB/Docker suite: 358 passed / 1 disabled online MCP skip before the
 last two regression tests; final rerun follows the scoring corrections.
+
+## Final closure — 2026-10-29
+
+M0–M6 complete; current code 4e9f710. Final full DB/Docker suite **360 passed /
+1 explicitly disabled online MCP skip**; Ruff and Alembic 0008/check passed,
+disposable replay covered. TypeScript/Vite build passed. Current focused V6 tests
+31 passed. Final dataset v2 17 tasks: 12 scripted passes/5 unreviewed outputs; real
+Docker repairs 2/2 and safe decision 1/1. V1 vector/hybrid baseline preserved,
+V2/V3 regressions pass. Two compatible actual retrieval repeats compare unchanged;
+v1/v2 CLI comparison correctly refuses. Reviewed Qwen v1 full pass retains 2/3
+Issue success, tests 2/2 and two unsupported investigation conclusions. Corrected
+v2 live RAG measured/reviewed 2/2. Offline diagnosis clearly retains original
+execution identity, no rerun or mixed-version claim. Tokens/cost unavailable.
+
+Final secret scan found zero configured key/token leaks; only database container
+remains; frozen fixtures, dependencies and migrations unchanged. No new API,
+service, Agent, V7 or remote mutation. No mandatory blocker remains. See
+[completion report](../evaluation/v6-evaluation-completion.md) for commands,
+limits, actual failures and full acceptance mapping. Stop before V7.

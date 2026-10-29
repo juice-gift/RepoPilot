@@ -1,0 +1,18 @@
+[
+  {
+    "id": "rag/missing-database-url",
+    "evidence_hash": "08a25a1f33e119d28c14c1701f146a1f6597363d39d316ceaec3e65a8ea14254",
+    "supported": true,
+    "reviewer": "Codex",
+    "provenance": "Codex source/claim review on 2026-10-29; not independent human review, not a new model run",
+    "reason": "src/settings.py strips DATABASE_URL, checks emptiness and raises the defined MissingDatabaseUrlError; cited source spans support this answer."
+  },
+  {
+    "id": "rag/late-fee-cap",
+    "evidence_hash": "4db8e4949e460660d23cda9a7bf9dc45dbd46ec29052646cc2551f8b13fc5d2e",
+    "supported": true,
+    "reviewer": "Codex",
+    "provenance": "Codex source/claim review on 2026-10-29; not independent human review, not a new model run",
+    "reason": "src/invoices.py computes max(days,0)//7 weeks at Decimal 0.01, caps the rate at Decimal 0.10 and quantizes balance*rate to Decimal 0.01. The actual weekly calculation/cap/rounding claims are supported. The initial V6-v1 daily annotation was an evaluator error, not an error in this answer."
+  }
+]

@@ -1,0 +1,961 @@
+{
+  "schema_version": 1,
+  "historical_evidence": [
+    {
+      "id": "authorization-before-policy",
+      "supported": true,
+      "reason": "Codex source review, 2026-10-14: the actual definition range 5–10 and auth range 1–3 are correct. E2_1/E4_1 support uncaught token rejection before retry_delay; E6_1 is the inspected helper. No incorrect line annotations remain in this answer.",
+      "provenance": "Historical Codex source review, not independent human review; not a V6 run",
+      "report": "v3-agent-qwen-grounding-report.json",
+      "report_hash": "93eddd3dc627023476c3fc32013653060aaba29027a6674af041aa64952575d8",
+      "review_hash": "72c7b2bfcea35806bbd1f9b970547916917b4d80ae55ee98acec86600a244e53",
+      "reviews_file_hash": "99d4b419fb52160880c5f74a24d1968b9f1e48f4d28d73114df1ed8a10e39c2c"
+    },
+    {
+      "id": "permanent-versus-transient",
+      "supported": false,
+      "reason": "Codex source review, 2026-10-14: the answer still claims all permanent jobs are unconditionally rejected regardless of attempt, then contradicts that with the earlier negative-attempt exception. Token preconditions are omitted. A correct summary table does not erase the unsupported universal claim.",
+      "provenance": "Historical Codex source review, not independent human review; not a V6 run",
+      "report": "v3-agent-qwen-grounding-report.json",
+      "report_hash": "93eddd3dc627023476c3fc32013653060aaba29027a6674af041aa64952575d8",
+      "review_hash": "fb24eb0692667589e558d29b2465ebc82d946cf6ba296dc16e5cec29281cb69a",
+      "reviews_file_hash": "99d4b419fb52160880c5f74a24d1968b9f1e48f4d28d73114df1ed8a10e39c2c"
+    },
+    {
+      "id": "documentation-policy-mismatch",
+      "supported": false,
+      "reason": "Codex source review, 2026-10-14: the source mismatch is correct, but the answer invents production usage and prefers the 300-second policy before confirming intent. It also uses parenthesized IDs instead of the requested citation syntax. Read-only capability does not establish which proposed fix is safer.",
+      "provenance": "Historical Codex source review, not independent human review; not a V6 run",
+      "report": "v3-agent-qwen-grounding-report.json",
+      "report_hash": "93eddd3dc627023476c3fc32013653060aaba29027a6674af041aa64952575d8",
+      "review_hash": "638b5c1ee85a0b4ae4f47f47f696e0ec6d5df27c9dcb271720cb8951a32fece5",
+      "reviews_file_hash": "99d4b419fb52160880c5f74a24d1968b9f1e48f4d28d73114df1ed8a10e39c2c"
+    },
+    {
+      "id": "fee-days",
+      "provenance": "Codex source/diff/claim review; not independent human review",
+      "verdict": "Verified independent tests and source-consistent repair",
+      "notes": "Diff preserves guards, cap and integer behavior; no test/config changes",
+      "supported": true,
+      "report": "v4-resolution-qwen-report.json",
+      "report_hash": "50a6403ca8771a2352d87cbff1666488ebb43d367f714c674980e1791d155f0e",
+      "review_hash": "65be6a550f02746fc5558a6d0898bd2e99ebae660f970ecee0d70ddc020554c0"
+    },
+    {
+      "id": "dispatch-preconditions",
+      "provenance": "Codex source/diff/claim review; not independent human review",
+      "verdict": "Verified independent tests and source-consistent repair",
+      "notes": "Both auth-before-policy and negative-attempt preconditions fixed; permanent rejection and cap preserved",
+      "supported": true,
+      "report": "v4-resolution-qwen-report.json",
+      "report_hash": "50a6403ca8771a2352d87cbff1666488ebb43d367f714c674980e1791d155f0e",
+      "review_hash": "42d7404b7bb1d64ed446a712b2448b91d329c7507948058ca125b90d8e3c1fbd"
+    },
+    {
+      "id": "ambiguous-cap",
+      "provenance": "Codex source/diff/claim review; not independent human review",
+      "verdict": "No changes; owner-decision criterion not achieved",
+      "notes": "Initial full run offered an unusable test tool and stopped safely; targeted corrected-capability runs failed at provider request 1. Provider diagnostic confirmed HTTP 403 PERMISSION_DENIED: free quota exhausted. Corrected real-model owner-decision behavior remains unverified.",
+      "supported": null,
+      "report": "v4-resolution-qwen-report.json",
+      "report_hash": "50a6403ca8771a2352d87cbff1666488ebb43d367f714c674980e1791d155f0e",
+      "review_hash": "b88c5d2ed97d2db274facd61382f5a213573cdc5220508d8fa4e41be3c18d32c"
+    },
+    {
+      "id": "ambiguous-cap",
+      "provenance": "Codex source/diff/claim review; not independent human review",
+      "verdict": "No changes; owner-decision criterion not achieved",
+      "notes": "Initial full run offered an unusable test tool and stopped safely; targeted corrected-capability runs failed at provider request 1. Provider diagnostic confirmed HTTP 403 PERMISSION_DENIED: free quota exhausted. Corrected real-model owner-decision behavior remains unverified.",
+      "supported": null,
+      "report": "v4-resolution-qwen-ambiguity-trial.json",
+      "report_hash": "143d2eb371b6537b2b81ca4b4fe9defc3c8328e4a2ed83d29e95c39acf8d7d95",
+      "review_hash": "992adeee11d305312ef93a23bd416c9e152f4498fc4a1c131b2a29220a7e1c0b"
+    },
+    {
+      "id": "ambiguous-cap",
+      "provenance": "Codex source/diff/claim review; not independent human review",
+      "verdict": "No changes; owner-decision criterion not achieved",
+      "notes": "Initial full run offered an unusable test tool and stopped safely; targeted corrected-capability runs failed at provider request 1. Provider diagnostic confirmed HTTP 403 PERMISSION_DENIED: free quota exhausted. Corrected real-model owner-decision behavior remains unverified.",
+      "supported": null,
+      "report": "v4-resolution-qwen-ambiguity-retry-report.json",
+      "report_hash": "0c12bbf79f28ce6ae2d14fe8d5ffeb790329a8569b16d44b944240f6554a10c3",
+      "review_hash": "97262b9ec36976a42a77a0e189b9148ea945e31ed2c785663afb059943bc8f62"
+    },
+    {
+      "id": "ambiguous-cap",
+      "provenance": "Codex source/diff/claim review; not independent human review",
+      "verdict": "Frozen owner-decision criterion achieved without patch attempts or changes",
+      "notes": "Owner selected qwen3.7-flash-2026-07-15. Model read all five source files and identified the documented 60/300-second conflict and explicit absence of owner intent. One submit_plan missing expected_revision was rejected; the model corrected it. Nine model calls; revision 0; zero patch/test attempts; original/Snapshot unchanged and workspace cleaned. Future plan wording assumes a code update, though choosing 300 could instead require a documentation change; no such change was attempted. Prior failures remain recorded.",
+      "supported": true,
+      "report": "v4-resolution-qwen-ambiguity-resumed.json",
+      "report_hash": "c5cdfed014565859290bd9ec940c588c45500435d85a34dbdbb32574ecd2ea1b",
+      "review_hash": "ba32c95a3124096a6b45d364dd921646b4233accb3db16d2c1e36757a6b39e80"
+    }
+  ],
+  "review_policy": "unreviewed",
+  "definitions": "v6-evidence-grading-3",
+  "dataset": {
+    "name": "RepoPilot frozen evaluation suite",
+    "version": 2,
+    "hash": "25d0666fe7666424cb84256408b3ae41da7b99fde22c9f3e838c8be5b1f3cc18",
+    "total_tasks": 17
+  },
+  "selection": [
+    "retrieval/missing-database-url",
+    "retrieval/late-fee-cap",
+    "retrieval/webhook-authentication",
+    "retrieval/duplicate-delivery",
+    "retrieval/tenant-cache-isolation",
+    "retrieval/report-progress",
+    "retrieval/audit-redaction",
+    "retrieval/delivery-backoff"
+  ],
+  "mode": "scripted",
+  "measurement": "Scripted protocol only; no real LLM reasoning quality measurement.",
+  "code_commit": "4e9f710f4a0b05b94d24b615fcca5ab2475d91d9",
+  "dirty": true,
+  "started_at": "2026-10-29T11:24:17.679945+00:00",
+  "runtime": {
+    "model": "frozen-scripts",
+    "provider": "scripted",
+    "retrieval_strategy": "hybrid",
+    "embedding": "deterministic-token-hash",
+    "top_k": 5,
+    "max_output_tokens": 1200,
+    "endpoint_hash": null,
+    "sandbox_image": "sha256:71aebb88109cbb7c2eb535ef4321a4b9d23b886c0c14625bafaeb9e78b5fea5f",
+    "python": "3.13.13",
+    "platform": "Windows",
+    "fingerprints": {
+      "agent/runner.py": "cb274dddfad69fa7a652e9a80a7d86d134bc3487732ba6ef69a908d527079e2f",
+      "resolution/service.py": "eabaedc76332a9c67add8c924f0ba18d66eb073fa748003982cdb6ff08a8cd89",
+      "rag/generation.py": "fc670fd4868bd78d8f8af3f4b3cd25806b4b88e0afbfc7838b26165ce2a1397d",
+      "evaluation/grading.py": "f958f49b1acc02b60513ce3d349d662ae28593c55ae85389483baa642bac8a51",
+      "evaluation/adapters.py": "a8bf715ae9940a33076e697ceb8d8659af3d1e5577c6eb09d10998b67eabaa01",
+      "evaluation/harness.py": "d91655661002432341842fb378dce221ee8ec428c09340a73d98751618a92d22",
+      "evaluation/reviews.py": "cc553349b694c7920c0120997373a301994b71c77c54cff69c9068c7e9687575",
+      "evaluation/contracts.py": "2f123cf03dcfb8938e2b3ec414d7663ef434a97304617573f66cbb777dbb90ac",
+      "evaluation/metrics.py": "16ea06b3c8978b173e238054c522eee0cd738fec50f390d74cad2f31c6d85cfb"
+    }
+  },
+  "cases": [
+    {
+      "id": "retrieval/missing-database-url",
+      "category": "retrieval",
+      "status": "passed",
+      "checks": {
+        "evidence_discovery": "passed"
+      },
+      "failures": [],
+      "evidence": {
+        "dataset": "RepoPilot V1 Golden Repository",
+        "dataset_version": 1,
+        "strategy": "exact-vector-plus-lexical-rerank",
+        "provider": "deterministic",
+        "model": "deterministic-token-hash-v1",
+        "dimensions": 512,
+        "repository_file_count": 8,
+        "chunk_count": 19,
+        "query_count": 8,
+        "top_k": 5,
+        "metrics": {
+          "k=1": {
+            "query_count": 1,
+            "k": 1,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=3": {
+            "query_count": 1,
+            "k": 3,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=5": {
+            "query_count": 1,
+            "k": 5,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          }
+        },
+        "cases": [
+          {
+            "id": "missing-database-url",
+            "query": "Where does startup reject a missing database connection URL?",
+            "expected": [
+              {
+                "file_path": "src/settings.py",
+                "symbol_name": "require_database_url"
+              }
+            ],
+            "first_relevant_rank": 1,
+            "retrieved": [
+              {
+                "file_path": "src/settings.py",
+                "symbol_name": "require_database_url"
+              },
+              {
+                "file_path": "src/settings.py",
+                "symbol_name": "MissingDatabaseUrlError"
+              },
+              {
+                "file_path": "docs/operations.md",
+                "symbol_name": "Database Recovery"
+              },
+              {
+                "file_path": "src/report-status.tsx",
+                "symbol_name": "ReportStatus"
+              },
+              {
+                "file_path": "src/cache.ts",
+                "symbol_name": "buildCacheKey"
+              }
+            ]
+          }
+        ]
+      },
+      "latency_ms": 792.663,
+      "tool_calls": null,
+      "model_turns": null,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "retrieval/late-fee-cap",
+      "category": "retrieval",
+      "status": "passed",
+      "checks": {
+        "evidence_discovery": "passed"
+      },
+      "failures": [],
+      "evidence": {
+        "dataset": "RepoPilot V1 Golden Repository",
+        "dataset_version": 1,
+        "strategy": "exact-vector-plus-lexical-rerank",
+        "provider": "deterministic",
+        "model": "deterministic-token-hash-v1",
+        "dimensions": 512,
+        "repository_file_count": 8,
+        "chunk_count": 19,
+        "query_count": 8,
+        "top_k": 5,
+        "metrics": {
+          "k=1": {
+            "query_count": 1,
+            "k": 1,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=3": {
+            "query_count": 1,
+            "k": 3,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=5": {
+            "query_count": 1,
+            "k": 5,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          }
+        },
+        "cases": [
+          {
+            "id": "late-fee-cap",
+            "query": "How is the overdue invoice fee calculated and capped?",
+            "expected": [
+              {
+                "file_path": "src/invoices.py",
+                "symbol_name": "calculate_late_fee"
+              }
+            ],
+            "first_relevant_rank": 1,
+            "retrieved": [
+              {
+                "file_path": "src/invoices.py",
+                "symbol_name": "calculate_late_fee"
+              },
+              {
+                "file_path": "src/invoices.py",
+                "symbol_name": "format_invoice_number"
+              },
+              {
+                "file_path": "docs/operations.md",
+                "symbol_name": "Retry Policy"
+              },
+              {
+                "file_path": "src/invoices.py",
+                "symbol_name": null
+              },
+              {
+                "file_path": "docs/operations.md",
+                "symbol_name": "Database Recovery"
+              }
+            ]
+          }
+        ]
+      },
+      "latency_ms": 396.717,
+      "tool_calls": null,
+      "model_turns": null,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "retrieval/webhook-authentication",
+      "category": "retrieval",
+      "status": "passed",
+      "checks": {
+        "evidence_discovery": "passed"
+      },
+      "failures": [],
+      "evidence": {
+        "dataset": "RepoPilot V1 Golden Repository",
+        "dataset_version": 1,
+        "strategy": "exact-vector-plus-lexical-rerank",
+        "provider": "deterministic",
+        "model": "deterministic-token-hash-v1",
+        "dimensions": 512,
+        "repository_file_count": 8,
+        "chunk_count": 19,
+        "query_count": 8,
+        "top_k": 5,
+        "metrics": {
+          "k=1": {
+            "query_count": 1,
+            "k": 1,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=3": {
+            "query_count": 1,
+            "k": 3,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=5": {
+            "query_count": 1,
+            "k": 5,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          }
+        },
+        "cases": [
+          {
+            "id": "webhook-authentication",
+            "query": "Which function authenticates webhook payload signatures with HMAC?",
+            "expected": [
+              {
+                "file_path": "src/delivery.py",
+                "symbol_name": "verify_webhook_signature"
+              }
+            ],
+            "first_relevant_rank": 1,
+            "retrieved": [
+              {
+                "file_path": "src/delivery.py",
+                "symbol_name": "verify_webhook_signature"
+              },
+              {
+                "file_path": "src/delivery.py",
+                "symbol_name": null
+              },
+              {
+                "file_path": "src/audit.js",
+                "symbol_name": "appendAuditTimestamp"
+              },
+              {
+                "file_path": "src/audit.js",
+                "symbol_name": "redactAuditFields"
+              },
+              {
+                "file_path": "src/cache.ts",
+                "symbol_name": "buildCacheKey"
+              }
+            ]
+          }
+        ]
+      },
+      "latency_ms": 391.026,
+      "tool_calls": null,
+      "model_turns": null,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "retrieval/duplicate-delivery",
+      "category": "retrieval",
+      "status": "passed",
+      "checks": {
+        "evidence_discovery": "passed"
+      },
+      "failures": [],
+      "evidence": {
+        "dataset": "RepoPilot V1 Golden Repository",
+        "dataset_version": 1,
+        "strategy": "exact-vector-plus-lexical-rerank",
+        "provider": "deterministic",
+        "model": "deterministic-token-hash-v1",
+        "dimensions": 512,
+        "repository_file_count": 8,
+        "chunk_count": 19,
+        "query_count": 8,
+        "top_k": 5,
+        "metrics": {
+          "k=1": {
+            "query_count": 1,
+            "k": 1,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=3": {
+            "query_count": 1,
+            "k": 3,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=5": {
+            "query_count": 1,
+            "k": 5,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          }
+        },
+        "cases": [
+          {
+            "id": "duplicate-delivery",
+            "query": "What prevents the same event from being delivered twice?",
+            "expected": [
+              {
+                "file_path": "src/delivery.py",
+                "symbol_name": "create_delivery_key"
+              }
+            ],
+            "first_relevant_rank": 1,
+            "retrieved": [
+              {
+                "file_path": "src/delivery.py",
+                "symbol_name": "create_delivery_key"
+              },
+              {
+                "file_path": "src/audit.js",
+                "symbol_name": "appendAuditTimestamp"
+              },
+              {
+                "file_path": "src/audit.js",
+                "symbol_name": "redactAuditFields"
+              },
+              {
+                "file_path": "src/invoices.py",
+                "symbol_name": null
+              },
+              {
+                "file_path": "src/delivery.py",
+                "symbol_name": null
+              }
+            ]
+          }
+        ]
+      },
+      "latency_ms": 397.306,
+      "tool_calls": null,
+      "model_turns": null,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "retrieval/tenant-cache-isolation",
+      "category": "retrieval",
+      "status": "passed",
+      "checks": {
+        "evidence_discovery": "passed"
+      },
+      "failures": [],
+      "evidence": {
+        "dataset": "RepoPilot V1 Golden Repository",
+        "dataset_version": 1,
+        "strategy": "exact-vector-plus-lexical-rerank",
+        "provider": "deterministic",
+        "model": "deterministic-token-hash-v1",
+        "dimensions": 512,
+        "repository_file_count": 8,
+        "chunk_count": 19,
+        "query_count": 8,
+        "top_k": 5,
+        "metrics": {
+          "k=1": {
+            "query_count": 1,
+            "k": 1,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=3": {
+            "query_count": 1,
+            "k": 3,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=5": {
+            "query_count": 1,
+            "k": 5,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          }
+        },
+        "cases": [
+          {
+            "id": "tenant-cache-isolation",
+            "query": "How are cached reports isolated for each tenant?",
+            "expected": [
+              {
+                "file_path": "src/cache.ts",
+                "symbol_name": "buildCacheKey"
+              }
+            ],
+            "first_relevant_rank": 1,
+            "retrieved": [
+              {
+                "file_path": "src/cache.ts",
+                "symbol_name": "buildCacheKey"
+              },
+              {
+                "file_path": "README.md",
+                "symbol_name": "Harbor Reports"
+              },
+              {
+                "file_path": "src/settings.py",
+                "symbol_name": null
+              },
+              {
+                "file_path": "docs/operations.md",
+                "symbol_name": "Retry Policy"
+              },
+              {
+                "file_path": "src/report-status.tsx",
+                "symbol_name": "ReportStatus"
+              }
+            ]
+          }
+        ]
+      },
+      "latency_ms": 365.743,
+      "tool_calls": null,
+      "model_turns": null,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "retrieval/report-progress",
+      "category": "retrieval",
+      "status": "passed",
+      "checks": {
+        "evidence_discovery": "passed"
+      },
+      "failures": [],
+      "evidence": {
+        "dataset": "RepoPilot V1 Golden Repository",
+        "dataset_version": 1,
+        "strategy": "exact-vector-plus-lexical-rerank",
+        "provider": "deterministic",
+        "model": "deterministic-token-hash-v1",
+        "dimensions": 512,
+        "repository_file_count": 8,
+        "chunk_count": 19,
+        "query_count": 8,
+        "top_k": 5,
+        "metrics": {
+          "k=1": {
+            "query_count": 1,
+            "k": 1,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=3": {
+            "query_count": 1,
+            "k": 3,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=5": {
+            "query_count": 1,
+            "k": 5,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          }
+        },
+        "cases": [
+          {
+            "id": "report-progress",
+            "query": "Which UI component displays report loading progress?",
+            "expected": [
+              {
+                "file_path": "src/report-status.tsx",
+                "symbol_name": "ReportStatus"
+              }
+            ],
+            "first_relevant_rank": 1,
+            "retrieved": [
+              {
+                "file_path": "src/report-status.tsx",
+                "symbol_name": "ReportStatus"
+              },
+              {
+                "file_path": "src/report-status.tsx",
+                "symbol_name": null
+              },
+              {
+                "file_path": "src/cache.ts",
+                "symbol_name": "buildCacheKey"
+              },
+              {
+                "file_path": "src/settings.py",
+                "symbol_name": "MissingDatabaseUrlError"
+              },
+              {
+                "file_path": "README.md",
+                "symbol_name": "Harbor Reports"
+              }
+            ]
+          }
+        ]
+      },
+      "latency_ms": 376.708,
+      "tool_calls": null,
+      "model_turns": null,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "retrieval/audit-redaction",
+      "category": "retrieval",
+      "status": "passed",
+      "checks": {
+        "evidence_discovery": "passed"
+      },
+      "failures": [],
+      "evidence": {
+        "dataset": "RepoPilot V1 Golden Repository",
+        "dataset_version": 1,
+        "strategy": "exact-vector-plus-lexical-rerank",
+        "provider": "deterministic",
+        "model": "deterministic-token-hash-v1",
+        "dimensions": 512,
+        "repository_file_count": 8,
+        "chunk_count": 19,
+        "query_count": 8,
+        "top_k": 5,
+        "metrics": {
+          "k=1": {
+            "query_count": 1,
+            "k": 1,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=3": {
+            "query_count": 1,
+            "k": 3,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=5": {
+            "query_count": 1,
+            "k": 5,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          }
+        },
+        "cases": [
+          {
+            "id": "audit-redaction",
+            "query": "Where are passwords and access tokens removed before audit logging?",
+            "expected": [
+              {
+                "file_path": "src/audit.js",
+                "symbol_name": "redactAuditFields"
+              }
+            ],
+            "first_relevant_rank": 1,
+            "retrieved": [
+              {
+                "file_path": "src/audit.js",
+                "symbol_name": "redactAuditFields"
+              },
+              {
+                "file_path": "src/audit.js",
+                "symbol_name": "appendAuditTimestamp"
+              },
+              {
+                "file_path": "docs/operations.md",
+                "symbol_name": "Retry Policy"
+              },
+              {
+                "file_path": "README.md",
+                "symbol_name": "Harbor Reports"
+              },
+              {
+                "file_path": "docs/operations.md",
+                "symbol_name": "Database Recovery"
+              }
+            ]
+          }
+        ]
+      },
+      "latency_ms": 468.692,
+      "tool_calls": null,
+      "model_turns": null,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "retrieval/delivery-backoff",
+      "category": "retrieval",
+      "status": "passed",
+      "checks": {
+        "evidence_discovery": "passed"
+      },
+      "failures": [],
+      "evidence": {
+        "dataset": "RepoPilot V1 Golden Repository",
+        "dataset_version": 1,
+        "strategy": "exact-vector-plus-lexical-rerank",
+        "provider": "deterministic",
+        "model": "deterministic-token-hash-v1",
+        "dimensions": 512,
+        "repository_file_count": 8,
+        "chunk_count": 19,
+        "query_count": 8,
+        "top_k": 5,
+        "metrics": {
+          "k=1": {
+            "query_count": 1,
+            "k": 1,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=3": {
+            "query_count": 1,
+            "k": 3,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=5": {
+            "query_count": 1,
+            "k": 5,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          }
+        },
+        "cases": [
+          {
+            "id": "delivery-backoff",
+            "query": "What is the retry delay policy for failed outbound deliveries?",
+            "expected": [
+              {
+                "file_path": "docs/operations.md",
+                "symbol_name": "Retry Policy"
+              }
+            ],
+            "first_relevant_rank": 1,
+            "retrieved": [
+              {
+                "file_path": "docs/operations.md",
+                "symbol_name": "Retry Policy"
+              },
+              {
+                "file_path": "src/settings.py",
+                "symbol_name": null
+              },
+              {
+                "file_path": "docs/operations.md",
+                "symbol_name": "Database Recovery"
+              },
+              {
+                "file_path": "src/invoices.py",
+                "symbol_name": null
+              },
+              {
+                "file_path": "src/delivery.py",
+                "symbol_name": null
+              }
+            ]
+          }
+        ]
+      },
+      "latency_ms": 389.868,
+      "tool_calls": null,
+      "model_turns": null,
+      "tokens": null,
+      "cost": null
+    }
+  ],
+  "aggregate": {
+    "tool_calls": 0,
+    "tool_calls_measured_cases": 0,
+    "model_turns": 0,
+    "model_turns_measured_cases": 0,
+    "case_count": 8,
+    "statuses": {
+      "passed": 8
+    },
+    "metrics": {
+      "task_success": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null,
+        "statuses": {}
+      },
+      "verified_repair": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null,
+        "statuses": {}
+      },
+      "safe_decision": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null,
+        "statuses": {}
+      },
+      "patch_apply": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null,
+        "statuses": {}
+      },
+      "independent_test": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null,
+        "statuses": {}
+      },
+      "evidence_discovery": {
+        "numerator": 8,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 8
+        }
+      },
+      "citation_validity": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null,
+        "statuses": {}
+      },
+      "citation_identity": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null,
+        "statuses": {}
+      },
+      "claim_support": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null,
+        "statuses": {},
+        "reviewed_denominator": 0,
+        "reviewed_rate": null
+      },
+      "patch_apply_attempts": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null,
+        "statuses": {
+          "not_run_cases": 0
+        }
+      },
+      "retrieval_hit@1": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "retrieval_recall@1": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "retrieval_mrr@1": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "retrieval_hit@3": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "retrieval_recall@3": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "retrieval_mrr@3": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "retrieval_hit@5": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "retrieval_recall@5": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "retrieval_mrr@5": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      }
+    },
+    "tokens": null,
+    "cost": null,
+    "usage_note": "Existing provider result contracts do not expose trustworthy usage/cost.",
+    "measured_latency_ms": 3578.723,
+    "latency_measured_cases": 8
+  },
+  "limitations": [
+    "Three frozen Issue cases cannot establish general repair reliability.",
+    "Tokens/cost unavailable from provider contracts; null is not zero.",
+    "Current answer claim support is unreviewed; valid citations do not prove grounding.",
+    "Historical V3/V4 unsupported claims remain in original reports/reviews.",
+    "One repetition per task; no general accuracy or improvement claim."
+  ],
+  "finished_at": "2026-10-29T11:24:21.291713+00:00",
+  "complete": true
+}

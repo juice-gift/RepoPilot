@@ -25,7 +25,14 @@ exact tested commits. Final regression: 330 passed; remote-source Docker retests
 passed. See the [V5 Completion Report](docs/evaluation/v5-mcp-github-completion.md),
 [actual read-only audit](docs/evaluation/v5-github-readonly-audit.json),
 [V5 goal](docs/goals/v5-mcp-github.md) and
-[execution plan](docs/tasks/v5-plan.md). Stop at V5/V6.
+[execution plan](docs/tasks/v5-plan.md).
+
+V6 Evaluation System is complete (2026-10-29); final DB/Docker regression: 360 passed,
+1 optional online MCP skip. Actual Qwen testing retains unsupported claims and
+a bounded-loop failure despite passing tests. See the [V6 completion report](docs/evaluation/v6-evaluation-completion.md). The CLI reuses
+frozen V1–V4 pipelines with versioned datasets, independent grading, JSON/Markdown
+reports and compatible-run comparison. See [usage and scoring definitions](docs/evaluation/v6-harness.md)
+and the [V6 plan](docs/tasks/v6-plan.md). Stop before V7.
 
 V5 setup: follow the [private fixture preparation plan](docs/tasks/v5-github-fixture-preparation.md).
 Put `GITHUB_MCP_TOKEN` only in the ignored root `.env`; it maps to the official

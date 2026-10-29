@@ -1,0 +1,345 @@
+{
+  "schema_version": 1,
+  "definitions": "v6-evidence-grading-1",
+  "dataset": {
+    "name": "RepoPilot frozen evaluation suite",
+    "version": 1,
+    "hash": "8497480d95559a947ed3ae9eb3410a33dea384c0dff026e2abe0a482dac7ddda",
+    "total_tasks": 17
+  },
+  "selection": [
+    "rag/missing-database-url",
+    "rag/late-fee-cap"
+  ],
+  "mode": "scripted",
+  "measurement": "Scripted protocol only; no real LLM reasoning quality measurement.",
+  "code_commit": "d95f69840c202ee66064fb30b68ffe66e85f6fc4",
+  "dirty": true,
+  "started_at": "2026-10-29T11:08:26.700763+00:00",
+  "runtime": {
+    "model": "frozen-scripts",
+    "provider": "scripted",
+    "retrieval_strategy": "hybrid",
+    "embedding": "deterministic-token-hash",
+    "top_k": 5,
+    "max_output_tokens": 1200,
+    "endpoint_hash": null,
+    "sandbox_image": null,
+    "python": "3.13.13",
+    "platform": "Windows",
+    "fingerprints": {
+      "agent/runner.py": "cb274dddfad69fa7a652e9a80a7d86d134bc3487732ba6ef69a908d527079e2f",
+      "resolution/service.py": "eabaedc76332a9c67add8c924f0ba18d66eb073fa748003982cdb6ff08a8cd89",
+      "rag/generation.py": "fc670fd4868bd78d8f8af3f4b3cd25806b4b88e0afbfc7838b26165ce2a1397d",
+      "evaluation/grading.py": "f000456021940fdc6faf5aad0753a696ef90964c38bbc0c79fd5deaf7cc73599",
+      "evaluation/adapters.py": "7ecdbea56e5c01ce69202fc99f185f95347af9dfabb11658a64f7e6779bb531a",
+      "evaluation/harness.py": "7d821e4351ca78a2f8677d4820a5624106e163618b451643f04461008ccbff5d"
+    }
+  },
+  "cases": [
+    {
+      "id": "rag/missing-database-url",
+      "category": "rag",
+      "status": "failed",
+      "checks": {
+        "evidence_discovery": "passed",
+        "citation_validity": "failed",
+        "citation_identity": "failed",
+        "claim_support": "unverified"
+      },
+      "failures": [
+        "unsupported_citation"
+      ],
+      "evidence": {
+        "answer": "Inspect the supplied source for this question. [invalid citation removed]",
+        "citations": [],
+        "invalid_ids": [
+          "E999"
+        ],
+        "retrieved": [
+          {
+            "rank": 1,
+            "chunk_id": 4026,
+            "file_path": "src/settings.py",
+            "language": "python",
+            "chunk_type": "function",
+            "symbol_name": "require_database_url",
+            "qualified_name": "require_database_url",
+            "parent_symbol": null,
+            "start_line": 10,
+            "end_line": 15,
+            "content_hash": "d4e0c4cf5bb5eb0a0645fb045b2f27dfc01fbd73446353085e26f1687ac8cd35",
+            "score": 0.505125,
+            "distance": 0.532293,
+            "content": "def require_database_url() -> str:\n    \"\"\"Read DATABASE_URL and reject startup when it is missing.\"\"\"\n    database_url = os.getenv(\"DATABASE_URL\", \"\").strip()\n    if not database_url:\n        raise MissingDatabaseUrlError(\"DATABASE_URL must be configured\")\n    return database_url\n"
+          },
+          {
+            "rank": 2,
+            "chunk_id": 4025,
+            "file_path": "src/settings.py",
+            "language": "python",
+            "chunk_type": "class",
+            "symbol_name": "MissingDatabaseUrlError",
+            "qualified_name": "MissingDatabaseUrlError",
+            "parent_symbol": null,
+            "start_line": 6,
+            "end_line": 7,
+            "content_hash": "7490ab3cc2ae783d48660bd7a14cf31860c2e295e8e3c088b66f803dd0380d68",
+            "score": 0.371993,
+            "distance": 0.659648,
+            "content": "class MissingDatabaseUrlError(RuntimeError):\n    \"\"\"Raised when the database connection string is absent.\"\"\"\n"
+          },
+          {
+            "rank": 3,
+            "chunk_id": 4010,
+            "file_path": "docs/operations.md",
+            "language": "markdown",
+            "chunk_type": "section",
+            "symbol_name": "Database Recovery",
+            "qualified_name": "Database Recovery",
+            "parent_symbol": null,
+            "start_line": 9,
+            "end_line": 12,
+            "content_hash": "9aad67c93a5e870886123c9de5bf8f1a7cc616472125e6dbb4a5ab899592b4cb",
+            "score": 0.108895,
+            "distance": 0.901705,
+            "content": "## Database Recovery\n\nRestore the most recent snapshot before replaying the transaction log. Verify\nrecord counts before returning the service to traffic.\n"
+          },
+          {
+            "rank": 4,
+            "chunk_id": 4023,
+            "file_path": "src/report-status.tsx",
+            "language": "tsx",
+            "chunk_type": "function",
+            "symbol_name": "ReportStatus",
+            "qualified_name": "ReportStatus",
+            "parent_symbol": null,
+            "start_line": 6,
+            "end_line": 9,
+            "content_hash": "8c43e14713c31d0b46d726a5cb61e46f1016c5505c5f2aeabeffe2d194365840",
+            "score": 0.093709,
+            "distance": 0.86613,
+            "content": "export function ReportStatus({ completedRows, totalRows }: ReportStatusProps) {\n  const isComplete = completedRows >= totalRows;\n  return <p>{isComplete ? \"Report ready\" : `Loading ${completedRows}/${totalRows}`}</p>;\n}\n"
+          },
+          {
+            "rank": 5,
+            "chunk_id": 4014,
+            "file_path": "src/cache.ts",
+            "language": "typescript",
+            "chunk_type": "function",
+            "symbol_name": "buildCacheKey",
+            "qualified_name": "buildCacheKey",
+            "parent_symbol": null,
+            "start_line": 1,
+            "end_line": 4,
+            "content_hash": "0389964018bf75f9730ffa051c0cdeb2a6a634f9ebe4dc2c3983bdd916acd5a9",
+            "score": 0.093333,
+            "distance": 0.866667,
+            "content": "export function buildCacheKey(tenantId: string, reportId: string): string {\n  // Isolate cached reports by tenant and report identifier.\n  return `report:${tenantId}:${reportId}`;\n}\n"
+          }
+        ],
+        "generation_model": "v6-grounding-protocol-v1",
+        "claim_check": "Startup requires a nonempty database URL."
+      },
+      "latency_ms": 756.874,
+      "tool_calls": null,
+      "model_turns": 1,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "rag/late-fee-cap",
+      "category": "rag",
+      "status": "failed",
+      "checks": {
+        "evidence_discovery": "passed",
+        "citation_validity": "failed",
+        "citation_identity": "failed",
+        "claim_support": "unverified"
+      },
+      "failures": [
+        "unsupported_citation"
+      ],
+      "evidence": {
+        "answer": "Inspect the supplied source for this question. [invalid citation removed]",
+        "citations": [],
+        "invalid_ids": [
+          "E999"
+        ],
+        "retrieved": [
+          {
+            "rank": 1,
+            "chunk_id": 4039,
+            "file_path": "src/invoices.py",
+            "language": "python",
+            "chunk_type": "function",
+            "symbol_name": "calculate_late_fee",
+            "qualified_name": "calculate_late_fee",
+            "parent_symbol": null,
+            "start_line": 6,
+            "end_line": 10,
+            "content_hash": "0a8a4afcda11b32261f7facdcaf44e359f3b1069a6f46ddad6141b0b2cfe7678",
+            "score": 0.270004,
+            "distance": 0.748246,
+            "content": "def calculate_late_fee(balance: Decimal, days_overdue: int) -> Decimal:\n    \"\"\"Charge one percent per overdue week, capped at ten percent.\"\"\"\n    overdue_weeks = max(days_overdue, 0) // 7\n    rate = min(Decimal(\"0.01\") * overdue_weeks, Decimal(\"0.10\"))\n    return (balance * rate).quantize(Decimal(\"0.01\"))\n"
+          },
+          {
+            "rank": 2,
+            "chunk_id": 4040,
+            "file_path": "src/invoices.py",
+            "language": "python",
+            "chunk_type": "function",
+            "symbol_name": "format_invoice_number",
+            "qualified_name": "format_invoice_number",
+            "parent_symbol": null,
+            "start_line": 13,
+            "end_line": 15,
+            "content_hash": "2886f75c084cd37abe327d7c1c4b97f3939831ccf3b597864348e17622336058",
+            "score": 0.196095,
+            "distance": 0.80755,
+            "content": "def format_invoice_number(sequence: int) -> str:\n    \"\"\"Render the public invoice identifier.\"\"\"\n    return f\"INV-{sequence:08d}\"\n"
+          },
+          {
+            "rank": 3,
+            "chunk_id": 4028,
+            "file_path": "docs/operations.md",
+            "language": "markdown",
+            "chunk_type": "section",
+            "symbol_name": "Retry Policy",
+            "qualified_name": "Retry Policy",
+            "parent_symbol": null,
+            "start_line": 3,
+            "end_line": 8,
+            "content_hash": "b92b94cc10eb62c16c78d821306579387d525add91c5407ef8053a4fd00a4bd8",
+            "score": 0.195973,
+            "distance": 0.751548,
+            "content": "## Retry Policy\n\nFailed outbound deliveries use exponential backoff. The delay doubles after each\nfailure and is capped at five minutes. Permanent authentication failures are not\nretried.\n\n"
+          },
+          {
+            "rank": 4,
+            "chunk_id": 4038,
+            "file_path": "src/invoices.py",
+            "language": "python",
+            "chunk_type": "module",
+            "symbol_name": null,
+            "qualified_name": null,
+            "parent_symbol": null,
+            "start_line": 1,
+            "end_line": 5,
+            "content_hash": "8e8ee7489b928b807acd57a03d33fa241937b82656a1059665c553c66c0072a1",
+            "score": 0.130273,
+            "distance": 0.857866,
+            "content": "\"\"\"Invoice calculations for the Golden Repository.\"\"\"\n\nfrom decimal import Decimal\n\n\n"
+          },
+          {
+            "rank": 5,
+            "chunk_id": 4029,
+            "file_path": "docs/operations.md",
+            "language": "markdown",
+            "chunk_type": "section",
+            "symbol_name": "Database Recovery",
+            "qualified_name": "Database Recovery",
+            "parent_symbol": null,
+            "start_line": 9,
+            "end_line": 12,
+            "content_hash": "9aad67c93a5e870886123c9de5bf8f1a7cc616472125e6dbb4a5ab899592b4cb",
+            "score": 0.103209,
+            "distance": 0.852558,
+            "content": "## Database Recovery\n\nRestore the most recent snapshot before replaying the transaction log. Verify\nrecord counts before returning the service to traffic.\n"
+          }
+        ],
+        "generation_model": "v6-grounding-protocol-v1",
+        "claim_check": "Fee uses nonnegative days and is capped at thirty days; verify units and formula against source."
+      },
+      "latency_ms": 375.78,
+      "tool_calls": null,
+      "model_turns": 1,
+      "tokens": null,
+      "cost": null
+    }
+  ],
+  "aggregate": {
+    "case_count": 2,
+    "statuses": {
+      "failed": 2
+    },
+    "metrics": {
+      "task_success": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null,
+        "statuses": {}
+      },
+      "verified_repair": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null,
+        "statuses": {}
+      },
+      "safe_decision": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null,
+        "statuses": {}
+      },
+      "patch_apply": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null,
+        "statuses": {}
+      },
+      "independent_test": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null,
+        "statuses": {}
+      },
+      "evidence_discovery": {
+        "numerator": 2,
+        "denominator": 2,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 2
+        }
+      },
+      "citation_validity": {
+        "numerator": 0,
+        "denominator": 2,
+        "rate": 0.0,
+        "statuses": {
+          "failed": 2
+        }
+      },
+      "citation_identity": {
+        "numerator": 0,
+        "denominator": 2,
+        "rate": 0.0,
+        "statuses": {
+          "failed": 2
+        }
+      },
+      "claim_support": {
+        "numerator": 0,
+        "denominator": 2,
+        "rate": 0.0,
+        "statuses": {
+          "unverified": 2
+        }
+      }
+    },
+    "tokens": null,
+    "cost": null,
+    "usage_note": "Existing provider result contracts do not expose trustworthy usage/cost.",
+    "measured_latency_ms": 1132.654,
+    "latency_measured_cases": 2
+  },
+  "limitations": [
+    "Three frozen Issue cases cannot establish general repair reliability.",
+    "Tokens/cost unavailable from provider contracts; null is not zero.",
+    "Current answer claim support is unreviewed; valid citations do not prove grounding.",
+    "Historical V3/V4 unsupported claims remain in original reports/reviews.",
+    "One repetition per task; no general accuracy or improvement claim."
+  ],
+  "finished_at": "2026-10-29T11:08:27.870699+00:00",
+  "complete": true
+}

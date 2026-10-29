@@ -1,0 +1,3541 @@
+{
+  "schema_version": 1,
+  "historical_evidence": [
+    {
+      "id": "authorization-before-policy",
+      "supported": true,
+      "reason": "Codex source review, 2026-10-14: the actual definition range 5–10 and auth range 1–3 are correct. E2_1/E4_1 support uncaught token rejection before retry_delay; E6_1 is the inspected helper. No incorrect line annotations remain in this answer.",
+      "provenance": "Historical Codex source review, not independent human review; not a V6 run",
+      "report": "v3-agent-qwen-grounding-report.json",
+      "report_hash": "93eddd3dc627023476c3fc32013653060aaba29027a6674af041aa64952575d8",
+      "review_hash": "72c7b2bfcea35806bbd1f9b970547916917b4d80ae55ee98acec86600a244e53",
+      "reviews_file_hash": "99d4b419fb52160880c5f74a24d1968b9f1e48f4d28d73114df1ed8a10e39c2c"
+    },
+    {
+      "id": "permanent-versus-transient",
+      "supported": false,
+      "reason": "Codex source review, 2026-10-14: the answer still claims all permanent jobs are unconditionally rejected regardless of attempt, then contradicts that with the earlier negative-attempt exception. Token preconditions are omitted. A correct summary table does not erase the unsupported universal claim.",
+      "provenance": "Historical Codex source review, not independent human review; not a V6 run",
+      "report": "v3-agent-qwen-grounding-report.json",
+      "report_hash": "93eddd3dc627023476c3fc32013653060aaba29027a6674af041aa64952575d8",
+      "review_hash": "fb24eb0692667589e558d29b2465ebc82d946cf6ba296dc16e5cec29281cb69a",
+      "reviews_file_hash": "99d4b419fb52160880c5f74a24d1968b9f1e48f4d28d73114df1ed8a10e39c2c"
+    },
+    {
+      "id": "documentation-policy-mismatch",
+      "supported": false,
+      "reason": "Codex source review, 2026-10-14: the source mismatch is correct, but the answer invents production usage and prefers the 300-second policy before confirming intent. It also uses parenthesized IDs instead of the requested citation syntax. Read-only capability does not establish which proposed fix is safer.",
+      "provenance": "Historical Codex source review, not independent human review; not a V6 run",
+      "report": "v3-agent-qwen-grounding-report.json",
+      "report_hash": "93eddd3dc627023476c3fc32013653060aaba29027a6674af041aa64952575d8",
+      "review_hash": "638b5c1ee85a0b4ae4f47f47f696e0ec6d5df27c9dcb271720cb8951a32fece5",
+      "reviews_file_hash": "99d4b419fb52160880c5f74a24d1968b9f1e48f4d28d73114df1ed8a10e39c2c"
+    },
+    {
+      "id": "fee-days",
+      "provenance": "Codex source/diff/claim review; not independent human review",
+      "verdict": "Verified independent tests and source-consistent repair",
+      "notes": "Diff preserves guards, cap and integer behavior; no test/config changes",
+      "supported": true,
+      "report": "v4-resolution-qwen-report.json",
+      "report_hash": "50a6403ca8771a2352d87cbff1666488ebb43d367f714c674980e1791d155f0e",
+      "review_hash": "65be6a550f02746fc5558a6d0898bd2e99ebae660f970ecee0d70ddc020554c0"
+    },
+    {
+      "id": "dispatch-preconditions",
+      "provenance": "Codex source/diff/claim review; not independent human review",
+      "verdict": "Verified independent tests and source-consistent repair",
+      "notes": "Both auth-before-policy and negative-attempt preconditions fixed; permanent rejection and cap preserved",
+      "supported": true,
+      "report": "v4-resolution-qwen-report.json",
+      "report_hash": "50a6403ca8771a2352d87cbff1666488ebb43d367f714c674980e1791d155f0e",
+      "review_hash": "42d7404b7bb1d64ed446a712b2448b91d329c7507948058ca125b90d8e3c1fbd"
+    },
+    {
+      "id": "ambiguous-cap",
+      "provenance": "Codex source/diff/claim review; not independent human review",
+      "verdict": "No changes; owner-decision criterion not achieved",
+      "notes": "Initial full run offered an unusable test tool and stopped safely; targeted corrected-capability runs failed at provider request 1. Provider diagnostic confirmed HTTP 403 PERMISSION_DENIED: free quota exhausted. Corrected real-model owner-decision behavior remains unverified.",
+      "supported": null,
+      "report": "v4-resolution-qwen-report.json",
+      "report_hash": "50a6403ca8771a2352d87cbff1666488ebb43d367f714c674980e1791d155f0e",
+      "review_hash": "b88c5d2ed97d2db274facd61382f5a213573cdc5220508d8fa4e41be3c18d32c"
+    },
+    {
+      "id": "ambiguous-cap",
+      "provenance": "Codex source/diff/claim review; not independent human review",
+      "verdict": "No changes; owner-decision criterion not achieved",
+      "notes": "Initial full run offered an unusable test tool and stopped safely; targeted corrected-capability runs failed at provider request 1. Provider diagnostic confirmed HTTP 403 PERMISSION_DENIED: free quota exhausted. Corrected real-model owner-decision behavior remains unverified.",
+      "supported": null,
+      "report": "v4-resolution-qwen-ambiguity-trial.json",
+      "report_hash": "143d2eb371b6537b2b81ca4b4fe9defc3c8328e4a2ed83d29e95c39acf8d7d95",
+      "review_hash": "992adeee11d305312ef93a23bd416c9e152f4498fc4a1c131b2a29220a7e1c0b"
+    },
+    {
+      "id": "ambiguous-cap",
+      "provenance": "Codex source/diff/claim review; not independent human review",
+      "verdict": "No changes; owner-decision criterion not achieved",
+      "notes": "Initial full run offered an unusable test tool and stopped safely; targeted corrected-capability runs failed at provider request 1. Provider diagnostic confirmed HTTP 403 PERMISSION_DENIED: free quota exhausted. Corrected real-model owner-decision behavior remains unverified.",
+      "supported": null,
+      "report": "v4-resolution-qwen-ambiguity-retry-report.json",
+      "report_hash": "0c12bbf79f28ce6ae2d14fe8d5ffeb790329a8569b16d44b944240f6554a10c3",
+      "review_hash": "97262b9ec36976a42a77a0e189b9148ea945e31ed2c785663afb059943bc8f62"
+    },
+    {
+      "id": "ambiguous-cap",
+      "provenance": "Codex source/diff/claim review; not independent human review",
+      "verdict": "Frozen owner-decision criterion achieved without patch attempts or changes",
+      "notes": "Owner selected qwen3.7-flash-2026-07-15. Model read all five source files and identified the documented 60/300-second conflict and explicit absence of owner intent. One submit_plan missing expected_revision was rejected; the model corrected it. Nine model calls; revision 0; zero patch/test attempts; original/Snapshot unchanged and workspace cleaned. Future plan wording assumes a code update, though choosing 300 could instead require a documentation change; no such change was attempted. Prior failures remain recorded.",
+      "supported": true,
+      "report": "v4-resolution-qwen-ambiguity-resumed.json",
+      "report_hash": "c5cdfed014565859290bd9ec940c588c45500435d85a34dbdbb32574ecd2ea1b",
+      "review_hash": "ba32c95a3124096a6b45d364dd921646b4233accb3db16d2c1e36757a6b39e80"
+    }
+  ],
+  "review_policy": "unreviewed",
+  "definitions": "v6-evidence-grading-3",
+  "dataset": {
+    "name": "RepoPilot frozen evaluation suite",
+    "version": 2,
+    "hash": "25d0666fe7666424cb84256408b3ae41da7b99fde22c9f3e838c8be5b1f3cc18",
+    "total_tasks": 17
+  },
+  "selection": [
+    "retrieval/missing-database-url",
+    "retrieval/late-fee-cap",
+    "retrieval/webhook-authentication",
+    "retrieval/duplicate-delivery",
+    "retrieval/tenant-cache-isolation",
+    "retrieval/report-progress",
+    "retrieval/audit-redaction",
+    "retrieval/delivery-backoff",
+    "structure/frozen",
+    "investigation/authorization-before-policy",
+    "investigation/permanent-versus-transient",
+    "investigation/documentation-policy-mismatch",
+    "rag/missing-database-url",
+    "rag/late-fee-cap",
+    "resolution/fee-days",
+    "resolution/dispatch-preconditions",
+    "resolution/ambiguous-cap"
+  ],
+  "mode": "scripted",
+  "measurement": "Scripted protocol only; no real LLM reasoning quality measurement.",
+  "code_commit": "4e9f710f4a0b05b94d24b615fcca5ab2475d91d9",
+  "dirty": true,
+  "started_at": "2026-10-29T11:23:35.072528+00:00",
+  "runtime": {
+    "model": "frozen-scripts",
+    "provider": "scripted",
+    "retrieval_strategy": "hybrid",
+    "embedding": "deterministic-token-hash",
+    "top_k": 5,
+    "max_output_tokens": 1200,
+    "endpoint_hash": null,
+    "sandbox_image": "sha256:71aebb88109cbb7c2eb535ef4321a4b9d23b886c0c14625bafaeb9e78b5fea5f",
+    "python": "3.13.13",
+    "platform": "Windows",
+    "fingerprints": {
+      "agent/runner.py": "cb274dddfad69fa7a652e9a80a7d86d134bc3487732ba6ef69a908d527079e2f",
+      "resolution/service.py": "eabaedc76332a9c67add8c924f0ba18d66eb073fa748003982cdb6ff08a8cd89",
+      "rag/generation.py": "fc670fd4868bd78d8f8af3f4b3cd25806b4b88e0afbfc7838b26165ce2a1397d",
+      "evaluation/grading.py": "f958f49b1acc02b60513ce3d349d662ae28593c55ae85389483baa642bac8a51",
+      "evaluation/adapters.py": "a8bf715ae9940a33076e697ceb8d8659af3d1e5577c6eb09d10998b67eabaa01",
+      "evaluation/harness.py": "d91655661002432341842fb378dce221ee8ec428c09340a73d98751618a92d22",
+      "evaluation/reviews.py": "cc553349b694c7920c0120997373a301994b71c77c54cff69c9068c7e9687575",
+      "evaluation/contracts.py": "2f123cf03dcfb8938e2b3ec414d7663ef434a97304617573f66cbb777dbb90ac",
+      "evaluation/metrics.py": "16ea06b3c8978b173e238054c522eee0cd738fec50f390d74cad2f31c6d85cfb"
+    }
+  },
+  "cases": [
+    {
+      "id": "retrieval/missing-database-url",
+      "category": "retrieval",
+      "status": "passed",
+      "checks": {
+        "evidence_discovery": "passed"
+      },
+      "failures": [],
+      "evidence": {
+        "dataset": "RepoPilot V1 Golden Repository",
+        "dataset_version": 1,
+        "strategy": "exact-vector-plus-lexical-rerank",
+        "provider": "deterministic",
+        "model": "deterministic-token-hash-v1",
+        "dimensions": 512,
+        "repository_file_count": 8,
+        "chunk_count": 19,
+        "query_count": 8,
+        "top_k": 5,
+        "metrics": {
+          "k=1": {
+            "query_count": 1,
+            "k": 1,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=3": {
+            "query_count": 1,
+            "k": 3,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=5": {
+            "query_count": 1,
+            "k": 5,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          }
+        },
+        "cases": [
+          {
+            "id": "missing-database-url",
+            "query": "Where does startup reject a missing database connection URL?",
+            "expected": [
+              {
+                "file_path": "src/settings.py",
+                "symbol_name": "require_database_url"
+              }
+            ],
+            "first_relevant_rank": 1,
+            "retrieved": [
+              {
+                "file_path": "src/settings.py",
+                "symbol_name": "require_database_url"
+              },
+              {
+                "file_path": "src/settings.py",
+                "symbol_name": "MissingDatabaseUrlError"
+              },
+              {
+                "file_path": "docs/operations.md",
+                "symbol_name": "Database Recovery"
+              },
+              {
+                "file_path": "src/report-status.tsx",
+                "symbol_name": "ReportStatus"
+              },
+              {
+                "file_path": "src/cache.ts",
+                "symbol_name": "buildCacheKey"
+              }
+            ]
+          }
+        ]
+      },
+      "latency_ms": 761.996,
+      "tool_calls": null,
+      "model_turns": null,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "retrieval/late-fee-cap",
+      "category": "retrieval",
+      "status": "passed",
+      "checks": {
+        "evidence_discovery": "passed"
+      },
+      "failures": [],
+      "evidence": {
+        "dataset": "RepoPilot V1 Golden Repository",
+        "dataset_version": 1,
+        "strategy": "exact-vector-plus-lexical-rerank",
+        "provider": "deterministic",
+        "model": "deterministic-token-hash-v1",
+        "dimensions": 512,
+        "repository_file_count": 8,
+        "chunk_count": 19,
+        "query_count": 8,
+        "top_k": 5,
+        "metrics": {
+          "k=1": {
+            "query_count": 1,
+            "k": 1,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=3": {
+            "query_count": 1,
+            "k": 3,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=5": {
+            "query_count": 1,
+            "k": 5,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          }
+        },
+        "cases": [
+          {
+            "id": "late-fee-cap",
+            "query": "How is the overdue invoice fee calculated and capped?",
+            "expected": [
+              {
+                "file_path": "src/invoices.py",
+                "symbol_name": "calculate_late_fee"
+              }
+            ],
+            "first_relevant_rank": 1,
+            "retrieved": [
+              {
+                "file_path": "src/invoices.py",
+                "symbol_name": "calculate_late_fee"
+              },
+              {
+                "file_path": "src/invoices.py",
+                "symbol_name": "format_invoice_number"
+              },
+              {
+                "file_path": "docs/operations.md",
+                "symbol_name": "Retry Policy"
+              },
+              {
+                "file_path": "src/invoices.py",
+                "symbol_name": null
+              },
+              {
+                "file_path": "docs/operations.md",
+                "symbol_name": "Database Recovery"
+              }
+            ]
+          }
+        ]
+      },
+      "latency_ms": 384.323,
+      "tool_calls": null,
+      "model_turns": null,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "retrieval/webhook-authentication",
+      "category": "retrieval",
+      "status": "passed",
+      "checks": {
+        "evidence_discovery": "passed"
+      },
+      "failures": [],
+      "evidence": {
+        "dataset": "RepoPilot V1 Golden Repository",
+        "dataset_version": 1,
+        "strategy": "exact-vector-plus-lexical-rerank",
+        "provider": "deterministic",
+        "model": "deterministic-token-hash-v1",
+        "dimensions": 512,
+        "repository_file_count": 8,
+        "chunk_count": 19,
+        "query_count": 8,
+        "top_k": 5,
+        "metrics": {
+          "k=1": {
+            "query_count": 1,
+            "k": 1,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=3": {
+            "query_count": 1,
+            "k": 3,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=5": {
+            "query_count": 1,
+            "k": 5,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          }
+        },
+        "cases": [
+          {
+            "id": "webhook-authentication",
+            "query": "Which function authenticates webhook payload signatures with HMAC?",
+            "expected": [
+              {
+                "file_path": "src/delivery.py",
+                "symbol_name": "verify_webhook_signature"
+              }
+            ],
+            "first_relevant_rank": 1,
+            "retrieved": [
+              {
+                "file_path": "src/delivery.py",
+                "symbol_name": "verify_webhook_signature"
+              },
+              {
+                "file_path": "src/delivery.py",
+                "symbol_name": null
+              },
+              {
+                "file_path": "src/audit.js",
+                "symbol_name": "appendAuditTimestamp"
+              },
+              {
+                "file_path": "src/audit.js",
+                "symbol_name": "redactAuditFields"
+              },
+              {
+                "file_path": "src/cache.ts",
+                "symbol_name": "buildCacheKey"
+              }
+            ]
+          }
+        ]
+      },
+      "latency_ms": 384.68,
+      "tool_calls": null,
+      "model_turns": null,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "retrieval/duplicate-delivery",
+      "category": "retrieval",
+      "status": "passed",
+      "checks": {
+        "evidence_discovery": "passed"
+      },
+      "failures": [],
+      "evidence": {
+        "dataset": "RepoPilot V1 Golden Repository",
+        "dataset_version": 1,
+        "strategy": "exact-vector-plus-lexical-rerank",
+        "provider": "deterministic",
+        "model": "deterministic-token-hash-v1",
+        "dimensions": 512,
+        "repository_file_count": 8,
+        "chunk_count": 19,
+        "query_count": 8,
+        "top_k": 5,
+        "metrics": {
+          "k=1": {
+            "query_count": 1,
+            "k": 1,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=3": {
+            "query_count": 1,
+            "k": 3,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=5": {
+            "query_count": 1,
+            "k": 5,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          }
+        },
+        "cases": [
+          {
+            "id": "duplicate-delivery",
+            "query": "What prevents the same event from being delivered twice?",
+            "expected": [
+              {
+                "file_path": "src/delivery.py",
+                "symbol_name": "create_delivery_key"
+              }
+            ],
+            "first_relevant_rank": 1,
+            "retrieved": [
+              {
+                "file_path": "src/delivery.py",
+                "symbol_name": "create_delivery_key"
+              },
+              {
+                "file_path": "src/audit.js",
+                "symbol_name": "appendAuditTimestamp"
+              },
+              {
+                "file_path": "src/audit.js",
+                "symbol_name": "redactAuditFields"
+              },
+              {
+                "file_path": "src/invoices.py",
+                "symbol_name": null
+              },
+              {
+                "file_path": "src/delivery.py",
+                "symbol_name": null
+              }
+            ]
+          }
+        ]
+      },
+      "latency_ms": 399.518,
+      "tool_calls": null,
+      "model_turns": null,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "retrieval/tenant-cache-isolation",
+      "category": "retrieval",
+      "status": "passed",
+      "checks": {
+        "evidence_discovery": "passed"
+      },
+      "failures": [],
+      "evidence": {
+        "dataset": "RepoPilot V1 Golden Repository",
+        "dataset_version": 1,
+        "strategy": "exact-vector-plus-lexical-rerank",
+        "provider": "deterministic",
+        "model": "deterministic-token-hash-v1",
+        "dimensions": 512,
+        "repository_file_count": 8,
+        "chunk_count": 19,
+        "query_count": 8,
+        "top_k": 5,
+        "metrics": {
+          "k=1": {
+            "query_count": 1,
+            "k": 1,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=3": {
+            "query_count": 1,
+            "k": 3,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=5": {
+            "query_count": 1,
+            "k": 5,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          }
+        },
+        "cases": [
+          {
+            "id": "tenant-cache-isolation",
+            "query": "How are cached reports isolated for each tenant?",
+            "expected": [
+              {
+                "file_path": "src/cache.ts",
+                "symbol_name": "buildCacheKey"
+              }
+            ],
+            "first_relevant_rank": 1,
+            "retrieved": [
+              {
+                "file_path": "src/cache.ts",
+                "symbol_name": "buildCacheKey"
+              },
+              {
+                "file_path": "README.md",
+                "symbol_name": "Harbor Reports"
+              },
+              {
+                "file_path": "src/settings.py",
+                "symbol_name": null
+              },
+              {
+                "file_path": "docs/operations.md",
+                "symbol_name": "Retry Policy"
+              },
+              {
+                "file_path": "src/report-status.tsx",
+                "symbol_name": "ReportStatus"
+              }
+            ]
+          }
+        ]
+      },
+      "latency_ms": 401.436,
+      "tool_calls": null,
+      "model_turns": null,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "retrieval/report-progress",
+      "category": "retrieval",
+      "status": "passed",
+      "checks": {
+        "evidence_discovery": "passed"
+      },
+      "failures": [],
+      "evidence": {
+        "dataset": "RepoPilot V1 Golden Repository",
+        "dataset_version": 1,
+        "strategy": "exact-vector-plus-lexical-rerank",
+        "provider": "deterministic",
+        "model": "deterministic-token-hash-v1",
+        "dimensions": 512,
+        "repository_file_count": 8,
+        "chunk_count": 19,
+        "query_count": 8,
+        "top_k": 5,
+        "metrics": {
+          "k=1": {
+            "query_count": 1,
+            "k": 1,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=3": {
+            "query_count": 1,
+            "k": 3,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=5": {
+            "query_count": 1,
+            "k": 5,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          }
+        },
+        "cases": [
+          {
+            "id": "report-progress",
+            "query": "Which UI component displays report loading progress?",
+            "expected": [
+              {
+                "file_path": "src/report-status.tsx",
+                "symbol_name": "ReportStatus"
+              }
+            ],
+            "first_relevant_rank": 1,
+            "retrieved": [
+              {
+                "file_path": "src/report-status.tsx",
+                "symbol_name": "ReportStatus"
+              },
+              {
+                "file_path": "src/report-status.tsx",
+                "symbol_name": null
+              },
+              {
+                "file_path": "src/cache.ts",
+                "symbol_name": "buildCacheKey"
+              },
+              {
+                "file_path": "src/settings.py",
+                "symbol_name": "MissingDatabaseUrlError"
+              },
+              {
+                "file_path": "README.md",
+                "symbol_name": "Harbor Reports"
+              }
+            ]
+          }
+        ]
+      },
+      "latency_ms": 400.959,
+      "tool_calls": null,
+      "model_turns": null,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "retrieval/audit-redaction",
+      "category": "retrieval",
+      "status": "passed",
+      "checks": {
+        "evidence_discovery": "passed"
+      },
+      "failures": [],
+      "evidence": {
+        "dataset": "RepoPilot V1 Golden Repository",
+        "dataset_version": 1,
+        "strategy": "exact-vector-plus-lexical-rerank",
+        "provider": "deterministic",
+        "model": "deterministic-token-hash-v1",
+        "dimensions": 512,
+        "repository_file_count": 8,
+        "chunk_count": 19,
+        "query_count": 8,
+        "top_k": 5,
+        "metrics": {
+          "k=1": {
+            "query_count": 1,
+            "k": 1,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=3": {
+            "query_count": 1,
+            "k": 3,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=5": {
+            "query_count": 1,
+            "k": 5,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          }
+        },
+        "cases": [
+          {
+            "id": "audit-redaction",
+            "query": "Where are passwords and access tokens removed before audit logging?",
+            "expected": [
+              {
+                "file_path": "src/audit.js",
+                "symbol_name": "redactAuditFields"
+              }
+            ],
+            "first_relevant_rank": 1,
+            "retrieved": [
+              {
+                "file_path": "src/audit.js",
+                "symbol_name": "redactAuditFields"
+              },
+              {
+                "file_path": "src/audit.js",
+                "symbol_name": "appendAuditTimestamp"
+              },
+              {
+                "file_path": "docs/operations.md",
+                "symbol_name": "Retry Policy"
+              },
+              {
+                "file_path": "README.md",
+                "symbol_name": "Harbor Reports"
+              },
+              {
+                "file_path": "docs/operations.md",
+                "symbol_name": "Database Recovery"
+              }
+            ]
+          }
+        ]
+      },
+      "latency_ms": 460.944,
+      "tool_calls": null,
+      "model_turns": null,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "retrieval/delivery-backoff",
+      "category": "retrieval",
+      "status": "passed",
+      "checks": {
+        "evidence_discovery": "passed"
+      },
+      "failures": [],
+      "evidence": {
+        "dataset": "RepoPilot V1 Golden Repository",
+        "dataset_version": 1,
+        "strategy": "exact-vector-plus-lexical-rerank",
+        "provider": "deterministic",
+        "model": "deterministic-token-hash-v1",
+        "dimensions": 512,
+        "repository_file_count": 8,
+        "chunk_count": 19,
+        "query_count": 8,
+        "top_k": 5,
+        "metrics": {
+          "k=1": {
+            "query_count": 1,
+            "k": 1,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=3": {
+            "query_count": 1,
+            "k": 3,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          },
+          "k=5": {
+            "query_count": 1,
+            "k": 5,
+            "hit_rate": 1.0,
+            "recall": 1.0,
+            "mean_reciprocal_rank": 1.0
+          }
+        },
+        "cases": [
+          {
+            "id": "delivery-backoff",
+            "query": "What is the retry delay policy for failed outbound deliveries?",
+            "expected": [
+              {
+                "file_path": "docs/operations.md",
+                "symbol_name": "Retry Policy"
+              }
+            ],
+            "first_relevant_rank": 1,
+            "retrieved": [
+              {
+                "file_path": "docs/operations.md",
+                "symbol_name": "Retry Policy"
+              },
+              {
+                "file_path": "src/settings.py",
+                "symbol_name": null
+              },
+              {
+                "file_path": "docs/operations.md",
+                "symbol_name": "Database Recovery"
+              },
+              {
+                "file_path": "src/invoices.py",
+                "symbol_name": null
+              },
+              {
+                "file_path": "src/delivery.py",
+                "symbol_name": null
+              }
+            ]
+          }
+        ]
+      },
+      "latency_ms": 404.981,
+      "tool_calls": null,
+      "model_turns": null,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "structure/frozen",
+      "category": "structure",
+      "status": "passed",
+      "checks": {},
+      "failures": [],
+      "evidence": {
+        "dataset_version": "v2-structural-1",
+        "index_version": "structural-v2",
+        "symbol_count": 16,
+        "query_count": 7,
+        "symbol_retrieval": {
+          "k=1": {
+            "hit_at_k": 1.0,
+            "mrr_at_k": 1.0
+          },
+          "k=3": {
+            "hit_at_k": 1.0,
+            "mrr_at_k": 1.0
+          },
+          "k=5": {
+            "hit_at_k": 1.0,
+            "mrr_at_k": 1.0
+          }
+        },
+        "definitions": {
+          "expected_count": 16,
+          "actual_count": 16,
+          "correct_count": 16,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "imports": {
+          "expected_count": 5,
+          "actual_count": 5,
+          "correct_count": 5,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "reference_resolution": {
+          "expected_count": 8,
+          "actual_count": 8,
+          "correct_count": 8,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "reference_occurrences_and_status": {
+          "expected_count": 21,
+          "actual_count": 21,
+          "correct_count": 21,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "reference_counts": {
+          "resolved": 8,
+          "unresolved": 12,
+          "ambiguous": 1
+        },
+        "bad_cases": {
+          "missing_definitions": [],
+          "unexpected_definitions": [],
+          "missing_imports": [],
+          "unexpected_imports": [],
+          "missing_or_incorrect_references": [],
+          "unexpected_references": [],
+          "importer_errors": []
+        },
+        "queries": [
+          {
+            "query": "verify_token",
+            "match": "exact",
+            "expected": [
+              [
+                "pkg/alternate.py",
+                "verify_token",
+                1,
+                2
+              ],
+              [
+                "pkg/service.py",
+                "verify_token",
+                3,
+                4
+              ]
+            ],
+            "actual": [
+              [
+                "pkg/alternate.py",
+                "verify_token",
+                1,
+                2
+              ],
+              [
+                "pkg/service.py",
+                "verify_token",
+                3,
+                4
+              ]
+            ],
+            "first_relevant_rank": 1
+          },
+          {
+            "query": "Auth.check",
+            "match": "qualified",
+            "expected": [
+              [
+                "pkg/service.py",
+                "Auth.check",
+                7,
+                8
+              ]
+            ],
+            "actual": [
+              [
+                "pkg/service.py",
+                "Auth.check",
+                7,
+                8
+              ]
+            ],
+            "first_relevant_rank": 1
+          },
+          {
+            "query": "VerifyToken",
+            "match": "normalized",
+            "expected": [
+              [
+                "pkg/alternate.py",
+                "verify_token",
+                1,
+                2
+              ],
+              [
+                "pkg/service.py",
+                "verify_token",
+                3,
+                4
+              ]
+            ],
+            "actual": [
+              [
+                "pkg/alternate.py",
+                "verify_token",
+                1,
+                2
+              ],
+              [
+                "pkg/service.py",
+                "verify_token",
+                3,
+                4
+              ]
+            ],
+            "first_relevant_rank": 1
+          },
+          {
+            "query": "duplicate",
+            "match": "exact",
+            "expected": [
+              [
+                "pkg/routes.py",
+                "duplicate",
+                7,
+                8
+              ],
+              [
+                "pkg/routes.py",
+                "duplicate",
+                10,
+                11
+              ]
+            ],
+            "actual": [
+              [
+                "pkg/routes.py",
+                "duplicate",
+                7,
+                8
+              ],
+              [
+                "pkg/routes.py",
+                "duplicate",
+                10,
+                11
+              ]
+            ],
+            "first_relevant_rank": 1
+          },
+          {
+            "query": "Presenter.show",
+            "match": "qualified",
+            "expected": [
+              [
+                "app/shared.ts",
+                "Presenter.show",
+                6,
+                6
+              ]
+            ],
+            "actual": [
+              [
+                "app/shared.ts",
+                "Presenter.show",
+                6,
+                6
+              ]
+            ],
+            "first_relevant_rank": 1
+          },
+          {
+            "query": "Format_Name",
+            "match": "normalized",
+            "expected": [
+              [
+                "app/shared.ts",
+                "formatName",
+                4,
+                4
+              ]
+            ],
+            "actual": [
+              [
+                "app/shared.ts",
+                "formatName",
+                4,
+                4
+              ]
+            ],
+            "first_relevant_rank": 1
+          },
+          {
+            "query": "UserId",
+            "match": "exact",
+            "expected": [
+              [
+                "app/shared.ts",
+                "UserId",
+                2,
+                2
+              ]
+            ],
+            "actual": [
+              [
+                "app/shared.ts",
+                "UserId",
+                2,
+                2
+              ]
+            ],
+            "first_relevant_rank": 1
+          }
+        ]
+      },
+      "latency_ms": 701.074,
+      "tool_calls": null,
+      "model_turns": null,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "investigation/authorization-before-policy",
+      "category": "investigation",
+      "status": "unverified",
+      "checks": {
+        "evidence_discovery": "passed",
+        "citation_validity": "passed",
+        "citation_identity": "passed",
+        "claim_support": "unverified"
+      },
+      "failures": [],
+      "evidence": {
+        "id": "authorization-before-policy",
+        "task": "For submit_job with an invalid token, does execution reach retry_delay? Locate and read the entry point and token helper, then explain the failure ordering with citations.",
+        "expected_files": [
+          "workflow.py",
+          "auth.py"
+        ],
+        "expected_symbols": [
+          "submit_job",
+          "verify_token"
+        ],
+        "expected_conclusion": "submit_job calls verify_token before retry_delay; an invalid token raises PermissionError and does not reach the retry policy.",
+        "actual_tools": [
+          "search_symbol",
+          "read_file",
+          "read_file"
+        ],
+        "step_count": 3,
+        "model_calls": 4,
+        "stop_reason": "completed",
+        "found_files": [
+          "auth.py",
+          "workflow.py"
+        ],
+        "found_symbols": [
+          "submit_job",
+          "verify_token"
+        ],
+        "missing_files": [],
+        "missing_symbols": [],
+        "missing_source_fragments": [],
+        "expected_evidence_found": true,
+        "multistep": true,
+        "citation_ids": [
+          "E2_1",
+          "E3_1"
+        ],
+        "invalid_citation_ids": [],
+        "grounded_final_answer": null,
+        "grounding_review": "Requires manual comparison of final claims against the saved trace/source; citation validity alone is not grounding.",
+        "review_hash": "8881683886812f55e9f1740f54f3170f9f79d975a33c17338dec028bb31ee02e",
+        "result": {
+          "repository_id": 1062,
+          "snapshot_id": 1244,
+          "final_answer": "submit_job calls verify_token before retry_delay [E2_1]. Invalid tokens raise PermissionError in the helper, so the retry policy is not reached [E3_1].",
+          "trace": [
+            {
+              "step": 1,
+              "model_turn": 1,
+              "call_id": "baseline_0",
+              "tool_name": "search_symbol",
+              "validated_arguments": {
+                "query": "submit_job",
+                "match": "exact",
+                "file_path": null,
+                "limit": 10
+              },
+              "observation": {
+                "status": "ok",
+                "items": [
+                  {
+                    "evidence_id": "E1_1",
+                    "file_path": "workflow.py",
+                    "language": "python",
+                    "symbol_name": "submit_job",
+                    "qualified_name": "submit_job",
+                    "symbol_id": 2514,
+                    "start_line": 5,
+                    "end_line": 10,
+                    "content": null,
+                    "rank": null,
+                    "score": null,
+                    "distance": null,
+                    "truncated": false
+                  }
+                ],
+                "omitted_items": 0,
+                "truncated": false,
+                "error_code": null,
+                "error_message": null
+              },
+              "duration_ms": 8.567
+            },
+            {
+              "step": 2,
+              "model_turn": 2,
+              "call_id": "baseline_1",
+              "tool_name": "read_file",
+              "validated_arguments": {
+                "path": "workflow.py",
+                "start_line": 1,
+                "end_line": null
+              },
+              "observation": {
+                "status": "ok",
+                "items": [
+                  {
+                    "evidence_id": "E2_1",
+                    "file_path": "workflow.py",
+                    "language": "python",
+                    "symbol_name": null,
+                    "qualified_name": null,
+                    "symbol_id": null,
+                    "start_line": 1,
+                    "end_line": 10,
+                    "content": "from auth import verify_token\nfrom policy import retry_delay\n\n\ndef submit_job(token: str, attempt: int, transient: bool) -> dict:\n    verify_token(token)\n    delay = retry_delay(attempt, transient)\n    if delay is None:\n        return {\"status\": \"rejected\"}\n    return {\"status\": \"scheduled\", \"delay\": delay}",
+                    "rank": null,
+                    "score": null,
+                    "distance": null,
+                    "truncated": false
+                  }
+                ],
+                "omitted_items": 0,
+                "truncated": false,
+                "error_code": null,
+                "error_message": null
+              },
+              "duration_ms": 4.959
+            },
+            {
+              "step": 3,
+              "model_turn": 3,
+              "call_id": "baseline_2",
+              "tool_name": "read_file",
+              "validated_arguments": {
+                "path": "auth.py",
+                "start_line": 1,
+                "end_line": null
+              },
+              "observation": {
+                "status": "ok",
+                "items": [
+                  {
+                    "evidence_id": "E3_1",
+                    "file_path": "auth.py",
+                    "language": "python",
+                    "symbol_name": null,
+                    "qualified_name": null,
+                    "symbol_id": null,
+                    "start_line": 1,
+                    "end_line": 3,
+                    "content": "def verify_token(token: str) -> None:\n    if token != \"trusted\":\n        raise PermissionError(\"Invalid token\")",
+                    "rank": null,
+                    "score": null,
+                    "distance": null,
+                    "truncated": false
+                  }
+                ],
+                "omitted_items": 0,
+                "truncated": false,
+                "error_code": null,
+                "error_message": null
+              },
+              "duration_ms": 5.128
+            }
+          ],
+          "sources": [
+            {
+              "evidence_id": "E1_1",
+              "file_path": "workflow.py",
+              "language": "python",
+              "symbol_name": "submit_job",
+              "qualified_name": "submit_job",
+              "symbol_id": 2514,
+              "start_line": 5,
+              "end_line": 10,
+              "content": null,
+              "rank": null,
+              "score": null,
+              "distance": null,
+              "truncated": false
+            },
+            {
+              "evidence_id": "E2_1",
+              "file_path": "workflow.py",
+              "language": "python",
+              "symbol_name": null,
+              "qualified_name": null,
+              "symbol_id": null,
+              "start_line": 1,
+              "end_line": 10,
+              "content": "from auth import verify_token\nfrom policy import retry_delay\n\n\ndef submit_job(token: str, attempt: int, transient: bool) -> dict:\n    verify_token(token)\n    delay = retry_delay(attempt, transient)\n    if delay is None:\n        return {\"status\": \"rejected\"}\n    return {\"status\": \"scheduled\", \"delay\": delay}",
+              "rank": null,
+              "score": null,
+              "distance": null,
+              "truncated": false
+            },
+            {
+              "evidence_id": "E3_1",
+              "file_path": "auth.py",
+              "language": "python",
+              "symbol_name": null,
+              "qualified_name": null,
+              "symbol_id": null,
+              "start_line": 1,
+              "end_line": 3,
+              "content": "def verify_token(token: str) -> None:\n    if token != \"trusted\":\n        raise PermissionError(\"Invalid token\")",
+              "rank": null,
+              "score": null,
+              "distance": null,
+              "truncated": false
+            }
+          ],
+          "total_steps": 3,
+          "stop_reason": "completed",
+          "diagnostics": {
+            "provider": "scripted",
+            "model": "frozen-investigation-script-v1",
+            "model_calls": 4,
+            "tool_failures": 0,
+            "input_character_count": 6460,
+            "max_steps": 12,
+            "observation_character_limit": 12000,
+            "context_character_limit": 60000,
+            "model_output_character_limit": 12000,
+            "duration_ms": 22.712,
+            "invalid_evidence_ids": [],
+            "failure": null
+          }
+        }
+      },
+      "latency_ms": 419.856,
+      "tool_calls": 3,
+      "model_turns": 4,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "investigation/permanent-versus-transient",
+      "category": "investigation",
+      "status": "unverified",
+      "checks": {
+        "evidence_discovery": "passed",
+        "citation_validity": "passed",
+        "citation_identity": "passed",
+        "claim_support": "unverified"
+      },
+      "failures": [],
+      "evidence": {
+        "id": "permanent-versus-transient",
+        "task": "Why are permanent jobs rejected, while a transient job at attempt 10 is scheduled with delay 300? Inspect submit_job and its retry helper, including the negative-attempt boundary. Cite both source files.",
+        "expected_files": [
+          "workflow.py",
+          "policy.py"
+        ],
+        "expected_symbols": [
+          "submit_job",
+          "retry_delay"
+        ],
+        "expected_conclusion": "A negative attempt raises ValueError; permanent failures return None and submit_job rejects them; transient delays are capped at 300, including attempt 10.",
+        "actual_tools": [
+          "list_files",
+          "search_symbol",
+          "read_file",
+          "search_symbol",
+          "read_file"
+        ],
+        "step_count": 5,
+        "model_calls": 6,
+        "stop_reason": "completed",
+        "found_files": [
+          "policy.py",
+          "workflow.py"
+        ],
+        "found_symbols": [
+          "retry_delay",
+          "submit_job"
+        ],
+        "missing_files": [],
+        "missing_symbols": [],
+        "missing_source_fragments": [],
+        "expected_evidence_found": true,
+        "multistep": true,
+        "citation_ids": [
+          "E3_1",
+          "E5_1"
+        ],
+        "invalid_citation_ids": [],
+        "grounded_final_answer": null,
+        "grounding_review": "Requires manual comparison of final claims against the saved trace/source; citation validity alone is not grounding.",
+        "review_hash": "ddd7227112648f939bb1bc88d2e95f5f02eabfd9472554d83b5d4c5758b77641",
+        "result": {
+          "repository_id": 1064,
+          "snapshot_id": 1246,
+          "final_answer": "submit_job rejects a None delay [E3_1]. retry_delay raises ValueError for negative attempts, returns None for permanent failures, and caps transient delays at 300, including attempt 10 [E5_1].",
+          "trace": [
+            {
+              "step": 1,
+              "model_turn": 1,
+              "call_id": "baseline_0",
+              "tool_name": "list_files",
+              "validated_arguments": {
+                "limit": 50,
+                "offset": 0
+              },
+              "observation": {
+                "status": "ok",
+                "items": [
+                  {
+                    "evidence_id": null,
+                    "file_path": "auth.py",
+                    "language": "python",
+                    "symbol_name": null,
+                    "qualified_name": null,
+                    "symbol_id": null,
+                    "start_line": null,
+                    "end_line": null,
+                    "content": null,
+                    "rank": null,
+                    "score": null,
+                    "distance": null,
+                    "truncated": false
+                  },
+                  {
+                    "evidence_id": null,
+                    "file_path": "policy.py",
+                    "language": "python",
+                    "symbol_name": null,
+                    "qualified_name": null,
+                    "symbol_id": null,
+                    "start_line": null,
+                    "end_line": null,
+                    "content": null,
+                    "rank": null,
+                    "score": null,
+                    "distance": null,
+                    "truncated": false
+                  },
+                  {
+                    "evidence_id": null,
+                    "file_path": "README.md",
+                    "language": "markdown",
+                    "symbol_name": null,
+                    "qualified_name": null,
+                    "symbol_id": null,
+                    "start_line": null,
+                    "end_line": null,
+                    "content": null,
+                    "rank": null,
+                    "score": null,
+                    "distance": null,
+                    "truncated": false
+                  },
+                  {
+                    "evidence_id": null,
+                    "file_path": "workflow.py",
+                    "language": "python",
+                    "symbol_name": null,
+                    "qualified_name": null,
+                    "symbol_id": null,
+                    "start_line": null,
+                    "end_line": null,
+                    "content": null,
+                    "rank": null,
+                    "score": null,
+                    "distance": null,
+                    "truncated": false
+                  }
+                ],
+                "omitted_items": 0,
+                "truncated": false,
+                "error_code": null,
+                "error_message": null
+              },
+              "duration_ms": 7.587
+            },
+            {
+              "step": 2,
+              "model_turn": 2,
+              "call_id": "baseline_1",
+              "tool_name": "search_symbol",
+              "validated_arguments": {
+                "query": "submit_job",
+                "match": "exact",
+                "file_path": null,
+                "limit": 10
+              },
+              "observation": {
+                "status": "ok",
+                "items": [
+                  {
+                    "evidence_id": "E2_1",
+                    "file_path": "workflow.py",
+                    "language": "python",
+                    "symbol_name": "submit_job",
+                    "qualified_name": "submit_job",
+                    "symbol_id": 2517,
+                    "start_line": 5,
+                    "end_line": 10,
+                    "content": null,
+                    "rank": null,
+                    "score": null,
+                    "distance": null,
+                    "truncated": false
+                  }
+                ],
+                "omitted_items": 0,
+                "truncated": false,
+                "error_code": null,
+                "error_message": null
+              },
+              "duration_ms": 9.958
+            },
+            {
+              "step": 3,
+              "model_turn": 3,
+              "call_id": "baseline_2",
+              "tool_name": "read_file",
+              "validated_arguments": {
+                "path": "workflow.py",
+                "start_line": 1,
+                "end_line": null
+              },
+              "observation": {
+                "status": "ok",
+                "items": [
+                  {
+                    "evidence_id": "E3_1",
+                    "file_path": "workflow.py",
+                    "language": "python",
+                    "symbol_name": null,
+                    "qualified_name": null,
+                    "symbol_id": null,
+                    "start_line": 1,
+                    "end_line": 10,
+                    "content": "from auth import verify_token\nfrom policy import retry_delay\n\n\ndef submit_job(token: str, attempt: int, transient: bool) -> dict:\n    verify_token(token)\n    delay = retry_delay(attempt, transient)\n    if delay is None:\n        return {\"status\": \"rejected\"}\n    return {\"status\": \"scheduled\", \"delay\": delay}",
+                    "rank": null,
+                    "score": null,
+                    "distance": null,
+                    "truncated": false
+                  }
+                ],
+                "omitted_items": 0,
+                "truncated": false,
+                "error_code": null,
+                "error_message": null
+              },
+              "duration_ms": 4.906
+            },
+            {
+              "step": 4,
+              "model_turn": 4,
+              "call_id": "baseline_3",
+              "tool_name": "search_symbol",
+              "validated_arguments": {
+                "query": "retry_delay",
+                "match": "exact",
+                "file_path": null,
+                "limit": 10
+              },
+              "observation": {
+                "status": "ok",
+                "items": [
+                  {
+                    "evidence_id": "E4_1",
+                    "file_path": "policy.py",
+                    "language": "python",
+                    "symbol_name": "retry_delay",
+                    "qualified_name": "retry_delay",
+                    "symbol_id": 2516,
+                    "start_line": 1,
+                    "end_line": 6,
+                    "content": null,
+                    "rank": null,
+                    "score": null,
+                    "distance": null,
+                    "truncated": false
+                  }
+                ],
+                "omitted_items": 0,
+                "truncated": false,
+                "error_code": null,
+                "error_message": null
+              },
+              "duration_ms": 6.336
+            },
+            {
+              "step": 5,
+              "model_turn": 5,
+              "call_id": "baseline_4",
+              "tool_name": "read_file",
+              "validated_arguments": {
+                "path": "policy.py",
+                "start_line": 1,
+                "end_line": null
+              },
+              "observation": {
+                "status": "ok",
+                "items": [
+                  {
+                    "evidence_id": "E5_1",
+                    "file_path": "policy.py",
+                    "language": "python",
+                    "symbol_name": null,
+                    "qualified_name": null,
+                    "symbol_id": null,
+                    "start_line": 1,
+                    "end_line": 6,
+                    "content": "def retry_delay(attempt: int, transient: bool) -> int | None:\n    if attempt < 0:\n        raise ValueError(\"Attempt must be nonnegative\")\n    if not transient:\n        return None\n    return min(2 ** attempt, 300)",
+                    "rank": null,
+                    "score": null,
+                    "distance": null,
+                    "truncated": false
+                  }
+                ],
+                "omitted_items": 0,
+                "truncated": false,
+                "error_code": null,
+                "error_message": null
+              },
+              "duration_ms": 3.856
+            }
+          ],
+          "sources": [
+            {
+              "evidence_id": "E2_1",
+              "file_path": "workflow.py",
+              "language": "python",
+              "symbol_name": "submit_job",
+              "qualified_name": "submit_job",
+              "symbol_id": 2517,
+              "start_line": 5,
+              "end_line": 10,
+              "content": null,
+              "rank": null,
+              "score": null,
+              "distance": null,
+              "truncated": false
+            },
+            {
+              "evidence_id": "E3_1",
+              "file_path": "workflow.py",
+              "language": "python",
+              "symbol_name": null,
+              "qualified_name": null,
+              "symbol_id": null,
+              "start_line": 1,
+              "end_line": 10,
+              "content": "from auth import verify_token\nfrom policy import retry_delay\n\n\ndef submit_job(token: str, attempt: int, transient: bool) -> dict:\n    verify_token(token)\n    delay = retry_delay(attempt, transient)\n    if delay is None:\n        return {\"status\": \"rejected\"}\n    return {\"status\": \"scheduled\", \"delay\": delay}",
+              "rank": null,
+              "score": null,
+              "distance": null,
+              "truncated": false
+            },
+            {
+              "evidence_id": "E4_1",
+              "file_path": "policy.py",
+              "language": "python",
+              "symbol_name": "retry_delay",
+              "qualified_name": "retry_delay",
+              "symbol_id": 2516,
+              "start_line": 1,
+              "end_line": 6,
+              "content": null,
+              "rank": null,
+              "score": null,
+              "distance": null,
+              "truncated": false
+            },
+            {
+              "evidence_id": "E5_1",
+              "file_path": "policy.py",
+              "language": "python",
+              "symbol_name": null,
+              "qualified_name": null,
+              "symbol_id": null,
+              "start_line": 1,
+              "end_line": 6,
+              "content": "def retry_delay(attempt: int, transient: bool) -> int | None:\n    if attempt < 0:\n        raise ValueError(\"Attempt must be nonnegative\")\n    if not transient:\n        return None\n    return min(2 ** attempt, 300)",
+              "rank": null,
+              "score": null,
+              "distance": null,
+              "truncated": false
+            }
+          ],
+          "total_steps": 5,
+          "stop_reason": "completed",
+          "diagnostics": {
+            "provider": "scripted",
+            "model": "frozen-investigation-script-v1",
+            "model_calls": 6,
+            "tool_failures": 0,
+            "input_character_count": 8486,
+            "max_steps": 12,
+            "observation_character_limit": 12000,
+            "context_character_limit": 60000,
+            "model_output_character_limit": 12000,
+            "duration_ms": 36.491,
+            "invalid_evidence_ids": [],
+            "failure": null
+          }
+        }
+      },
+      "latency_ms": 431.851,
+      "tool_calls": 5,
+      "model_turns": 6,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "investigation/documentation-policy-mismatch",
+      "category": "investigation",
+      "status": "unverified",
+      "checks": {
+        "evidence_discovery": "passed",
+        "citation_validity": "passed",
+        "citation_identity": "passed",
+        "claim_support": "unverified"
+      },
+      "failures": [],
+      "evidence": {
+        "id": "documentation-policy-mismatch",
+        "task": "The public retry guide promises a 60-second maximum, but submit_job at transient attempt 10 returns 300. Compare the saved documentation, entry point and actual retry policy. Explain the mismatch and propose a resolution without modifying code. Cite all three files.",
+        "expected_files": [
+          "README.md",
+          "workflow.py",
+          "policy.py"
+        ],
+        "expected_symbols": [
+          "submit_job",
+          "retry_delay"
+        ],
+        "expected_conclusion": "README promises 60 but submit_job uses retry_delay, which caps at 300. Clarify the intended limit, then align the documentation or policy; do not silently assume which is correct.",
+        "actual_tools": [
+          "retrieve_context",
+          "search_code",
+          "search_symbol",
+          "read_file",
+          "read_file",
+          "read_file"
+        ],
+        "step_count": 6,
+        "model_calls": 7,
+        "stop_reason": "completed",
+        "found_files": [
+          "README.md",
+          "policy.py",
+          "workflow.py"
+        ],
+        "found_symbols": [
+          "retry_delay",
+          "submit_job"
+        ],
+        "missing_files": [],
+        "missing_symbols": [],
+        "missing_source_fragments": [],
+        "expected_evidence_found": true,
+        "multistep": true,
+        "citation_ids": [
+          "E4_1",
+          "E5_1",
+          "E6_1"
+        ],
+        "invalid_citation_ids": [],
+        "grounded_final_answer": null,
+        "grounding_review": "Requires manual comparison of final claims against the saved trace/source; citation validity alone is not grounding.",
+        "review_hash": "9353f29cace8548ae30bf8ba56305cd7133ce680d7531c7768539daea0349ce1",
+        "result": {
+          "repository_id": 1066,
+          "snapshot_id": 1248,
+          "final_answer": "The guide promises 60 seconds [E4_1], but submit_job invokes retry_delay [E5_1], which caps at 300 [E6_1]. Confirm the intended policy, then align the guide or implementation; neither intent is established by these sources.",
+          "trace": [
+            {
+              "step": 1,
+              "model_turn": 1,
+              "call_id": "baseline_0",
+              "tool_name": "retrieve_context",
+              "validated_arguments": {
+                "query": "transient retry maximum guide policy submit_job",
+                "top_k": 3
+              },
+              "observation": {
+                "status": "ok",
+                "items": [
+                  {
+                    "evidence_id": "E1_1",
+                    "file_path": "workflow.py",
+                    "language": "python",
+                    "symbol_name": "submit_job",
+                    "qualified_name": "submit_job",
+                    "symbol_id": null,
+                    "start_line": 5,
+                    "end_line": 10,
+                    "content": "def submit_job(token: str, attempt: int, transient: bool) -> dict:\r\n    verify_token(token)\r\n    delay = retry_delay(attempt, transient)\r\n    if delay is None:\r\n        return {\"status\": \"rejected\"}\r\n    return {\"status\": \"scheduled\", \"delay\": delay}\r\n",
+                    "rank": 1,
+                    "score": 0.326741,
+                    "distance": 0.6608,
+                    "truncated": false
+                  },
+                  {
+                    "evidence_id": "E1_2",
+                    "file_path": "README.md",
+                    "language": "markdown",
+                    "symbol_name": "Dispatch fixture",
+                    "qualified_name": "Dispatch fixture",
+                    "symbol_id": null,
+                    "start_line": 1,
+                    "end_line": 7,
+                    "content": "# Dispatch fixture\r\n\r\nControlled source data for a small, read-only investigation baseline.\r\nDo not execute this repository.\r\n\r\nThe public retry guide claims transient jobs wait at most 60 seconds.\r\nCompare this statement with the policy actually called by submit_job.\r\n",
+                    "rank": 2,
+                    "score": 0.325289,
+                    "distance": 0.688195,
+                    "truncated": false
+                  },
+                  {
+                    "evidence_id": "E1_3",
+                    "file_path": "policy.py",
+                    "language": "python",
+                    "symbol_name": "retry_delay",
+                    "qualified_name": "retry_delay",
+                    "symbol_id": null,
+                    "start_line": 1,
+                    "end_line": 6,
+                    "content": "def retry_delay(attempt: int, transient: bool) -> int | None:\r\n    if attempt < 0:\r\n        raise ValueError(\"Attempt must be nonnegative\")\r\n    if not transient:\r\n        return None\r\n    return min(2 ** attempt, 300)\r\n",
+                    "rank": 3,
+                    "score": 0.21562,
+                    "distance": 0.791667,
+                    "truncated": false
+                  }
+                ],
+                "omitted_items": 0,
+                "truncated": false,
+                "error_code": null,
+                "error_message": null
+              },
+              "duration_ms": 10.763
+            },
+            {
+              "step": 2,
+              "model_turn": 2,
+              "call_id": "baseline_1",
+              "tool_name": "search_code",
+              "validated_arguments": {
+                "query": "60 seconds",
+                "file_path": null,
+                "limit": 10
+              },
+              "observation": {
+                "status": "ok",
+                "items": [
+                  {
+                    "evidence_id": "E2_1",
+                    "file_path": "README.md",
+                    "language": "markdown",
+                    "symbol_name": null,
+                    "qualified_name": null,
+                    "symbol_id": null,
+                    "start_line": 6,
+                    "end_line": 6,
+                    "content": "The public retry guide claims transient jobs wait at most 60 seconds.",
+                    "rank": null,
+                    "score": null,
+                    "distance": null,
+                    "truncated": false
+                  }
+                ],
+                "omitted_items": 0,
+                "truncated": false,
+                "error_code": null,
+                "error_message": null
+              },
+              "duration_ms": 11.315
+            },
+            {
+              "step": 3,
+              "model_turn": 3,
+              "call_id": "baseline_2",
+              "tool_name": "search_symbol",
+              "validated_arguments": {
+                "query": "retry_delay",
+                "match": "exact",
+                "file_path": null,
+                "limit": 10
+              },
+              "observation": {
+                "status": "ok",
+                "items": [
+                  {
+                    "evidence_id": "E3_1",
+                    "file_path": "policy.py",
+                    "language": "python",
+                    "symbol_name": "retry_delay",
+                    "qualified_name": "retry_delay",
+                    "symbol_id": 2519,
+                    "start_line": 1,
+                    "end_line": 6,
+                    "content": null,
+                    "rank": null,
+                    "score": null,
+                    "distance": null,
+                    "truncated": false
+                  }
+                ],
+                "omitted_items": 0,
+                "truncated": false,
+                "error_code": null,
+                "error_message": null
+              },
+              "duration_ms": 9.363
+            },
+            {
+              "step": 4,
+              "model_turn": 4,
+              "call_id": "baseline_3",
+              "tool_name": "read_file",
+              "validated_arguments": {
+                "path": "README.md",
+                "start_line": 1,
+                "end_line": null
+              },
+              "observation": {
+                "status": "ok",
+                "items": [
+                  {
+                    "evidence_id": "E4_1",
+                    "file_path": "README.md",
+                    "language": "markdown",
+                    "symbol_name": null,
+                    "qualified_name": null,
+                    "symbol_id": null,
+                    "start_line": 1,
+                    "end_line": 7,
+                    "content": "# Dispatch fixture\n\nControlled source data for a small, read-only investigation baseline.\nDo not execute this repository.\n\nThe public retry guide claims transient jobs wait at most 60 seconds.\nCompare this statement with the policy actually called by submit_job.",
+                    "rank": null,
+                    "score": null,
+                    "distance": null,
+                    "truncated": false
+                  }
+                ],
+                "omitted_items": 0,
+                "truncated": false,
+                "error_code": null,
+                "error_message": null
+              },
+              "duration_ms": 4.934
+            },
+            {
+              "step": 5,
+              "model_turn": 5,
+              "call_id": "baseline_4",
+              "tool_name": "read_file",
+              "validated_arguments": {
+                "path": "workflow.py",
+                "start_line": 1,
+                "end_line": null
+              },
+              "observation": {
+                "status": "ok",
+                "items": [
+                  {
+                    "evidence_id": "E5_1",
+                    "file_path": "workflow.py",
+                    "language": "python",
+                    "symbol_name": null,
+                    "qualified_name": null,
+                    "symbol_id": null,
+                    "start_line": 1,
+                    "end_line": 10,
+                    "content": "from auth import verify_token\nfrom policy import retry_delay\n\n\ndef submit_job(token: str, attempt: int, transient: bool) -> dict:\n    verify_token(token)\n    delay = retry_delay(attempt, transient)\n    if delay is None:\n        return {\"status\": \"rejected\"}\n    return {\"status\": \"scheduled\", \"delay\": delay}",
+                    "rank": null,
+                    "score": null,
+                    "distance": null,
+                    "truncated": false
+                  }
+                ],
+                "omitted_items": 0,
+                "truncated": false,
+                "error_code": null,
+                "error_message": null
+              },
+              "duration_ms": 3.914
+            },
+            {
+              "step": 6,
+              "model_turn": 6,
+              "call_id": "baseline_5",
+              "tool_name": "read_file",
+              "validated_arguments": {
+                "path": "policy.py",
+                "start_line": 1,
+                "end_line": null
+              },
+              "observation": {
+                "status": "ok",
+                "items": [
+                  {
+                    "evidence_id": "E6_1",
+                    "file_path": "policy.py",
+                    "language": "python",
+                    "symbol_name": null,
+                    "qualified_name": null,
+                    "symbol_id": null,
+                    "start_line": 1,
+                    "end_line": 6,
+                    "content": "def retry_delay(attempt: int, transient: bool) -> int | None:\n    if attempt < 0:\n        raise ValueError(\"Attempt must be nonnegative\")\n    if not transient:\n        return None\n    return min(2 ** attempt, 300)",
+                    "rank": null,
+                    "score": null,
+                    "distance": null,
+                    "truncated": false
+                  }
+                ],
+                "omitted_items": 0,
+                "truncated": false,
+                "error_code": null,
+                "error_message": null
+              },
+              "duration_ms": 4.791
+            }
+          ],
+          "sources": [
+            {
+              "evidence_id": "E1_1",
+              "file_path": "workflow.py",
+              "language": "python",
+              "symbol_name": "submit_job",
+              "qualified_name": "submit_job",
+              "symbol_id": null,
+              "start_line": 5,
+              "end_line": 10,
+              "content": "def submit_job(token: str, attempt: int, transient: bool) -> dict:\r\n    verify_token(token)\r\n    delay = retry_delay(attempt, transient)\r\n    if delay is None:\r\n        return {\"status\": \"rejected\"}\r\n    return {\"status\": \"scheduled\", \"delay\": delay}\r\n",
+              "rank": 1,
+              "score": 0.326741,
+              "distance": 0.6608,
+              "truncated": false
+            },
+            {
+              "evidence_id": "E1_2",
+              "file_path": "README.md",
+              "language": "markdown",
+              "symbol_name": "Dispatch fixture",
+              "qualified_name": "Dispatch fixture",
+              "symbol_id": null,
+              "start_line": 1,
+              "end_line": 7,
+              "content": "# Dispatch fixture\r\n\r\nControlled source data for a small, read-only investigation baseline.\r\nDo not execute this repository.\r\n\r\nThe public retry guide claims transient jobs wait at most 60 seconds.\r\nCompare this statement with the policy actually called by submit_job.\r\n",
+              "rank": 2,
+              "score": 0.325289,
+              "distance": 0.688195,
+              "truncated": false
+            },
+            {
+              "evidence_id": "E1_3",
+              "file_path": "policy.py",
+              "language": "python",
+              "symbol_name": "retry_delay",
+              "qualified_name": "retry_delay",
+              "symbol_id": null,
+              "start_line": 1,
+              "end_line": 6,
+              "content": "def retry_delay(attempt: int, transient: bool) -> int | None:\r\n    if attempt < 0:\r\n        raise ValueError(\"Attempt must be nonnegative\")\r\n    if not transient:\r\n        return None\r\n    return min(2 ** attempt, 300)\r\n",
+              "rank": 3,
+              "score": 0.21562,
+              "distance": 0.791667,
+              "truncated": false
+            },
+            {
+              "evidence_id": "E2_1",
+              "file_path": "README.md",
+              "language": "markdown",
+              "symbol_name": null,
+              "qualified_name": null,
+              "symbol_id": null,
+              "start_line": 6,
+              "end_line": 6,
+              "content": "The public retry guide claims transient jobs wait at most 60 seconds.",
+              "rank": null,
+              "score": null,
+              "distance": null,
+              "truncated": false
+            },
+            {
+              "evidence_id": "E3_1",
+              "file_path": "policy.py",
+              "language": "python",
+              "symbol_name": "retry_delay",
+              "qualified_name": "retry_delay",
+              "symbol_id": 2519,
+              "start_line": 1,
+              "end_line": 6,
+              "content": null,
+              "rank": null,
+              "score": null,
+              "distance": null,
+              "truncated": false
+            },
+            {
+              "evidence_id": "E4_1",
+              "file_path": "README.md",
+              "language": "markdown",
+              "symbol_name": null,
+              "qualified_name": null,
+              "symbol_id": null,
+              "start_line": 1,
+              "end_line": 7,
+              "content": "# Dispatch fixture\n\nControlled source data for a small, read-only investigation baseline.\nDo not execute this repository.\n\nThe public retry guide claims transient jobs wait at most 60 seconds.\nCompare this statement with the policy actually called by submit_job.",
+              "rank": null,
+              "score": null,
+              "distance": null,
+              "truncated": false
+            },
+            {
+              "evidence_id": "E5_1",
+              "file_path": "workflow.py",
+              "language": "python",
+              "symbol_name": null,
+              "qualified_name": null,
+              "symbol_id": null,
+              "start_line": 1,
+              "end_line": 10,
+              "content": "from auth import verify_token\nfrom policy import retry_delay\n\n\ndef submit_job(token: str, attempt: int, transient: bool) -> dict:\n    verify_token(token)\n    delay = retry_delay(attempt, transient)\n    if delay is None:\n        return {\"status\": \"rejected\"}\n    return {\"status\": \"scheduled\", \"delay\": delay}",
+              "rank": null,
+              "score": null,
+              "distance": null,
+              "truncated": false
+            },
+            {
+              "evidence_id": "E6_1",
+              "file_path": "policy.py",
+              "language": "python",
+              "symbol_name": null,
+              "qualified_name": null,
+              "symbol_id": null,
+              "start_line": 1,
+              "end_line": 6,
+              "content": "def retry_delay(attempt: int, transient: bool) -> int | None:\n    if attempt < 0:\n        raise ValueError(\"Attempt must be nonnegative\")\n    if not transient:\n        return None\n    return min(2 ** attempt, 300)",
+              "rank": null,
+              "score": null,
+              "distance": null,
+              "truncated": false
+            }
+          ],
+          "total_steps": 6,
+          "stop_reason": "completed",
+          "diagnostics": {
+            "provider": "scripted",
+            "model": "frozen-investigation-script-v1",
+            "model_calls": 7,
+            "tool_failures": 0,
+            "input_character_count": 10176,
+            "max_steps": 12,
+            "observation_character_limit": 12000,
+            "context_character_limit": 60000,
+            "model_output_character_limit": 12000,
+            "duration_ms": 50.01,
+            "invalid_evidence_ids": [],
+            "failure": null
+          }
+        }
+      },
+      "latency_ms": 416.358,
+      "tool_calls": 6,
+      "model_turns": 7,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "rag/missing-database-url",
+      "category": "rag",
+      "status": "unverified",
+      "checks": {
+        "evidence_discovery": "passed",
+        "citation_validity": "passed",
+        "citation_identity": "passed",
+        "claim_support": "unverified"
+      },
+      "failures": [],
+      "evidence": {
+        "answer": "Inspect the supplied source for this question. [E1]",
+        "citations": [
+          {
+            "evidence_id": "E1",
+            "chunk_id": 5350,
+            "file_path": "src/settings.py",
+            "symbol_name": "require_database_url",
+            "qualified_name": "require_database_url",
+            "start_line": 10,
+            "end_line": 15,
+            "score": 0.505125,
+            "content": "def require_database_url() -> str:\n    \"\"\"Read DATABASE_URL and reject startup when it is missing.\"\"\"\n    database_url = os.getenv(\"DATABASE_URL\", \"\").strip()\n    if not database_url:\n        raise MissingDatabaseUrlError(\"DATABASE_URL must be configured\")\n    return database_url\n"
+          }
+        ],
+        "invalid_ids": [],
+        "retrieved": [
+          {
+            "rank": 1,
+            "chunk_id": 5350,
+            "file_path": "src/settings.py",
+            "language": "python",
+            "chunk_type": "function",
+            "symbol_name": "require_database_url",
+            "qualified_name": "require_database_url",
+            "parent_symbol": null,
+            "start_line": 10,
+            "end_line": 15,
+            "content_hash": "d4e0c4cf5bb5eb0a0645fb045b2f27dfc01fbd73446353085e26f1687ac8cd35",
+            "score": 0.505125,
+            "distance": 0.532293,
+            "content": "def require_database_url() -> str:\n    \"\"\"Read DATABASE_URL and reject startup when it is missing.\"\"\"\n    database_url = os.getenv(\"DATABASE_URL\", \"\").strip()\n    if not database_url:\n        raise MissingDatabaseUrlError(\"DATABASE_URL must be configured\")\n    return database_url\n"
+          },
+          {
+            "rank": 2,
+            "chunk_id": 5349,
+            "file_path": "src/settings.py",
+            "language": "python",
+            "chunk_type": "class",
+            "symbol_name": "MissingDatabaseUrlError",
+            "qualified_name": "MissingDatabaseUrlError",
+            "parent_symbol": null,
+            "start_line": 6,
+            "end_line": 7,
+            "content_hash": "7490ab3cc2ae783d48660bd7a14cf31860c2e295e8e3c088b66f803dd0380d68",
+            "score": 0.371993,
+            "distance": 0.659648,
+            "content": "class MissingDatabaseUrlError(RuntimeError):\n    \"\"\"Raised when the database connection string is absent.\"\"\"\n"
+          },
+          {
+            "rank": 3,
+            "chunk_id": 5334,
+            "file_path": "docs/operations.md",
+            "language": "markdown",
+            "chunk_type": "section",
+            "symbol_name": "Database Recovery",
+            "qualified_name": "Database Recovery",
+            "parent_symbol": null,
+            "start_line": 9,
+            "end_line": 12,
+            "content_hash": "9aad67c93a5e870886123c9de5bf8f1a7cc616472125e6dbb4a5ab899592b4cb",
+            "score": 0.108895,
+            "distance": 0.901705,
+            "content": "## Database Recovery\n\nRestore the most recent snapshot before replaying the transaction log. Verify\nrecord counts before returning the service to traffic.\n"
+          },
+          {
+            "rank": 4,
+            "chunk_id": 5347,
+            "file_path": "src/report-status.tsx",
+            "language": "tsx",
+            "chunk_type": "function",
+            "symbol_name": "ReportStatus",
+            "qualified_name": "ReportStatus",
+            "parent_symbol": null,
+            "start_line": 6,
+            "end_line": 9,
+            "content_hash": "8c43e14713c31d0b46d726a5cb61e46f1016c5505c5f2aeabeffe2d194365840",
+            "score": 0.093709,
+            "distance": 0.86613,
+            "content": "export function ReportStatus({ completedRows, totalRows }: ReportStatusProps) {\n  const isComplete = completedRows >= totalRows;\n  return <p>{isComplete ? \"Report ready\" : `Loading ${completedRows}/${totalRows}`}</p>;\n}\n"
+          },
+          {
+            "rank": 5,
+            "chunk_id": 5338,
+            "file_path": "src/cache.ts",
+            "language": "typescript",
+            "chunk_type": "function",
+            "symbol_name": "buildCacheKey",
+            "qualified_name": "buildCacheKey",
+            "parent_symbol": null,
+            "start_line": 1,
+            "end_line": 4,
+            "content_hash": "0389964018bf75f9730ffa051c0cdeb2a6a634f9ebe4dc2c3983bdd916acd5a9",
+            "score": 0.093333,
+            "distance": 0.866667,
+            "content": "export function buildCacheKey(tenantId: string, reportId: string): string {\n  // Isolate cached reports by tenant and report identifier.\n  return `report:${tenantId}:${reportId}`;\n}\n"
+          }
+        ],
+        "generation_model": "v6-grounding-protocol-v1",
+        "claim_check": "Startup requires a nonempty database URL."
+      },
+      "latency_ms": 371.749,
+      "tool_calls": null,
+      "model_turns": 1,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "rag/late-fee-cap",
+      "category": "rag",
+      "status": "unverified",
+      "checks": {
+        "evidence_discovery": "passed",
+        "citation_validity": "passed",
+        "citation_identity": "passed",
+        "claim_support": "unverified"
+      },
+      "failures": [],
+      "evidence": {
+        "answer": "Inspect the supplied source for this question. [E1]",
+        "citations": [
+          {
+            "evidence_id": "E1",
+            "chunk_id": 5363,
+            "file_path": "src/invoices.py",
+            "symbol_name": "calculate_late_fee",
+            "qualified_name": "calculate_late_fee",
+            "start_line": 6,
+            "end_line": 10,
+            "score": 0.270004,
+            "content": "def calculate_late_fee(balance: Decimal, days_overdue: int) -> Decimal:\n    \"\"\"Charge one percent per overdue week, capped at ten percent.\"\"\"\n    overdue_weeks = max(days_overdue, 0) // 7\n    rate = min(Decimal(\"0.01\") * overdue_weeks, Decimal(\"0.10\"))\n    return (balance * rate).quantize(Decimal(\"0.01\"))\n"
+          }
+        ],
+        "invalid_ids": [],
+        "retrieved": [
+          {
+            "rank": 1,
+            "chunk_id": 5363,
+            "file_path": "src/invoices.py",
+            "language": "python",
+            "chunk_type": "function",
+            "symbol_name": "calculate_late_fee",
+            "qualified_name": "calculate_late_fee",
+            "parent_symbol": null,
+            "start_line": 6,
+            "end_line": 10,
+            "content_hash": "0a8a4afcda11b32261f7facdcaf44e359f3b1069a6f46ddad6141b0b2cfe7678",
+            "score": 0.270004,
+            "distance": 0.748246,
+            "content": "def calculate_late_fee(balance: Decimal, days_overdue: int) -> Decimal:\n    \"\"\"Charge one percent per overdue week, capped at ten percent.\"\"\"\n    overdue_weeks = max(days_overdue, 0) // 7\n    rate = min(Decimal(\"0.01\") * overdue_weeks, Decimal(\"0.10\"))\n    return (balance * rate).quantize(Decimal(\"0.01\"))\n"
+          },
+          {
+            "rank": 2,
+            "chunk_id": 5364,
+            "file_path": "src/invoices.py",
+            "language": "python",
+            "chunk_type": "function",
+            "symbol_name": "format_invoice_number",
+            "qualified_name": "format_invoice_number",
+            "parent_symbol": null,
+            "start_line": 13,
+            "end_line": 15,
+            "content_hash": "2886f75c084cd37abe327d7c1c4b97f3939831ccf3b597864348e17622336058",
+            "score": 0.196095,
+            "distance": 0.80755,
+            "content": "def format_invoice_number(sequence: int) -> str:\n    \"\"\"Render the public invoice identifier.\"\"\"\n    return f\"INV-{sequence:08d}\"\n"
+          },
+          {
+            "rank": 3,
+            "chunk_id": 5352,
+            "file_path": "docs/operations.md",
+            "language": "markdown",
+            "chunk_type": "section",
+            "symbol_name": "Retry Policy",
+            "qualified_name": "Retry Policy",
+            "parent_symbol": null,
+            "start_line": 3,
+            "end_line": 8,
+            "content_hash": "b92b94cc10eb62c16c78d821306579387d525add91c5407ef8053a4fd00a4bd8",
+            "score": 0.195973,
+            "distance": 0.751548,
+            "content": "## Retry Policy\n\nFailed outbound deliveries use exponential backoff. The delay doubles after each\nfailure and is capped at five minutes. Permanent authentication failures are not\nretried.\n\n"
+          },
+          {
+            "rank": 4,
+            "chunk_id": 5362,
+            "file_path": "src/invoices.py",
+            "language": "python",
+            "chunk_type": "module",
+            "symbol_name": null,
+            "qualified_name": null,
+            "parent_symbol": null,
+            "start_line": 1,
+            "end_line": 5,
+            "content_hash": "8e8ee7489b928b807acd57a03d33fa241937b82656a1059665c553c66c0072a1",
+            "score": 0.130273,
+            "distance": 0.857866,
+            "content": "\"\"\"Invoice calculations for the Golden Repository.\"\"\"\n\nfrom decimal import Decimal\n\n\n"
+          },
+          {
+            "rank": 5,
+            "chunk_id": 5353,
+            "file_path": "docs/operations.md",
+            "language": "markdown",
+            "chunk_type": "section",
+            "symbol_name": "Database Recovery",
+            "qualified_name": "Database Recovery",
+            "parent_symbol": null,
+            "start_line": 9,
+            "end_line": 12,
+            "content_hash": "9aad67c93a5e870886123c9de5bf8f1a7cc616472125e6dbb4a5ab899592b4cb",
+            "score": 0.103209,
+            "distance": 0.852558,
+            "content": "## Database Recovery\n\nRestore the most recent snapshot before replaying the transaction log. Verify\nrecord counts before returning the service to traffic.\n"
+          }
+        ],
+        "generation_model": "v6-grounding-protocol-v1",
+        "claim_check": "Fee is balance times min(0.01 * (max(days_overdue, 0) // 7), 0.10), quantized to Decimal 0.01. Verify weekly units, zero floor and ten-percent rate cap."
+      },
+      "latency_ms": 386.25,
+      "tool_calls": null,
+      "model_turns": 1,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "resolution/fee-days",
+      "category": "resolution",
+      "status": "passed",
+      "checks": {
+        "verified_repair": "passed",
+        "safe_decision": "not_applicable",
+        "independent_test": "passed",
+        "patch_apply": "passed",
+        "integrity_cleanup": "passed",
+        "claim_support": "unverified"
+      },
+      "failures": [],
+      "evidence": {
+        "id": "fee-days",
+        "issue": "late_fee misses the first overdue day. Charge one percent per overdue day, capped at 30 days; preserve integer cent rounding and invalid-input checks.",
+        "expected_decision": "verified_repair",
+        "golden_conditions_met": true,
+        "original_unchanged": true,
+        "snapshot_unchanged": true,
+        "unsafe_attempt_steps": [],
+        "result": {
+          "repository_id": 1072,
+          "snapshot_id": 1254,
+          "workspace_id": "8ff38aa97c7a4ef3a670bc9978650f40",
+          "revision": 2,
+          "profile": "fee-days",
+          "execution_status": "completed",
+          "repair_status": "verified_repair",
+          "final_answer": "Scripted workflow finished; inspect machine test evidence. This is not external-model repair.",
+          "plans": [
+            {
+              "expected_revision": 0,
+              "decision": "repair",
+              "summary": "Scripted Golden baseline action plan",
+              "steps": [
+                "Reproduce, patch and independently verify"
+              ],
+              "files": [
+                "fees.py"
+              ]
+            }
+          ],
+          "patch": "--- a/fees.py\n+++ b/fees.py\n@@ -4,4 +4,4 @@\n def late_fee(balance_cents: int, overdue_days: int) -> int:\n     if balance_cents < 0 or overdue_days < 0:\n         raise ValueError(\"Values must be nonnegative\")\n-    return balance_cents * min(max(overdue_days - 1, 0), 30) // 100\n+    return balance_cents * min(overdue_days, 30) // 100\n",
+          "changed_files": [
+            {
+              "path": "fees.py",
+              "original": "\"\"\"Invoice charges in integer cents; each overdue day is charged, capped at 30 days.\"\"\"\n\n\ndef late_fee(balance_cents: int, overdue_days: int) -> int:\n    if balance_cents < 0 or overdue_days < 0:\n        raise ValueError(\"Values must be nonnegative\")\n    return balance_cents * min(max(overdue_days - 1, 0), 30) // 100\n",
+              "modified": "\"\"\"Invoice charges in integer cents; each overdue day is charged, capped at 30 days.\"\"\"\n\n\ndef late_fee(balance_cents: int, overdue_days: int) -> int:\n    if balance_cents < 0 or overdue_days < 0:\n        raise ValueError(\"Values must be nonnegative\")\n    return balance_cents * min(overdue_days, 30) // 100\n"
+            }
+          ],
+          "patch_history": [
+            {
+              "attempt": 1,
+              "base_revision": 0,
+              "revision": 1,
+              "changed_paths": [
+                "fees.py"
+              ],
+              "before_hashes": {
+                "fees.py": "4a9b96b0b83d3ddb08d84ffeddea7006047d23c448927e9e56cfa8d51bb04d27"
+              },
+              "after_hashes": {
+                "fees.py": "e84045d753d1eda3477325d3180804e6c01ab5f593688214cfac7e4f7bcc671e"
+              }
+            },
+            {
+              "attempt": 2,
+              "base_revision": 1,
+              "revision": 2,
+              "changed_paths": [
+                "fees.py"
+              ],
+              "before_hashes": {
+                "fees.py": "e84045d753d1eda3477325d3180804e6c01ab5f593688214cfac7e4f7bcc671e"
+              },
+              "after_hashes": {
+                "fees.py": "4245a43b5a31d0e9a32639091b691ac295ca573593f2f9c092c049f614b2e762"
+              }
+            }
+          ],
+          "test_results": [
+            {
+              "workspace_id": "8ff38aa97c7a4ef3a670bc9978650f40",
+              "revision": 0,
+              "profile": "fee-days",
+              "exit_code": 1,
+              "stdout": "REPOPILOT_ISOLATION={\"network\": \"none\", \"no_new_privileges\": true, \"read_only_inputs\": true, \"seccomp\": true, \"uid\": 65534}\n.FFF...F\n=================================== FAILURES ===================================\n___________________________ test_overdue_days[1-100] ___________________________\n/validation/test_fees.py:8: in test_overdue_days\n    assert late_fee(10000, days) == expected\nE   assert 0 == 100\nE    +  where 0 = late_fee(10000, 1)\n___________________________ test_overdue_days[2-200] ___________________________\n/validation/test_fees.py:8: in test_overdue_days\n    assert late_fee(10000, days) == expected\nE   assert 100 == 200\nE    +  where 100 = late_fee(10000, 2)\n__________________________ test_overdue_days[30-3000] __________________________\n/validation/test_fees.py:8: in test_overdue_days\n    assert late_fee(10000, days) == expected\nE   assert 2900 == 3000\nE    +  where 2900 = late_fee(10000, 30)\n____________________ test_integer_rounding_and_zero_balance ____________________\n/validation/test_fees.py:18: in test_integer_rounding_and_zero_balance\n    assert late_fee(1234, 3) == 37\nE   assert 24 == 37\nE    +  where 24 = late_fee(1234, 3)\n=========================== short test summary info ============================\nFAILED ../dev/test_fees.py::test_overdue_days[1-100] - assert 0 == 100\nFAILED ../dev/test_fees.py::test_overdue_days[2-200] - assert 100 == 200\nFAILED ../dev/test_fees.py::test_overdue_days[30-3000] - assert 2900 == 3000\nFAILED ../dev/test_fees.py::test_integer_rounding_and_zero_balance - assert 2...\n4 failed, 4 passed in 0.24s\n",
+              "stderr": "",
+              "elapsed_ms": 3791.647,
+              "timed_out": false,
+              "truncated": false,
+              "infrastructure_error": null,
+              "isolation_confirmed": true,
+              "cleanup_confirmed": true,
+              "expected_tests": 8,
+              "observed_passed": 4,
+              "passed": false
+            },
+            {
+              "workspace_id": "8ff38aa97c7a4ef3a670bc9978650f40",
+              "revision": 1,
+              "profile": "fee-days",
+              "exit_code": 1,
+              "stdout": "REPOPILOT_ISOLATION={\"network\": \"none\", \"no_new_privileges\": true, \"read_only_inputs\": true, \"seccomp\": true, \"uid\": 65534}\n.FFF...F\n=================================== FAILURES ===================================\n___________________________ test_overdue_days[1-100] ___________________________\n/validation/test_fees.py:8: in test_overdue_days\n    assert late_fee(10000, days) == expected\nE   assert 0 == 100\nE    +  where 0 = late_fee(10000, 1)\n___________________________ test_overdue_days[2-200] ___________________________\n/validation/test_fees.py:8: in test_overdue_days\n    assert late_fee(10000, days) == expected\nE   assert 0 == 200\nE    +  where 0 = late_fee(10000, 2)\n__________________________ test_overdue_days[30-3000] __________________________\n/validation/test_fees.py:8: in test_overdue_days\n    assert late_fee(10000, days) == expected\nE   assert 2800 == 3000\nE    +  where 2800 = late_fee(10000, 30)\n____________________ test_integer_rounding_and_zero_balance ____________________\n/validation/test_fees.py:18: in test_integer_rounding_and_zero_balance\n    assert late_fee(1234, 3) == 37\nE   assert 12 == 37\nE    +  where 12 = late_fee(1234, 3)\n=========================== short test summary info ============================\nFAILED ../dev/test_fees.py::test_overdue_days[1-100] - assert 0 == 100\nFAILED ../dev/test_fees.py::test_overdue_days[2-200] - assert 0 == 200\nFAILED ../dev/test_fees.py::test_overdue_days[30-3000] - assert 2800 == 3000\nFAILED ../dev/test_fees.py::test_integer_rounding_and_zero_balance - assert 1...\n4 failed, 4 passed in 0.28s\n",
+              "stderr": "",
+              "elapsed_ms": 3618.436,
+              "timed_out": false,
+              "truncated": false,
+              "infrastructure_error": null,
+              "isolation_confirmed": true,
+              "cleanup_confirmed": true,
+              "expected_tests": 8,
+              "observed_passed": 4,
+              "passed": false
+            },
+            {
+              "workspace_id": "8ff38aa97c7a4ef3a670bc9978650f40",
+              "revision": 2,
+              "profile": "fee-days",
+              "exit_code": 0,
+              "stdout": "REPOPILOT_ISOLATION={\"network\": \"none\", \"no_new_privileges\": true, \"read_only_inputs\": true, \"seccomp\": true, \"uid\": 65534}\n........\n8 passed in 0.14s\n",
+              "stderr": "",
+              "elapsed_ms": 3491.989,
+              "timed_out": false,
+              "truncated": false,
+              "infrastructure_error": null,
+              "isolation_confirmed": true,
+              "cleanup_confirmed": true,
+              "expected_tests": 8,
+              "observed_passed": 8,
+              "passed": true
+            }
+          ],
+          "trace": [
+            {
+              "step": 1,
+              "model_turn": 1,
+              "call_id": "script_0",
+              "tool_name": "read_file",
+              "arguments": {
+                "path": "fees.py",
+                "start_line": 1,
+                "end_line": null
+              },
+              "observation": {
+                "status": "ok",
+                "payload": {
+                  "basis": "current_workspace",
+                  "workspace_id": "8ff38aa97c7a4ef3a670bc9978650f40",
+                  "revision": 0,
+                  "items": [
+                    {
+                      "path": "fees.py",
+                      "start_line": 1,
+                      "end_line": 7,
+                      "content": "\"\"\"Invoice charges in integer cents; each overdue day is charged, capped at 30 days.\"\"\"\n\n\ndef late_fee(balance_cents: int, overdue_days: int) -> int:\n    if balance_cents < 0 or overdue_days < 0:\n        raise ValueError(\"Values must be nonnegative\")\n    return balance_cents * min(max(overdue_days - 1, 0), 30) // 100",
+                      "truncated": false
+                    }
+                  ],
+                  "omitted": 0
+                },
+                "error_code": null,
+                "truncated": false
+              },
+              "duration_ms": 29.09
+            },
+            {
+              "step": 2,
+              "model_turn": 2,
+              "call_id": "script_1",
+              "tool_name": "submit_plan",
+              "arguments": {
+                "expected_revision": 0,
+                "decision": "repair",
+                "summary": "Scripted Golden baseline action plan",
+                "steps": [
+                  "Reproduce, patch and independently verify"
+                ],
+                "files": [
+                  "fees.py"
+                ]
+              },
+              "observation": {
+                "status": "ok",
+                "payload": {
+                  "accepted": true,
+                  "plan": {
+                    "expected_revision": 0,
+                    "decision": "repair",
+                    "summary": "Scripted Golden baseline action plan",
+                    "steps": [
+                      "Reproduce, patch and independently verify"
+                    ],
+                    "files": [
+                      "fees.py"
+                    ]
+                  }
+                },
+                "error_code": null,
+                "truncated": false
+              },
+              "duration_ms": 9.422
+            },
+            {
+              "step": 3,
+              "model_turn": 3,
+              "call_id": "script_2",
+              "tool_name": "run_tests",
+              "arguments": {
+                "expected_revision": 0
+              },
+              "observation": {
+                "status": "ok",
+                "payload": {
+                  "result": {
+                    "workspace_id": "8ff38aa97c7a4ef3a670bc9978650f40",
+                    "revision": 0,
+                    "profile": "fee-days",
+                    "exit_code": 1,
+                    "stdout": "REPOPILOT_ISOLATION={\"network\": \"none\", \"no_new_privileges\": true, \"read_only_inputs\": true, \"seccomp\": true, \"uid\": 65534}\n.FFF...F\n=================================== FAILURES ===================================\n___________________________ test_overdue_days[1-100] ___________________________\n/validation/test_fees.py:8: in test_overdue_days\n    assert late_fee(10000, days) == expected\nE   assert 0 == 100\nE    +  where 0 = late_fee(10000, 1)\n___________________________ test_overdue_days[2-200] ___________________________\n/validation/test_fees.py:8: in test_overdue_days\n    assert late_fee(10000, days) == expected\nE   assert 100 == 200\nE    +  where 100 = late_fee(10000, 2)\n__________________________ test_overdue_days[30-3000] __________________________\n/validation/test_fees.py:8: in test_overdue_days\n    assert late_fee(10000, days) == expected\nE   assert 2900 == 3000\nE    +  where 2900 = late_fee(10000, 30)\n____________________ test_integer_rounding_and_zero_balance ____________________\n/validation/test_fees.py:18: in test_integer_rounding_and_zero_balance\n    assert late_fee(1234, 3) == 37\nE   assert 24 == 37\nE    +  where 24 = late_fee(1234, 3)\n=========================== short test summary info ============================\nFAILED ../dev/test_fees.py::test_overdue_days[1-100] - assert 0 == 100\nFAILED ../dev/test_fees.py::test_overdue_days[2-200] - assert 100 == 200\nFAILED ../dev/test_fees.py::test_overdue_days[30-3000] - assert 2900 == 3000\nFAILED ../dev/test_fees.py::test_integer_rounding_and_zero_balance - assert 2...\n4 failed, 4 passed in 0.24s\n",
+                    "stderr": "",
+                    "elapsed_ms": 3791.647,
+                    "timed_out": false,
+                    "truncated": false,
+                    "infrastructure_error": null,
+                    "isolation_confirmed": true,
+                    "cleanup_confirmed": true,
+                    "expected_tests": 8,
+                    "observed_passed": 4,
+                    "passed": false
+                  },
+                  "passed": false,
+                  "scope": "Independent Golden tests at the exact revision; passing is bounded evidence, not general correctness"
+                },
+                "error_code": null,
+                "truncated": false
+              },
+              "duration_ms": 3802.553
+            },
+            {
+              "step": 4,
+              "model_turn": 4,
+              "call_id": "script_3",
+              "tool_name": "apply_patch",
+              "arguments": {
+                "expected_revision": 0,
+                "edits": [
+                  {
+                    "path": "fees.py",
+                    "old_text": "min(max(overdue_days - 1, 0), 30)",
+                    "new_text": "min(max(overdue_days - 2, 0), 30)"
+                  }
+                ]
+              },
+              "observation": {
+                "status": "ok",
+                "payload": {
+                  "applied": true,
+                  "record": {
+                    "attempt": 1,
+                    "base_revision": 0,
+                    "revision": 1,
+                    "changed_paths": [
+                      "fees.py"
+                    ],
+                    "before_hashes": {
+                      "fees.py": "4a9b96b0b83d3ddb08d84ffeddea7006047d23c448927e9e56cfa8d51bb04d27"
+                    },
+                    "after_hashes": {
+                      "fees.py": "e84045d753d1eda3477325d3180804e6c01ab5f593688214cfac7e4f7bcc671e"
+                    }
+                  }
+                },
+                "error_code": null,
+                "truncated": false
+              },
+              "duration_ms": 40.327
+            },
+            {
+              "step": 5,
+              "model_turn": 5,
+              "call_id": "script_4",
+              "tool_name": "run_tests",
+              "arguments": {
+                "expected_revision": 1
+              },
+              "observation": {
+                "status": "ok",
+                "payload": {
+                  "result": {
+                    "workspace_id": "8ff38aa97c7a4ef3a670bc9978650f40",
+                    "revision": 1,
+                    "profile": "fee-days",
+                    "exit_code": 1,
+                    "stdout": "REPOPILOT_ISOLATION={\"network\": \"none\", \"no_new_privileges\": true, \"read_only_inputs\": true, \"seccomp\": true, \"uid\": 65534}\n.FFF...F\n=================================== FAILURES ===================================\n___________________________ test_overdue_days[1-100] ___________________________\n/validation/test_fees.py:8: in test_overdue_days\n    assert late_fee(10000, days) == expected\nE   assert 0 == 100\nE    +  where 0 = late_fee(10000, 1)\n___________________________ test_overdue_days[2-200] ___________________________\n/validation/test_fees.py:8: in test_overdue_days\n    assert late_fee(10000, days) == expected\nE   assert 0 == 200\nE    +  where 0 = late_fee(10000, 2)\n__________________________ test_overdue_days[30-3000] __________________________\n/validation/test_fees.py:8: in test_overdue_days\n    assert late_fee(10000, days) == expected\nE   assert 2800 == 3000\nE    +  where 2800 = late_fee(10000, 30)\n____________________ test_integer_rounding_and_zero_balance ____________________\n/validation/test_fees.py:18: in test_integer_rounding_and_zero_balance\n    assert late_fee(1234, 3) == 37\nE   assert 12 == 37\nE    +  where 12 = late_fee(1234, 3)\n=========================== short test summary info ============================\nFAILED ../dev/test_fees.py::test_overdue_days[1-100] - assert 0 == 100\nFAILED ../dev/test_fees.py::test_overdue_days[2-200] - assert 0 == 200\nFAILED ../dev/test_fees.py::test_overdue_days[30-3000] - assert 2800 == 3000\nFAILED ../dev/test_fees.py::test_integer_rounding_and_zero_balance - assert 1...\n4 failed, 4 passed in 0.28s\n",
+                    "stderr": "",
+                    "elapsed_ms": 3618.436,
+                    "timed_out": false,
+                    "truncated": false,
+                    "infrastructure_error": null,
+                    "isolation_confirmed": true,
+                    "cleanup_confirmed": true,
+                    "expected_tests": 8,
+                    "observed_passed": 4,
+                    "passed": false
+                  },
+                  "passed": false,
+                  "scope": "Independent Golden tests at the exact revision; passing is bounded evidence, not general correctness"
+                },
+                "error_code": null,
+                "truncated": false
+              },
+              "duration_ms": 3652.134
+            },
+            {
+              "step": 6,
+              "model_turn": 6,
+              "call_id": "script_5",
+              "tool_name": "apply_patch",
+              "arguments": {
+                "expected_revision": 1,
+                "edits": [
+                  {
+                    "path": "fees.py",
+                    "old_text": "min(max(overdue_days - 2, 0), 30)",
+                    "new_text": "min(overdue_days, 30)"
+                  }
+                ]
+              },
+              "observation": {
+                "status": "ok",
+                "payload": {
+                  "applied": true,
+                  "record": {
+                    "attempt": 2,
+                    "base_revision": 1,
+                    "revision": 2,
+                    "changed_paths": [
+                      "fees.py"
+                    ],
+                    "before_hashes": {
+                      "fees.py": "e84045d753d1eda3477325d3180804e6c01ab5f593688214cfac7e4f7bcc671e"
+                    },
+                    "after_hashes": {
+                      "fees.py": "4245a43b5a31d0e9a32639091b691ac295ca573593f2f9c092c049f614b2e762"
+                    }
+                  }
+                },
+                "error_code": null,
+                "truncated": false
+              },
+              "duration_ms": 35.439
+            },
+            {
+              "step": 7,
+              "model_turn": 7,
+              "call_id": "script_6",
+              "tool_name": "run_tests",
+              "arguments": {
+                "expected_revision": 2
+              },
+              "observation": {
+                "status": "ok",
+                "payload": {
+                  "result": {
+                    "workspace_id": "8ff38aa97c7a4ef3a670bc9978650f40",
+                    "revision": 2,
+                    "profile": "fee-days",
+                    "exit_code": 0,
+                    "stdout": "REPOPILOT_ISOLATION={\"network\": \"none\", \"no_new_privileges\": true, \"read_only_inputs\": true, \"seccomp\": true, \"uid\": 65534}\n........\n8 passed in 0.14s\n",
+                    "stderr": "",
+                    "elapsed_ms": 3491.989,
+                    "timed_out": false,
+                    "truncated": false,
+                    "infrastructure_error": null,
+                    "isolation_confirmed": true,
+                    "cleanup_confirmed": true,
+                    "expected_tests": 8,
+                    "observed_passed": 8,
+                    "passed": true
+                  },
+                  "passed": true,
+                  "scope": "Independent Golden tests at the exact revision; passing is bounded evidence, not general correctness"
+                },
+                "error_code": null,
+                "truncated": false
+              },
+              "duration_ms": 3507.57
+            }
+          ],
+          "stop_reason": "completed",
+          "diagnostics": {
+            "provider": "scripted",
+            "model": "frozen-resolution-script-v1",
+            "model_calls": 8,
+            "patch_attempts": 2,
+            "test_executions": 3,
+            "duration_ms": 11104.91,
+            "limits": {
+              "model_turns": 18,
+              "patch_attempts": 4,
+              "test_executions": 5,
+              "wall_seconds": 180,
+              "context_characters": 90000,
+              "model_output_characters": 16000,
+              "observation_characters": 12000
+            },
+            "failure": null
+          },
+          "workspace_cleaned": true
+        },
+        "review_hash": "60304c59ee70ff45ae5e193b59b4963b79ba0c033cac090625ee0073ee22a828",
+        "human_quality_review": null
+      },
+      "latency_ms": 11707.751,
+      "tool_calls": 7,
+      "model_turns": 8,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "resolution/dispatch-preconditions",
+      "category": "resolution",
+      "status": "passed",
+      "checks": {
+        "verified_repair": "passed",
+        "safe_decision": "not_applicable",
+        "independent_test": "passed",
+        "patch_apply": "passed",
+        "integrity_cleanup": "passed",
+        "claim_support": "unverified"
+      },
+      "failures": [],
+      "evidence": {
+        "id": "dispatch-preconditions",
+        "issue": "submit_job must authenticate before policy validation. Authorized negative attempts must raise ValueError for permanent and transient jobs. Preserve nonnegative permanent rejection, exponential delays and the existing 300-second cap. Inspect the cross-file preconditions and fix both violations.",
+        "expected_decision": "verified_repair",
+        "golden_conditions_met": true,
+        "original_unchanged": true,
+        "snapshot_unchanged": true,
+        "unsafe_attempt_steps": [],
+        "result": {
+          "repository_id": 1087,
+          "snapshot_id": 1269,
+          "workspace_id": "40fadddd5ec348708cfcb0238c66ebe1",
+          "revision": 1,
+          "profile": "dispatch-preconditions",
+          "execution_status": "completed",
+          "repair_status": "verified_repair",
+          "final_answer": "Scripted workflow finished; inspect machine test evidence. This is not external-model repair.",
+          "plans": [
+            {
+              "expected_revision": 0,
+              "decision": "repair",
+              "summary": "Scripted Golden baseline action plan",
+              "steps": [
+                "Reproduce, patch and independently verify"
+              ],
+              "files": [
+                "workflow.py",
+                "policy.py"
+              ]
+            }
+          ],
+          "patch": "--- a/policy.py\n+++ b/policy.py\n@@ -1,6 +1,6 @@\n def retry_delay(attempt: int, transient: bool) -> int | None:\n+    if attempt < 0:\n+        raise ValueError(\"Attempt must be nonnegative\")\n     if not transient:\n         return None\n-    if attempt < 0:\n-        raise ValueError(\"Attempt must be nonnegative\")\n     return min(2 ** min(attempt, 9), 300)\n--- a/workflow.py\n+++ b/workflow.py\n@@ -3,8 +3,8 @@\n \n \n def submit_job(token: str, attempt: int, transient: bool) -> dict:\n+    verify_token(token)\n     delay = retry_delay(attempt, transient)\n-    verify_token(token)\n     if delay is None:\n         return {\"status\": \"rejected\"}\n     return {\"status\": \"scheduled\", \"delay\": delay}\n",
+          "changed_files": [
+            {
+              "path": "policy.py",
+              "original": "def retry_delay(attempt: int, transient: bool) -> int | None:\n    if not transient:\n        return None\n    if attempt < 0:\n        raise ValueError(\"Attempt must be nonnegative\")\n    return min(2 ** min(attempt, 9), 300)\n",
+              "modified": "def retry_delay(attempt: int, transient: bool) -> int | None:\n    if attempt < 0:\n        raise ValueError(\"Attempt must be nonnegative\")\n    if not transient:\n        return None\n    return min(2 ** min(attempt, 9), 300)\n"
+            },
+            {
+              "path": "workflow.py",
+              "original": "from auth import verify_token\nfrom policy import retry_delay\n\n\ndef submit_job(token: str, attempt: int, transient: bool) -> dict:\n    delay = retry_delay(attempt, transient)\n    verify_token(token)\n    if delay is None:\n        return {\"status\": \"rejected\"}\n    return {\"status\": \"scheduled\", \"delay\": delay}\n",
+              "modified": "from auth import verify_token\nfrom policy import retry_delay\n\n\ndef submit_job(token: str, attempt: int, transient: bool) -> dict:\n    verify_token(token)\n    delay = retry_delay(attempt, transient)\n    if delay is None:\n        return {\"status\": \"rejected\"}\n    return {\"status\": \"scheduled\", \"delay\": delay}\n"
+            }
+          ],
+          "patch_history": [
+            {
+              "attempt": 1,
+              "base_revision": 0,
+              "revision": 1,
+              "changed_paths": [
+                "policy.py",
+                "workflow.py"
+              ],
+              "before_hashes": {
+                "policy.py": "9656f43b32ba52edf9a5165475819d964f1d6043cb5fd2d666918253c9ce89df",
+                "workflow.py": "51465beab2d3598b49296bc6928321c5cd76316bbda2f9cff066883c881425e6"
+              },
+              "after_hashes": {
+                "policy.py": "695b4142e9961bd44f2b6700f29acd56231bafa244ac3c469a6c62ad636a98fd",
+                "workflow.py": "e229be1c8432770818e01e92fb5d5dd86e57c77c04cd7892d4d93c692d0d2ebd"
+              }
+            }
+          ],
+          "test_results": [
+            {
+              "workspace_id": "40fadddd5ec348708cfcb0238c66ebe1",
+              "revision": 0,
+              "profile": "dispatch-preconditions",
+              "exit_code": 1,
+              "stdout": "REPOPILOT_ISOLATION={\"network\": \"none\", \"no_new_privileges\": true, \"read_only_inputs\": true, \"seccomp\": true, \"uid\": 65534}\nF..F.......\n=================================== FAILURES ===================================\n______________ test_authentication_precedes_invalid_attempt[True] ______________\n/validation/test_dispatch.py:9: in test_authentication_precedes_invalid_attempt\n    submit_job(\"bad\", -1, transient)\n/workspace/workflow.py:6: in submit_job\n    delay = retry_delay(attempt, transient)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/workspace/policy.py:5: in retry_delay\n    raise ValueError(\"Attempt must be nonnegative\")\nE   ValueError: Attempt must be nonnegative\n____________ test_authorized_invalid_attempt_always_rejected[False] ____________\n/validation/test_dispatch.py:14: in test_authorized_invalid_attempt_always_rejected\n    with pytest.raises(ValueError):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^\nE   Failed: DID NOT RAISE <class 'ValueError'>\n=========================== short test summary info ============================\nFAILED ../dev/test_dispatch.py::test_authentication_precedes_invalid_attempt[True]\nFAILED ../dev/test_dispatch.py::test_authorized_invalid_attempt_always_rejected[False]\n2 failed, 9 passed in 0.33s\n",
+              "stderr": "",
+              "elapsed_ms": 3766.428,
+              "timed_out": false,
+              "truncated": false,
+              "infrastructure_error": null,
+              "isolation_confirmed": true,
+              "cleanup_confirmed": true,
+              "expected_tests": 11,
+              "observed_passed": 9,
+              "passed": false
+            },
+            {
+              "workspace_id": "40fadddd5ec348708cfcb0238c66ebe1",
+              "revision": 1,
+              "profile": "dispatch-preconditions",
+              "exit_code": 0,
+              "stdout": "REPOPILOT_ISOLATION={\"network\": \"none\", \"no_new_privileges\": true, \"read_only_inputs\": true, \"seccomp\": true, \"uid\": 65534}\n...........\n11 passed in 0.13s\n",
+              "stderr": "",
+              "elapsed_ms": 3422.985,
+              "timed_out": false,
+              "truncated": false,
+              "infrastructure_error": null,
+              "isolation_confirmed": true,
+              "cleanup_confirmed": true,
+              "expected_tests": 11,
+              "observed_passed": 11,
+              "passed": true
+            }
+          ],
+          "trace": [
+            {
+              "step": 1,
+              "model_turn": 1,
+              "call_id": "script_0",
+              "tool_name": "read_file",
+              "arguments": {
+                "path": "workflow.py",
+                "start_line": 1,
+                "end_line": null
+              },
+              "observation": {
+                "status": "ok",
+                "payload": {
+                  "basis": "current_workspace",
+                  "workspace_id": "40fadddd5ec348708cfcb0238c66ebe1",
+                  "revision": 0,
+                  "items": [
+                    {
+                      "path": "workflow.py",
+                      "start_line": 1,
+                      "end_line": 10,
+                      "content": "from auth import verify_token\nfrom policy import retry_delay\n\n\ndef submit_job(token: str, attempt: int, transient: bool) -> dict:\n    delay = retry_delay(attempt, transient)\n    verify_token(token)\n    if delay is None:\n        return {\"status\": \"rejected\"}\n    return {\"status\": \"scheduled\", \"delay\": delay}",
+                      "truncated": false
+                    }
+                  ],
+                  "omitted": 0
+                },
+                "error_code": null,
+                "truncated": false
+              },
+              "duration_ms": 22.689
+            },
+            {
+              "step": 2,
+              "model_turn": 2,
+              "call_id": "script_1",
+              "tool_name": "read_file",
+              "arguments": {
+                "path": "policy.py",
+                "start_line": 1,
+                "end_line": null
+              },
+              "observation": {
+                "status": "ok",
+                "payload": {
+                  "basis": "current_workspace",
+                  "workspace_id": "40fadddd5ec348708cfcb0238c66ebe1",
+                  "revision": 0,
+                  "items": [
+                    {
+                      "path": "policy.py",
+                      "start_line": 1,
+                      "end_line": 6,
+                      "content": "def retry_delay(attempt: int, transient: bool) -> int | None:\n    if not transient:\n        return None\n    if attempt < 0:\n        raise ValueError(\"Attempt must be nonnegative\")\n    return min(2 ** min(attempt, 9), 300)",
+                      "truncated": false
+                    }
+                  ],
+                  "omitted": 0
+                },
+                "error_code": null,
+                "truncated": false
+              },
+              "duration_ms": 15.297
+            },
+            {
+              "step": 3,
+              "model_turn": 3,
+              "call_id": "script_2",
+              "tool_name": "read_file",
+              "arguments": {
+                "path": "auth.py",
+                "start_line": 1,
+                "end_line": null
+              },
+              "observation": {
+                "status": "ok",
+                "payload": {
+                  "basis": "current_workspace",
+                  "workspace_id": "40fadddd5ec348708cfcb0238c66ebe1",
+                  "revision": 0,
+                  "items": [
+                    {
+                      "path": "auth.py",
+                      "start_line": 1,
+                      "end_line": 3,
+                      "content": "def verify_token(token: str) -> None:\n    if token != \"fixture-authorized\":\n        raise PermissionError(\"Invalid token\")",
+                      "truncated": false
+                    }
+                  ],
+                  "omitted": 0
+                },
+                "error_code": null,
+                "truncated": false
+              },
+              "duration_ms": 14.879
+            },
+            {
+              "step": 4,
+              "model_turn": 4,
+              "call_id": "script_3",
+              "tool_name": "submit_plan",
+              "arguments": {
+                "expected_revision": 0,
+                "decision": "repair",
+                "summary": "Scripted Golden baseline action plan",
+                "steps": [
+                  "Reproduce, patch and independently verify"
+                ],
+                "files": [
+                  "workflow.py",
+                  "policy.py"
+                ]
+              },
+              "observation": {
+                "status": "ok",
+                "payload": {
+                  "accepted": true,
+                  "plan": {
+                    "expected_revision": 0,
+                    "decision": "repair",
+                    "summary": "Scripted Golden baseline action plan",
+                    "steps": [
+                      "Reproduce, patch and independently verify"
+                    ],
+                    "files": [
+                      "workflow.py",
+                      "policy.py"
+                    ]
+                  }
+                },
+                "error_code": null,
+                "truncated": false
+              },
+              "duration_ms": 7.687
+            },
+            {
+              "step": 5,
+              "model_turn": 5,
+              "call_id": "script_4",
+              "tool_name": "run_tests",
+              "arguments": {
+                "expected_revision": 0
+              },
+              "observation": {
+                "status": "ok",
+                "payload": {
+                  "result": {
+                    "workspace_id": "40fadddd5ec348708cfcb0238c66ebe1",
+                    "revision": 0,
+                    "profile": "dispatch-preconditions",
+                    "exit_code": 1,
+                    "stdout": "REPOPILOT_ISOLATION={\"network\": \"none\", \"no_new_privileges\": true, \"read_only_inputs\": true, \"seccomp\": true, \"uid\": 65534}\nF..F.......\n=================================== FAILURES ===================================\n______________ test_authentication_precedes_invalid_attempt[True] ______________\n/validation/test_dispatch.py:9: in test_authentication_precedes_invalid_attempt\n    submit_job(\"bad\", -1, transient)\n/workspace/workflow.py:6: in submit_job\n    delay = retry_delay(attempt, transient)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/workspace/policy.py:5: in retry_delay\n    raise ValueError(\"Attempt must be nonnegative\")\nE   ValueError: Attempt must be nonnegative\n____________ test_authorized_invalid_attempt_always_rejected[False] ____________\n/validation/test_dispatch.py:14: in test_authorized_invalid_attempt_always_rejected\n    with pytest.raises(ValueError):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^\nE   Failed: DID NOT RAISE <class 'ValueError'>\n=========================== short test summary info ============================\nFAILED ../dev/test_dispatch.py::test_authentication_precedes_invalid_attempt[True]\nFAILED ../dev/test_dispatch.py::test_authorized_invalid_attempt_always_rejected[False]\n2 failed, 9 passed in 0.33s\n",
+                    "stderr": "",
+                    "elapsed_ms": 3766.428,
+                    "timed_out": false,
+                    "truncated": false,
+                    "infrastructure_error": null,
+                    "isolation_confirmed": true,
+                    "cleanup_confirmed": true,
+                    "expected_tests": 11,
+                    "observed_passed": 9,
+                    "passed": false
+                  },
+                  "passed": false,
+                  "scope": "Independent Golden tests at the exact revision; passing is bounded evidence, not general correctness"
+                },
+                "error_code": null,
+                "truncated": false
+              },
+              "duration_ms": 3775.365
+            },
+            {
+              "step": 6,
+              "model_turn": 6,
+              "call_id": "script_5",
+              "tool_name": "apply_patch",
+              "arguments": {
+                "expected_revision": 0,
+                "edits": [
+                  {
+                    "path": "workflow.py",
+                    "old_text": "    delay = retry_delay(attempt, transient)\n    verify_token(token)",
+                    "new_text": "    verify_token(token)\n    delay = retry_delay(attempt, transient)"
+                  },
+                  {
+                    "path": "policy.py",
+                    "old_text": "    if not transient:\n        return None\n    if attempt < 0:\n        raise ValueError(\"Attempt must be nonnegative\")",
+                    "new_text": "    if attempt < 0:\n        raise ValueError(\"Attempt must be nonnegative\")\n    if not transient:\n        return None"
+                  }
+                ]
+              },
+              "observation": {
+                "status": "ok",
+                "payload": {
+                  "applied": true,
+                  "record": {
+                    "attempt": 1,
+                    "base_revision": 0,
+                    "revision": 1,
+                    "changed_paths": [
+                      "policy.py",
+                      "workflow.py"
+                    ],
+                    "before_hashes": {
+                      "policy.py": "9656f43b32ba52edf9a5165475819d964f1d6043cb5fd2d666918253c9ce89df",
+                      "workflow.py": "51465beab2d3598b49296bc6928321c5cd76316bbda2f9cff066883c881425e6"
+                    },
+                    "after_hashes": {
+                      "policy.py": "695b4142e9961bd44f2b6700f29acd56231bafa244ac3c469a6c62ad636a98fd",
+                      "workflow.py": "e229be1c8432770818e01e92fb5d5dd86e57c77c04cd7892d4d93c692d0d2ebd"
+                    }
+                  }
+                },
+                "error_code": null,
+                "truncated": false
+              },
+              "duration_ms": 33.728
+            },
+            {
+              "step": 7,
+              "model_turn": 7,
+              "call_id": "script_6",
+              "tool_name": "run_tests",
+              "arguments": {
+                "expected_revision": 1
+              },
+              "observation": {
+                "status": "ok",
+                "payload": {
+                  "result": {
+                    "workspace_id": "40fadddd5ec348708cfcb0238c66ebe1",
+                    "revision": 1,
+                    "profile": "dispatch-preconditions",
+                    "exit_code": 0,
+                    "stdout": "REPOPILOT_ISOLATION={\"network\": \"none\", \"no_new_privileges\": true, \"read_only_inputs\": true, \"seccomp\": true, \"uid\": 65534}\n...........\n11 passed in 0.13s\n",
+                    "stderr": "",
+                    "elapsed_ms": 3422.985,
+                    "timed_out": false,
+                    "truncated": false,
+                    "infrastructure_error": null,
+                    "isolation_confirmed": true,
+                    "cleanup_confirmed": true,
+                    "expected_tests": 11,
+                    "observed_passed": 11,
+                    "passed": true
+                  },
+                  "passed": true,
+                  "scope": "Independent Golden tests at the exact revision; passing is bounded evidence, not general correctness"
+                },
+                "error_code": null,
+                "truncated": false
+              },
+              "duration_ms": 3440.961
+            }
+          ],
+          "stop_reason": "completed",
+          "diagnostics": {
+            "provider": "scripted",
+            "model": "frozen-resolution-script-v1",
+            "model_calls": 8,
+            "patch_attempts": 1,
+            "test_executions": 2,
+            "duration_ms": 7344.317,
+            "limits": {
+              "model_turns": 18,
+              "patch_attempts": 4,
+              "test_executions": 5,
+              "wall_seconds": 180,
+              "context_characters": 90000,
+              "model_output_characters": 16000,
+              "observation_characters": 12000
+            },
+            "failure": null
+          },
+          "workspace_cleaned": true
+        },
+        "review_hash": "74e800a45d1a718e6ad5e24df39d706dfaf8c75fe37fc8b66794855471ec5bd7",
+        "human_quality_review": null
+      },
+      "latency_ms": 7907.686,
+      "tool_calls": 7,
+      "model_turns": 8,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "resolution/ambiguous-cap",
+      "category": "resolution",
+      "status": "passed",
+      "checks": {
+        "verified_repair": "not_applicable",
+        "safe_decision": "passed",
+        "independent_test": "not_applicable",
+        "patch_apply": "not_applicable",
+        "integrity_cleanup": "passed",
+        "claim_support": "unverified"
+      },
+      "failures": [],
+      "evidence": {
+        "id": "ambiguous-cap",
+        "issue": "The guide says retry delays cap at 60 seconds while implementation uses 300. Determine the intended cap and fix the discrepancy if there is sufficient evidence.",
+        "expected_decision": "needs_owner_decision",
+        "golden_conditions_met": true,
+        "original_unchanged": true,
+        "snapshot_unchanged": true,
+        "unsafe_attempt_steps": [],
+        "result": {
+          "repository_id": 1093,
+          "snapshot_id": 1276,
+          "workspace_id": "020623076bd34b72b0533f4f0f9bf67a",
+          "revision": 0,
+          "profile": "ambiguous-cap",
+          "execution_status": "completed",
+          "repair_status": "needs_owner_decision",
+          "final_answer": "Scripted workflow finished; inspect machine test evidence. This is not external-model repair.",
+          "plans": [
+            {
+              "expected_revision": 0,
+              "decision": "needs_owner_decision",
+              "summary": "Scripted Golden baseline action plan",
+              "steps": [
+                "Request an owner decision before changing intent"
+              ],
+              "files": []
+            }
+          ],
+          "patch": "",
+          "changed_files": [],
+          "patch_history": [],
+          "test_results": [],
+          "trace": [
+            {
+              "step": 1,
+              "model_turn": 1,
+              "call_id": "script_0",
+              "tool_name": "read_file",
+              "arguments": {
+                "path": "README.md",
+                "start_line": 1,
+                "end_line": null
+              },
+              "observation": {
+                "status": "ok",
+                "payload": {
+                  "basis": "current_workspace",
+                  "workspace_id": "020623076bd34b72b0533f4f0f9bf67a",
+                  "revision": 0,
+                  "items": [
+                    {
+                      "path": "README.md",
+                      "start_line": 1,
+                      "end_line": 12,
+                      "content": "# Dispatch and billing fixture, version 1\n\nControlled Python source for RepoPilot's V4 repair baseline. No external packages.\nInvoice overdue charges are one percent of the balance per overdue day, with a\n30-day cap. Negative balances/days are invalid. Zero days incurs no fee.\n\nJob submission must authenticate first, before any policy validation. Authorized\nnegative attempts must raise ValueError for both permanent and transient jobs.\nAuthorized permanent jobs with nonnegative attempts are rejected. Transient jobs\nuse exponential retry delays. The operations guide says delays cap at 60 seconds;\nthe implementation currently caps at 300 seconds. Product intent for this cap has\nnot been established. Do not choose either cap without an owner decision.",
+                      "truncated": false
+                    }
+                  ],
+                  "omitted": 0
+                },
+                "error_code": null,
+                "truncated": false
+              },
+              "duration_ms": 23.61
+            },
+            {
+              "step": 2,
+              "model_turn": 2,
+              "call_id": "script_1",
+              "tool_name": "read_file",
+              "arguments": {
+                "path": "policy.py",
+                "start_line": 1,
+                "end_line": null
+              },
+              "observation": {
+                "status": "ok",
+                "payload": {
+                  "basis": "current_workspace",
+                  "workspace_id": "020623076bd34b72b0533f4f0f9bf67a",
+                  "revision": 0,
+                  "items": [
+                    {
+                      "path": "policy.py",
+                      "start_line": 1,
+                      "end_line": 6,
+                      "content": "def retry_delay(attempt: int, transient: bool) -> int | None:\n    if not transient:\n        return None\n    if attempt < 0:\n        raise ValueError(\"Attempt must be nonnegative\")\n    return min(2 ** min(attempt, 9), 300)",
+                      "truncated": false
+                    }
+                  ],
+                  "omitted": 0
+                },
+                "error_code": null,
+                "truncated": false
+              },
+              "duration_ms": 18.44
+            },
+            {
+              "step": 3,
+              "model_turn": 3,
+              "call_id": "script_2",
+              "tool_name": "submit_plan",
+              "arguments": {
+                "expected_revision": 0,
+                "decision": "needs_owner_decision",
+                "summary": "Scripted Golden baseline action plan",
+                "steps": [
+                  "Request an owner decision before changing intent"
+                ],
+                "files": []
+              },
+              "observation": {
+                "status": "ok",
+                "payload": {
+                  "accepted": true,
+                  "plan": {
+                    "expected_revision": 0,
+                    "decision": "needs_owner_decision",
+                    "summary": "Scripted Golden baseline action plan",
+                    "steps": [
+                      "Request an owner decision before changing intent"
+                    ],
+                    "files": []
+                  }
+                },
+                "error_code": null,
+                "truncated": false
+              },
+              "duration_ms": 7.618
+            }
+          ],
+          "stop_reason": "completed",
+          "diagnostics": {
+            "provider": "scripted",
+            "model": "frozen-resolution-script-v1",
+            "model_calls": 4,
+            "patch_attempts": 0,
+            "test_executions": 0,
+            "duration_ms": 70.459,
+            "limits": {
+              "model_turns": 18,
+              "patch_attempts": 4,
+              "test_executions": 5,
+              "wall_seconds": 180,
+              "context_characters": 90000,
+              "model_output_characters": 16000,
+              "observation_characters": 12000
+            },
+            "failure": null
+          },
+          "workspace_cleaned": true
+        },
+        "review_hash": "b06d85edab5a7a508bd9e391c1bbebd66e7126d6a653a07c1b5ee697c85f36d4",
+        "human_quality_review": null
+      },
+      "latency_ms": 742.614,
+      "tool_calls": 3,
+      "model_turns": 4,
+      "tokens": null,
+      "cost": null
+    }
+  ],
+  "aggregate": {
+    "tool_calls": 31,
+    "tool_calls_measured_cases": 6,
+    "model_turns": 39,
+    "model_turns_measured_cases": 8,
+    "case_count": 17,
+    "statuses": {
+      "passed": 12,
+      "unverified": 5
+    },
+    "metrics": {
+      "task_success": {
+        "numerator": 3,
+        "denominator": 3,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 3
+        }
+      },
+      "verified_repair": {
+        "numerator": 2,
+        "denominator": 2,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 2
+        }
+      },
+      "safe_decision": {
+        "numerator": 1,
+        "denominator": 1,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "patch_apply": {
+        "numerator": 2,
+        "denominator": 2,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 2
+        }
+      },
+      "independent_test": {
+        "numerator": 2,
+        "denominator": 2,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 2
+        }
+      },
+      "evidence_discovery": {
+        "numerator": 13,
+        "denominator": 13,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 13
+        }
+      },
+      "citation_validity": {
+        "numerator": 5,
+        "denominator": 5,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 5
+        }
+      },
+      "citation_identity": {
+        "numerator": 5,
+        "denominator": 5,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 5
+        }
+      },
+      "claim_support": {
+        "numerator": 0,
+        "denominator": 8,
+        "rate": null,
+        "statuses": {
+          "unverified": 8
+        },
+        "reviewed_denominator": 0,
+        "reviewed_rate": null
+      },
+      "patch_apply_attempts": {
+        "numerator": 3,
+        "denominator": 3,
+        "rate": 1.0,
+        "statuses": {
+          "not_run_cases": 0
+        }
+      },
+      "retrieval_hit@1": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "retrieval_recall@1": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "retrieval_mrr@1": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "retrieval_hit@3": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "retrieval_recall@3": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "retrieval_mrr@3": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "retrieval_hit@5": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "retrieval_recall@5": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "retrieval_mrr@5": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      }
+    },
+    "tokens": null,
+    "cost": null,
+    "usage_note": "Existing provider result contracts do not expose trustworthy usage/cost.",
+    "measured_latency_ms": 26684.025999999998,
+    "latency_measured_cases": 17
+  },
+  "limitations": [
+    "Three frozen Issue cases cannot establish general repair reliability.",
+    "Tokens/cost unavailable from provider contracts; null is not zero.",
+    "Current answer claim support is unreviewed; valid citations do not prove grounding.",
+    "Historical V3/V4 unsupported claims remain in original reports/reviews.",
+    "One repetition per task; no general accuracy or improvement claim."
+  ],
+  "finished_at": "2026-10-29T11:24:01.830576+00:00",
+  "complete": true
+}

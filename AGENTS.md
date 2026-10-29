@@ -30,11 +30,14 @@ For the complete long-term product scope, architecture direction, and version ro
 
 Current stage:
 
-**V5 — MCP + GitHub Integration is complete (2026-10-29). V6 is not authorized.**
+**V6 — Evaluation System is complete (2026-10-29). Stop at V6 / V7.**
 
 The completed goal is `docs/goals/v5-mcp-github.md`; execution history is recorded
 in `docs/tasks/v5-plan.md` and completion evidence in
-`docs/evaluation/v5-mcp-github-completion.md`. Stop at the V5 / V6 boundary. Remote
+`docs/evaluation/v5-mcp-github-completion.md`. The active V6 goal is
+`docs/goals/v6-evaluation.md`; progress is in `docs/tasks/v6-plan.md`. Completion evidence is in
+`docs/evaluation/v6-evaluation-completion.md`: 360 passed / 1 disabled online MCP
+skip; actual Qwen failures and review limitations remain recorded. Stop before V7. Remote
 writes still require explicit human approval of a concrete publication proposal.
 
 V4 M0–M6 are complete. Local/database/Docker regressions pass, two real Qwen positive
@@ -77,7 +80,8 @@ approved frozen profiles in private temporary workspaces. Original repositories
 and saved Snapshots remain unchanged. Investigation stays read-only. The completed
 V4 goal is `docs/goals/v4-issue-resolution-agent.md`. V4 acceptance is complete.
 The separately authorized V5 goal now permits scoped MCP/GitHub integration;
-arbitrary repository execution, multiple agents and later versions remain forbidden.
+V6 permits the CLI evaluation harness only. Arbitrary repository execution,
+multiple agents, V7 and unapproved remote mutations remain forbidden.
 
 ---
 
