@@ -40,6 +40,10 @@ def verify_repository(value: dict, p: PublicationPlan) -> None:
 
 
 def verify_ref(value: dict | None, branch: str, sha: str) -> None:
+    if value is None:
+        raise GitHubMCPError(
+            "baseline_unavailable" if branch == "main" else "branch_unavailable"
+        )
     if (
         not isinstance(value, dict)
         or value.get("ref") != f"refs/heads/{branch}"
@@ -52,6 +56,8 @@ def verify_ref(value: dict | None, branch: str, sha: str) -> None:
 
 
 def verify_tree(value: dict | None, p: PublicationPlan) -> None:
+    if value is None:
+        raise GitHubMCPError("remote_tree_unavailable")
     entries = value.get("tree") if isinstance(value, dict) else None
     expected = {
         path: git_object("blob", text.encode()) for path, text in p.files.items()
@@ -78,12 +84,17 @@ def verify_tree(value: dict | None, p: PublicationPlan) -> None:
 
 
 def verify_commit(value: dict | None, p: PublicationPlan) -> None:
+    if value is None:
+        raise GitHubMCPError("remote_commit_unavailable")
     if (
         not isinstance(value, dict)
         or value.get("sha") != p.commit_sha
         or value.get("tree", {}).get("sha") != p.tree_sha
         or [v.get("sha") for v in value.get("parents", [])] != [p.base_sha]
-        or value.get("message") != p.commit_message
+        # GitHub renders the message without its terminal LF. The exact object
+        # SHA still binds the original complete Git commit bytes.
+        or value.get("message")
+        not in {p.commit_message, p.commit_message.removesuffix("\n")}
     ):
         raise GitHubMCPError("remote_commit_mismatch")
     for key in ("author", "committer"):
@@ -212,7 +223,10 @@ async def publish_effects(
                 outcome["observed_tree_sha"] = observed
             if created.get("sha") != p.tree_sha:
                 raise GitHubMCPError("remote_tree_mismatch")
-            tree = await git.tree()
+            # GitHub may not expose an unreferenced object through GET yet. The
+            # create response carries the full tree: verify it before creating
+            # the exact commit; require reachable GET readback before a PR.
+            tree = created
         verify_tree(tree, p)
         outcome["tree_sha"] = p.tree_sha
         commit = await git.commit()
@@ -224,7 +238,7 @@ async def publish_effects(
                 outcome["observed_commit_sha"] = observed
             if created.get("sha") != p.commit_sha:
                 raise GitHubMCPError("remote_commit_mismatch")
-            commit = await git.commit()
+            commit = created
         verify_commit(commit, p)
         outcome["commit_sha"] = p.commit_sha
         if branch is None:
@@ -232,6 +246,8 @@ async def publish_effects(
             await git.create_branch()
         verify_ref(await git.ref(p.head_branch), p.head_branch, p.commit_sha)
         outcome["branch"] = p.head_branch
+        verify_commit(await git.commit(), p)
+        verify_tree(await git.tree(), p)
         await require_baseline(git, p)
         async with connect_approved_pr(settings, p, digest) as prs:
             outcome["pr_connection"] = prs.connection_evidence

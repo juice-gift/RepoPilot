@@ -75,11 +75,21 @@ class Remote:
         return self.refs.get(branch)
 
     async def tree(self):
+        if (
+            getattr(self, "hide_unreferenced", False)
+            and self.p.head_branch not in self.refs
+        ):
+            return None
         return self.trees.get(self.p.tree_sha)
 
     async def commit(self, *, baseline=False):
         if baseline:
             return {"sha": self.p.base_sha, "tree": {"sha": self.p.baseline_tree_sha}}
+        if (
+            getattr(self, "hide_unreferenced", False)
+            and self.p.head_branch not in self.refs
+        ):
+            return None
         return self.commits.get(self.p.commit_sha)
 
     async def create_tree(self):
@@ -265,6 +275,16 @@ def test_concurrent_publisher_denied_while_row_locked(saved_repair, monkeypatch)
     assert remote.events == []
 
 
+def test_unreferenced_objects_verified_from_create_then_reachable_readback(
+    saved_repair, monkeypatch
+):
+    session, config, row, remote = setup(saved_repair, monkeypatch)
+    remote.hide_unreferenced = True
+    result = anyio.run(publish_proposal, session, config, row.id)
+    assert result.state == "published"
+    assert remote.events == ["tree", "commit", "branch", "pr"]
+
+
 def test_crash_marker_can_reconcile(saved_repair, monkeypatch):
     session, config, row, _ = setup(saved_repair, monkeypatch)
     row.state = "publishing"
@@ -351,6 +371,9 @@ def test_remote_verifiers_reject_content_parent_or_pr_changes(saved_repair):
     anyio.run(objects)
     verify_tree(anyio.run(remote.tree), p)
     verify_commit(anyio.run(remote.commit), p)
+    rendered = copy.deepcopy(remote.commits[p.commit_sha])
+    rendered["message"] = rendered["message"].removesuffix("\n")
+    verify_commit(rendered, p)
     verify_pr(remote.prs[0], p)
     damaged = copy.deepcopy(remote.commits[p.commit_sha])
     damaged["parents"] = [{"sha": "0" * 40}]
