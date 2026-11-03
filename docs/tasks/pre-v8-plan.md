@@ -1,201 +1,78 @@
-# Pre-V8 engineering execution plan
+# Pre-V8 execution plan — 2026-11-03
 
-Authorization: [owner goal](../goals/pre-v8-engineering.md), 2026-11-03.
-Baseline 40ccf6f, clean codex/v6-evaluation, now codex/pre-v8-engineering.
-Read-only fetch: origin/main 5316cf8 (V6 merge), tracked V6 branch 5dac7e9.
-Preserve local JSX fix. No remote writes, public deployment or V8 authorized.
+Active authorization: [Goal](../goals/pre-v8-engineering.md). Branch:
+`codex/pre-v8-engineering`; baseline 40ccf6f. Stop before V8. No remote writes or
+public hosting authorized. Owner separately approved selecting/reviewing two small
+public Python repositories and offline Docker tests; no further selection approval.
 
-| Milestone | State | Acceptance |
+| Milestone | State | Evidence |
 | --- | --- | --- |
-| M0 Preflight | Complete | Existing V4/V5/V6 boundaries, baseline DB/Docker/tests, history |
-| A1 Packaging/config | Implemented/validated locally | Locked API/Web images, loopback Compose, migration gate, explicit deployment settings, no daemon socket |
-| A2 Diagnostics/reliability | Implemented/validated locally | Correlation-safe JSON logs, measured operations, bounded failures, cleanup/restart |
-| A3 CI/deployment | Local validation; hosted CI unexecuted | Minimal-permission workflow, real local equivalent checks, smoke/restart/backup/restore |
-| B1 Trusted profiles | Implemented; regression passed | Commit-pinned approved Python source/test configurations, reuse workspace/sandbox, fail closed |
-| B2 Real repositories | Deterministic Docker passed; live trial running | Two independent real Python repositories; success/failure/refusal/escape scenarios |
-| C Integration | Pending | Existing binding/repair/verification/proposal pipeline, exact approval and fake remote recovery |
-| D Acceptance | Pending | Full regression, frozen/live evaluation, security review, accurate final evidence |
+| M0 Preflight | Complete | clean baseline, read-only fetch origin/main 5316cf8, existing V4–V6 inspected, 373-pass live baseline |
+| A1 Packaging/config | Implemented, partial deployment acceptance | locked API/Web images, migration gate, loopback Compose; container repair unavailable |
+| A2 Diagnostics/reliability | Tested paths complete | JSON correlation/latency, safe failures, bounded providers/Sandbox, cleanup and exact publication recovery |
+| A3 CI/deployment | Local execution verified | fresh stack/new volume/start/restart/smoke/restore; hosted CI NOT executed |
+| B1 Trusted profiles | Complete within limited layouts | operator registry + exact SHA256, immutable sources/image/tests, root/src, no shell/install options |
+| B2 Real repositories | Verified | ItsDangerous #126 and more-itertools #1336, success/failure/refusal/stale/path boundaries, original Golden regressions |
+| C Integration | Local/read-only acceptance verified | actual official MCP bindings; real DB/Docker repairs; exact awaiting-review plans; nested fake-remote recovery; UI |
+| D Regression/evaluation/security/docs | Evidence saved; full acceptance open | 414 passed /1 disabled online MCP skip; real harness; security review; decision below |
 
-Inspection: existing profiles require exact frozen sources and issue; publication
-Git tree calculation supports flat files only. Generalization must extend these,
-not create parallel approval/execution systems. Sandbox already enforces nonroot,
-network none, immutable image, caps/memory/pids/time limits and exact revisions.
-API container must never mount Docker socket; sandbox capability remains explicitly
-unavailable there until a separately safe execution arrangement exists. Host-local
-workflow stays supported. No new executor service or trust-boundary expansion.
+## Current decision / remaining work
 
-Validation: Docker 29.7.2 available, prepared v4 sandbox image 71aebb88109c;
-existing database started without volume deletion. Frontend npm run build passed.
-Ordinary backend baseline running. Live GitHub workflow execution unavailable
-without remote write authorization; local checks cannot be called GitHub CI PASS.
+Full Goal is NOT complete: application containers deliberately have no Docker
+CLI/socket and cannot perform Issue Resolution. Host-local API repairs are verified.
+Do not turn this safe refusal into a complete-container acceptance claim.
+[Concrete broker proposal](pre-v8-executor-decision.md) needs owner authorization
+under the Goal's mandatory security escalation rule. Alternative host-local-only
+acceptance is an explicit owner scope decision, not an automatic narrowing.
+Hosted CI is unexecuted and cannot be called GitHub PASS. No new real GitHub write
+is authorized; public historical upstream plans additionally fail the unchanged
+private-owner/current-main publication gate. After the execution-boundary decision:
+implement authorized choice, test actual container repair if applicable, review
+all acceptance again, update final report and stop before V8.
 
-2026-11-03 M0 baseline complete: ordinary 310 passed /64 opt-in skips;
-live DB/Docker 373 passed /1 disabled online MCP skip; Ruff, Alembic
-0008 current/check and npm build passed. Fetch confirms main only adds V6 merge.
+## Latest measured validation
 
-A1 implemented and actually started: immutable API/Web base images, locked
-installs, nonroot/read-only containers, isolated app override Compose, migration
-completion gate, loopback proxy, no Docker CLI/socket/credentials in API image.
-Database/API/Web healthy. HTTP ingest -> 19 chunks -> deterministic RAG with one
-citation passed and survived API/Web stop/start (repo 1187 / snapshot 1383).
-Runtime inspect confirms API no published port, read-only /repositories only;
-image scan found no .env/Git/node_modules. Source contexts reduced to ~623KB API
-and ~62KB changed Web input. Initial malformed tmpfs YAML was rejected by Docker,
-quoted list entries corrected before successful startup. No isolation relaxation.
-Backup restored into NEW pre_v8_restore_20261103 DB: Alembic 0008 and 17 snapshots
-read back. Original volume untouched. Repeat final quiescent acceptance pending.
+- Final full `uv run pytest -q`, DB/Sandbox/trusted flags enabled: **414 passed /
+  1 disabled online MCP skip**, 171.18s, code 9a9286b. Starlette/AnyIO warning remains.
+- Ruff passed; Alembic 0008 head/check no drift; clean replay/pgvector/sentinel and
+  reverse/replay included in full suite. npm TypeScript/Vite build passed.
+- Actual new `repopilot-pre-v8-acceptance` project, NEW volume, loopback 55432/8081:
+  images/clean migration/health passed, smoke repo/snapshot 1, 19 chunks, one
+  deterministic citation; API/Web restart preserved IDs/content. Test stack stopped
+  without deleting its volume. Original stack/volume retained.
+- Quiescent backup restored into NEW verification DB: 17 snapshot rows, both row
+  aggregate hashes 387b77cc39bee8ca0267329d514eec1d. No original data deletion.
+- Rebuilt-image runtime policy simulation: 30 passed (actual DB/Docker + fake
+  publication); historical policy/evidence identities remain immutable.
+- Actual official MCP trusted imports: bindings 2138/2140, snapshots 1566/1568;
+  zero remote writes. Deterministic bound repairs generate proposals
+  fc73598c6f744186b2d7af63f802486c / f09d2f51abce4e078f3bc86e86903296 awaiting approval.
+- Nested fake-remote tree/commit/branch/PR timeout recovery: 5 cases passed, no
+  duplicate effects. UI showed approved profiles, exact diff/test revision/plan
+  and limitations; no approval checkbox or publication action used.
+- V6 frozen 17-task CLI regression preserved; five semantic outputs remain unverified.
+- Current `trusted-python` corpus (5963068): scripted 3/3; actual dated Qwen 3/3,
+  two repairs (8/9 independent final tests) and one zero-change owner decision.
+  Codex exact-output review flags unsupported timestamp-interval prose in the first
+  answer; task success stays separate. Tokens/cost unavailable. Earlier summary-
+  input provider failure/max-step failure and initial evaluator/budget errors remain
+  distinct, preserved evidence. No general accuracy/improvement claim.
+- Configured key/token scans of pre-v8 reports: zero matches. No owned Sandbox
+  container remains. Task-owned API 8001/Vite 5174 stopped after browser verification.
 
-A2 initial regression after metadata diagnostics/config changes: 376 passed /
-1 disabled live MCP skip, 160.17s. Focused config/logging/provider tests 28 passed.
-Further bounded SDK defaults/investigation log changes need final regression.
-No package/schema additions. npm audit found two existing high dependencies;
-compatible lock-only patches Vite 7.3.7 and source-map-js 1.2.2 yield zero findings.
+## Decisions, commits and evidence
 
-A3 CI defined with exact verified action SHAs, locked tooling, DB/Sandbox tests,
-image builds and isolated Compose smoke. NOT run on GitHub (no remote writes).
-Local deployment operations/backup guidance exists; browser UI check pending.
-Phase B repository identities requested asynchronously under explicit trust rule;
-configuration/guard implementation can proceed without executing external code.
+Full details, commands, requirements and remaining limits:
+[acceptance report](../evaluation/pre-v8-engineering-completion.md),
+[security review](../evaluation/pre-v8-security-review.md),
+[Python source/execution review](../evaluation/pre-v8-python-review.md),
+[deployment](../deployment.md), [trusted Python](../trusted-python.md).
 
-B1/B2 progress: owner explicitly approved autonomous selection/review of two small
-public pure-Python repositories (no further selection approval needed). Selected
-pallets/itsdangerous 1a9b8d1f9968eb248bda69f39d373a6330b692ba Issue #126,
-and more-itertools/more-itertools 64be96ceb2a6e836f76f069f4a96d2394d59fd0c
-Issue #1336. Python package-source projections exported with licenses, source
-hashes and read-only Git provenance; no source import/install on host. Reviewed
-stdlib/optional imports, packaging metadata and protected independent tests.
-New pre-v8 sandbox immutable image 8aa71903f763491db90e2fa2ec4f60944b57aef16dd874aaf8817d43e880d958;
-original v4 image/tag preserved. Root/src layouts only, no installer/shell options.
-Policy file is operator-owned and SHA256-approved; changed source/image/validation
-fails closed. Patch source evidence limit may be explicitly configured up to 1MB,
-keeping frozen 40KB defaults and 40KB diff bound. This follows observed rejection
-of a real 170350-byte module; no filesystem/execution isolation relaxation.
+No new package/schema/framework/queue/service introduced. npm lock-only security
+patches applied. Larger real module justified explicit bounded source-evidence
+budget (500KB profile, 1MB ceiling); Golden default/diff limits retained. App images
+never received daemon access. New broker is design-only pending permission.
 
-Actual direct Docker probe: ItsDangerous 3 failing/5 passing -> 8 passing;
-more-itertools 6 failing/3 passing -> 9 passing. Initial report preserves malformed
-new predicate test and evidence-budget refusal; fixed test and controlled budget
-then reran. Actual full tool-loop tests plus refusal/stale-revision/escape guards:
-15 passed with RUN_TRUSTED_PYTHON_TESTS=1. Earlier full DB/Docker suite 389 passed/
-1 disabled MCP skip before the last two live tests were collected; final D will
-rerun with all opt-ins and current code. Frontend build passed after type updates.
-Current full tool-loop/registry/patch/API focus 35 passed. No new dependencies/schema.
-Configured dated Qwen key is available; bounded two-case live trial started once,
-separate from deterministic patch evidence. C integration and D still outstanding.
-
-Local milestone commits: e864545 authorization/plan, aeb0e69 security lock fixes,
-bcd7b03 packaging/config/CI, 544f741 correlated diagnostics/provider deadlines.
-Browser local-stack Q&A/citation flow confirmed; screenshot stored under evaluation.
-
-Live Qwen trial completed (no scripted fallback or retry): ItsDangerous stopped
-provider_failure at revision 0 after 16 tool steps, independent 5/8 passed;
-more-itertools exhausted max_steps at revision 1 after 18 tool steps, independent
-9/9 passed but incomplete_repair. Both workspaces cleaned. Evidence
-pre-v8-python-live.json retains full traces; no general success claim. The trial
-used approved task descriptions, not subsequently retrieved original Issue bodies.
-C will bind original Issue data separately; do not mix identities in evaluation.
-Quiescent database restore to NEW pre_v8_restore_verified_20261103 succeeded:
-17 snapshots, row JSON aggregate MD5 387b77cc39bee8ca0267329d514eec1d matches
-original and restored DB. Original volume untouched; API/Web restarted afterward.
-Nested Git tree provenance tests 8 passed, not yet wired to publication.
-
-C1 integration now implemented in the existing modules: optional operator profiles
-in persist_binding, original Issue body provenance, bound commit validation,
-resolve_bound_issue -> actual index/Agent/workspace/Docker -> persisted run,
-prepare_proposal -> precise hash/approval and disabled remote-write gate. Git
-nested trees preserve baseline blobs/modes (including untouched files outside the
-executable projection); new plans carry full baseline metadata. Legacy plan JSON
-omits new empty fields so historical exact approval hashes remain unchanged.
-Actual read-only official MCP imports succeeded for BOTH public repositories:
-bindings 2138/2140 and snapshots 1566/1568. Evidence pre-v8-trusted-import.json.
-No remote writes. Original issue bodies differ from earlier reviewed task summaries;
-new policy SHA256 fa66ccada24d38ada2d50d2a1164e77b1812a64db8ba98ff04236e37296e5555.
-Earlier model/probe reports retain old policy hashes and are historical trials.
-Focused C regression 47 passed, real DB/Docker exact proposal path included;
-further nested fake-remote recovery/UI/full regression still pending.
-Current publication guard still requires private repository/owner identity/main
-baseline. Public historical upstreams are read/repair/proposal inputs only; no
-extension of write permissions or public-target publication is authorized.
-
-C1 actual bound deterministic repairs/proposals completed for both real imported
-Issues, using original Issue bodies and exact approved source/profile identity.
-Run/plan evidence: pre-v8-bound-proposals.json. Proposals fc73598c6f744186b2d7af63f802486c
-and f09d2f51abce4e078f3bc86e86903296 remain awaiting_approval. No approval or remote
-mutation performed. Public historical targets are explicitly not publishable under
-the unchanged private-owner/main guard; limitations are attached to each proposal.
-Configured-secret scan across all pre-v8 evidence found zero matches.
-Current focused MCP/profile/binding/proposal/publication regression: 85 passed /
-1 check without RUN_SANDBOX_TESTS skipped, 49.13s. Follow-up narrower suite 36 passed.
-Frontend build passed after optional baseline tree metadata type/guard updates.
-Remaining: nested fake-remote publication/recovery tests, UI trusted profile selection,
-V6 real-repository harness integration, current full regression and security audit,
-controlled deployment limitations/CI execution status, final accurate report. Do not
-mark Phase C/D or the complete goal achieved yet.
-
-C2/C3 progress: five nested fake-remote publication/reconciliation cases passed
-(real saved Docker evidence, simulated remote only). Tree/commit/branch/PR ambiguous
-outcomes reconcile without duplicated effects; partial patches preserve all
-unchanged baseline blobs and file modes. Public targets remain rejected. Current
-UI now lists approved/allowlisted Python Issue identities, imports through the
-existing binding path, and presents persisted repair/proposal/limitations. Browser
-inspection at 127.0.0.1:5174 with host API 8001 confirmed both choices, a saved
-ItsDangerous repair, complete diff, awaiting_approval, and disabled approval/publish
-before human confirmation. No approval checkbox or publish action was used.
-Evidence screenshot: pre-v8-trusted-review-browser.png. Temporary API PID 29528 /
-exec session 44676, Vite session 43209 are task-owned loopback-only test services.
-Registry catalog test confirms unapproved/denied profiles are hidden, no test code
-or image metadata leaks, and changed policy bytes fail closed (14 passed /2 real
-Docker skips without opt-in). Frontend TypeScript/production build passed.
-Full DB/Docker/trusted suite on 8b97521: 400 passed /1 disabled online MCP skip,
-154.71s; this predates the six new catalog/fake-publication tests. Final D rerun
-must use the current committed code and all applicable opt-ins.
-
-V6 frozen CLI regression on 29fd645 completed successfully: original 17-task dataset
-unchanged; retrieval/structure and three resolution cases passed, five semantic
-outputs remain explicitly unverified. JSON/Markdown saved as
-pre-v8-v6-frozen-regression.*. No old revision or scripted semantic claim promoted
-to a live quality PASS. New full DB/Docker/trusted suite running in exec session
-81633; poll that exact session instead of restarting it. Next D3 work: add a narrow
-trusted-Python harness adapter/subcommand reusing CaseResult, resolution_checks,
-aggregate and save_report, with independently measured cleanup/source/Snapshot
-integrity and policy/revision identities. Preserve previous live trial failures
-and distinguish reviewed task summaries from original bound Issue inputs.
-
-D3 adapter implemented: evaluation/harness trusted-python subcommand reuses V6
-CaseResult, resolution_checks, aggregate, save_report, compatible comparison and
-sanitized failure reporting. Two approved original Issue tasks plus explicit
-clock-drift ambiguity; actual owned DB Snapshot/index, real loop and Docker,
-separate independent final tests, exact policy/image/revision checks, and measured
-original/Snapshot/DB/workspace cleanup. Original frozen dataset unchanged.
-Initial actual scripted corpus run: 3/3 passed (not model-quality evidence).
-Focused new grader/owned-adapter/V6 regression: 39 passed with live DB/Docker.
-Latest full DB/Docker/trusted suite on 29fd645: 406 passed /1 disabled online MCP
-skip, 159.87s. D3 committed-code scripted and original-Issue live runs follow.
-Earlier summary-prompt Qwen failures remain immutable evidence; new inputs and
-fingerprints are distinct and must never be pooled or presented as retries of the
-same task definition. No remote writes or new dependencies/schema/services.
-
-D3 committed-code evidence (5963068) now complete: scripted 3/3 task success,
-2/2 repairs, 1/1 safe decision; actual dated Qwen original-Issue corpus also 3/3,
-2/2 exact-revision independent final tests, 1/1 zero-change owner decision. Raw
-reports pre-v8-harness-python-{scripted,live}.*, initial scripted report retained.
-Qwen source/claim review marks ItsDangerous prose unsupported (timestamp interval
-reversed), while repair/test success remains separate. Other two explanations
-supported by Codex review, not independent human review; exact-output reviews and
-reviewed reports saved. Earlier summary-input Qwen provider failure/max-step failure
-remain in pre-v8-python-live.json, separate task definitions, never pooled.
-
-Fresh deployment check: new repopilot-pre-v8-acceptance Compose project, NEW volume,
-ports loopback 55432/8081. Current API/Web builds succeeded; migration completed;
-DB/API/Web healthy; smoke imported repo/snapshot 1, indexed 19 chunks, answered
-with deterministic provider and one citation. API/Web restart followed by same
-smoke retained those IDs/content. Original database/volume/stack untouched.
-Alembic current 0008/check no drift and Ruff passed. Existing quiescent backup/
-restore hash verification remains recorded above. No publicly exposed services.
-
-CI now opts into trusted Python tests. Runtime image policy is generated into an
-isolated temporary file; committed historical policies/evidence stay unchanged.
-Test-only override affects only live-execution fixtures; saved-evidence grading
-and publication mocks retain original image/policy identities. Local simulation
-with an independently rebuilt labeled immutable image passed 30 tests including
-real DB/Docker adapter/repair and fake publication. Hosted GitHub CI remains NOT
-executed and cannot be reported as passed. No remote writes authorized.
+Local milestone commits: e864545, aeb0e69, bcd7b03, 544f741, b7d5f82, 8b97521,
+29fd645, 270e8d7, 5963068, 9a9286b. Detailed historical progression is preserved in
+Git and raw reports; no history rewrite, push, PR, merge or public deployment.

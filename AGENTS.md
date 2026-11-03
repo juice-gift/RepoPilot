@@ -32,11 +32,16 @@ Current stage:
 
 **V7 / Pre-V8 engineering is authorized and in progress (2026-11-03). Stop before V8.**
 
+Local Pre-V8 implementation, real-repository integration and evaluation are validated.
+Full acceptance remains incomplete: container repair needs an approved execution
+boundary. See `docs/evaluation/pre-v8-engineering-completion.md` and
+`docs/tasks/pre-v8-executor-decision.md`. Do not mark the goal complete or enter V8.
+
 The active goal is `docs/goals/pre-v8-engineering.md`, with progress in
 `docs/tasks/pre-v8-plan.md`. It supersedes historical V6/V7 stop notices.
 The completed goal is `docs/goals/v5-mcp-github.md`; execution history is recorded
 in `docs/tasks/v5-plan.md` and completion evidence in
-`docs/evaluation/v5-mcp-github-completion.md`. The active V6 goal is
+`docs/evaluation/v5-mcp-github-completion.md`. The completed V6 goal is
 `docs/goals/v6-evaluation.md`; progress is in `docs/tasks/v6-plan.md`. Completion evidence is in
 `docs/evaluation/v6-evaluation-completion.md`: 360 passed / 1 disabled online MCP
 skip; actual Qwen failures and review limitations remain recorded. Remote
@@ -1132,6 +1137,3 @@ Every meaningful addition should provide at least one of:
 If a feature provides none of these:
 
 do not build it.
-
-
-

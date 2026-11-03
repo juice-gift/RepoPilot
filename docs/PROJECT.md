@@ -2323,6 +2323,8 @@ RepoPilot 才真正成为我的简历项目。
 
 # 五十七、当前执行状态
 
+2026-11-03 实际验收：容器构建、独立新卷 Compose/迁移/重启 Smoke、两个真实 Python 项目的受限 Profile、官方 MCP 只读绑定、持久化修复与精确审批方案、嵌套树模拟发布恢复和 V6 真实仓库评估已实现。最终 DB/Docker 回归 414 passed /1 个禁用在线 MCP skip。原始 Issue Qwen 运行修复及歧义任务均通过，但时间区间解释错误被单独标为不受支持；此前失败仍保留。GitHub CI 未远程执行，未进行新远程写入。容器 API 不能执行 Sandbox 修复，完整目标仍待执行信任边界决策；不得宣称完整验收或进入 V8。报告：`docs/evaluation/pre-v8-engineering-completion.md`。
+
 2026-11-03：新的 `docs/goals/pre-v8-engineering.md` 已授权 V7、受信任 Python 仓库通用化和 V8 前集成。执行计划为 `docs/tasks/pre-v8-plan.md`；当前正在实施，尚未完成全部验收。历史 V6/V7 停止声明由本授权覆盖；仍禁止 V8、未授权远程写入及公开部署。
 
 当前状态：

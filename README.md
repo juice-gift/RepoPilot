@@ -1,13 +1,23 @@
 # RepoPilot
 
 
-# Pre-V8 engineering
+## Pre-V8 engineering
 
 V7 / pre-V8 work is authorized and in progress. The active scope and actual
 validation are tracked in [execution plan](docs/tasks/pre-v8-plan.md).
 Optional trusted-local application containers and their security/backup limits
 are described in [deployment guide](docs/deployment.md). Stop before V8;
 no new remote publication or public hosting is authorized.
+
+Current acceptance: **414 passed /1 disabled online MCP skip**. Two approved real
+Python repositories, actual MCP imports, persisted repairs/exact proposals and
+the V6 trusted-python evaluation adapter are implemented. Scripted and original-Issue
+Qwen trials are recorded separately; a real unsupported explanation and earlier
+failures remain visible. Full acceptance is **incomplete** because container API
+repair is unavailable without a separately approved execution boundary; host-local
+repair works. Hosted CI has not run. See the [acceptance report](docs/evaluation/pre-v8-engineering-completion.md),
+[security review](docs/evaluation/pre-v8-security-review.md) and
+[execution-boundary decision](docs/tasks/pre-v8-executor-decision.md).
 
 RepoPilot is a long-term AI codebase intelligence and issue-resolution system.
 
@@ -41,7 +51,7 @@ V6 Evaluation System is complete (2026-10-29); final DB/Docker regression: 360 p
 a bounded-loop failure despite passing tests. See the [V6 completion report](docs/evaluation/v6-evaluation-completion.md). The CLI reuses
 frozen V1–V4 pipelines with versioned datasets, independent grading, JSON/Markdown
 reports and compatible-run comparison. See [usage and scoring definitions](docs/evaluation/v6-harness.md)
-and the [V6 plan](docs/tasks/v6-plan.md). Stop before V7.
+and the [V6 plan](docs/tasks/v6-plan.md). The newer Pre-V8 authorization supersedes that historical stop boundary.
 
 V5 setup: follow the [private fixture preparation plan](docs/tasks/v5-github-fixture-preparation.md).
 Put `GITHUB_MCP_TOKEN` only in the ignored root `.env`; it maps to the official
