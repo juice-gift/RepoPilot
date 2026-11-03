@@ -61,3 +61,24 @@ This requires the approved `repopilot-tests:pre-v8` image identified in the corp
 registry. Without the explicit flag, live tests are skipped, not passed. Direct
 baseline/patch evidence in docs/evaluation comes from real Docker but deterministic
 patches, not a live model. Full pre-V8 acceptance remains in progress.
+
+The V6 CLI now also supports the reviewed real Python corpus through its existing
+grader, aggregation, JSON/Markdown reporting and comparison schema:
+
+```powershell
+$env:PYTHONPATH='src'
+$env:TRUSTED_PROFILE_REGISTRY=(Resolve-Path evaluation/trusted_python/profiles.json).Path
+$env:TRUSTED_PROFILE_REGISTRY_SHA256=(Get-FileHash $env:TRUSTED_PROFILE_REGISTRY -Algorithm SHA256).Hash.ToLowerInvariant()
+uv run python -m repopilot.evaluation.harness trusted-python --output ../../docs/evaluation/python-scripted.json
+```
+
+Only use the displayed hash after operator review of that exact policy. To measure
+a configured real provider, add `--mode live`; deterministic provider fallback is
+forbidden. The three tasks are two original historical Issue bodies and a separate
+explicit clock-drift ambiguity question. Temporary source/Snapshot/index data are
+owned by the evaluation and removed by exact path. Protected tests run again after
+the Agent stops, at the final workspace revision, independently of its claims.
+Registry/image/test fingerprints, original and Snapshot integrity, cleanup,
+latency, tool/model counts and unavailable token/cost fields remain explicit.
+Earlier summary-prompt live failures are separate trials, not combined success
+denominators. The original frozen V1–V6 dataset and its acceptance facts are unchanged.

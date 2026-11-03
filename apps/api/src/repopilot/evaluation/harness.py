@@ -274,6 +274,9 @@ def main() -> None:
     execution.add_argument("--strategy", choices=["vector", "hybrid"], default="hybrid")
     execution.add_argument("--dataset", type=Path)
     execution.add_argument("--output", type=Path, required=True)
+    trusted = sub.add_parser("trusted-python")
+    trusted.add_argument("--mode", choices=["scripted", "live"], default="scripted")
+    trusted.add_argument("--output", type=Path, required=True)
     comparison = sub.add_parser("compare")
     comparison.add_argument("left", type=Path)
     comparison.add_argument("right", type=Path)
@@ -283,7 +286,16 @@ def main() -> None:
     review_parser.add_argument("reviews", type=Path)
     review_parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    if args.command == "review":
+    if args.command == "trusted-python":
+        from repopilot.evaluation.trusted import run_trusted
+
+        report = run_trusted(Settings(), mode=args.mode, output=args.output)
+        if any(
+            c["status"] in {"failed", "provider_error", "infrastructure_error"}
+            for c in report["cases"]
+        ):
+            raise SystemExit(1)
+    elif args.command == "review":
         result = apply_reviews(
             json.loads(args.report.read_text(encoding="utf-8")),
             json.loads(args.reviews.read_text(encoding="utf-8")),

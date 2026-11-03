@@ -4,17 +4,23 @@ from collections import Counter
 
 from repopilot.evaluation.contracts import CaseResult, Task
 from repopilot.evaluation.metrics import EvidenceIdentity, calculate_metrics
-from repopilot.resolution.profiles import load_profile
+from repopilot.resolution.profiles import TestProfile, load_profile
 from repopilot.resolution.sandbox import TestResult
 
 
-def resolution_checks(task: Task, case: dict) -> CaseResult:
+def resolution_checks(
+    task: Task, case: dict, *, approved_profile: TestProfile | None = None
+) -> CaseResult:
     result = case["result"]
-    profile = load_profile(task.legacy_id)
+    profile = approved_profile or load_profile(task.legacy_id)
+    if profile.case_id != task.legacy_id:
+        raise ValueError("Evaluation profile identity mismatch")
     positive = task.expected == "verified_repair"
     tests = [TestResult.model_validate(t) for t in result["test_results"]]
     baseline = [t for t in tests if t.revision == 0]
     final = [t for t in tests if t.revision == result["revision"]]
+    if "independent_final_test" in case:
+        final = [TestResult.model_validate(case["independent_final_test"])]
     verified = bool(
         final
         and result["revision"] > 0
@@ -22,6 +28,14 @@ def resolution_checks(task: Task, case: dict) -> CaseResult:
         and final[-1].expected_tests == profile.expected_tests
         and final[-1].workspace_id == result["workspace_id"]
         and final[-1].profile == profile.case_id
+        and final[-1].revision == result["revision"]
+        and (
+            not profile.commit_sha
+            or (
+                final[-1].profile_hash == profile.fingerprint()
+                and final[-1].image_id == profile.image_id
+            )
+        )
     )
     reproduced = any(
         t.exit_code not in (0, None)
@@ -32,6 +46,13 @@ def resolution_checks(task: Task, case: dict) -> CaseResult:
         and t.workspace_id == result["workspace_id"]
         and t.expected_tests == profile.expected_tests
         and t.observed_passed == profile.expected_tests - profile.baseline_failures
+        and (
+            not profile.commit_sha
+            or (
+                t.profile_hash == profile.fingerprint()
+                and t.image_id == profile.image_id
+            )
+        )
         for t in baseline
     )
     safe = (
@@ -47,6 +68,7 @@ def resolution_checks(task: Task, case: dict) -> CaseResult:
         case.get("original_unchanged") is True
         and case.get("snapshot_unchanged") is True
         and result["workspace_cleaned"]
+        and case.get("evaluation_inputs_cleaned", True)
     )
     checks = {
         "verified_repair": (

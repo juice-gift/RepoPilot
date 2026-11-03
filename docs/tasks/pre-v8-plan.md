@@ -159,3 +159,17 @@ trusted-Python harness adapter/subcommand reusing CaseResult, resolution_checks,
 aggregate and save_report, with independently measured cleanup/source/Snapshot
 integrity and policy/revision identities. Preserve previous live trial failures
 and distinguish reviewed task summaries from original bound Issue inputs.
+
+D3 adapter implemented: evaluation/harness trusted-python subcommand reuses V6
+CaseResult, resolution_checks, aggregate, save_report, compatible comparison and
+sanitized failure reporting. Two approved original Issue tasks plus explicit
+clock-drift ambiguity; actual owned DB Snapshot/index, real loop and Docker,
+separate independent final tests, exact policy/image/revision checks, and measured
+original/Snapshot/DB/workspace cleanup. Original frozen dataset unchanged.
+Initial actual scripted corpus run: 3/3 passed (not model-quality evidence).
+Focused new grader/owned-adapter/V6 regression: 39 passed with live DB/Docker.
+Latest full DB/Docker/trusted suite on 29fd645: 406 passed /1 disabled online MCP
+skip, 159.87s. D3 committed-code scripted and original-Issue live runs follow.
+Earlier summary-prompt Qwen failures remain immutable evidence; new inputs and
+fingerprints are distinct and must never be pooled or presented as retries of the
+same task definition. No remote writes or new dependencies/schema/services.
