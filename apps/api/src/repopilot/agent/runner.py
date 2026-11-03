@@ -14,6 +14,7 @@ from repopilot.agent.models import (
     TraceStep,
 )
 from repopilot.agent.tools import ToolRegistry
+from repopilot.diagnostics import event
 from repopilot.intelligence.service import require_snapshot
 from repopilot.rag.tool_calling import AgentProvider, AgentTurn, ToolCall
 
@@ -189,6 +190,13 @@ def run_investigation(
                 )
             )
             # Replay only tool call protocol and bounded observations. Never reasoning.
+            event(
+                "agent.tool",
+                step=step,
+                model_turn=model_turn,
+                outcome="failed" if execution.observation.status == "error" else "ok",
+                elapsed_ms=trace[-1].duration_ms,
+            )
             history.extend(
                 [
                     {
