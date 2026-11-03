@@ -1,6 +1,6 @@
 # Container repair execution boundary — decision proposal
 
-Status: reviewable design only; no new service or daemon permission implemented.
+Status: owner approved on 2026-11-03 with six mandatory constraints. Implementation in progress; no acceptance claim yet.
 The goal requires distinguishing application containers from Agent Sandbox and
 escalating major security trust-boundary changes. Current application images do
 not contain Docker CLI or mount its socket. Repair therefore fails closed there.
@@ -41,3 +41,22 @@ work is complete: authorize this concrete local execution trust boundary, or
 explicitly accept host-local API execution as the supported deployment boundary.
 The latter is an owner scope/acceptance decision, not a claim that container repair
 was already implemented. Remote writes and public hosting remain unauthorized.
+
+## Approved implementation refinement
+
+Owner approval requires fixed server-owned Profiles only, private authenticated
+communication, strict path/link/mount validation, unchanged test isolation and
+cleanup, minimum broker privilege, and explicit unauthorized/profile/path/timeout/
+concurrency tests. Stop if these cannot be met or more host privilege is needed.
+
+Implement Broker as a Linux container with no network, nonroot UID and only the
+socket's group access, capabilities dropped, readonly root, and its own private
+execution-data volume. API communicates via a separate private Unix-socket volume
+and a per-deployment secret file; neither API nor Web mounts the Docker socket.
+No host TCP listener is needed on Windows Docker Desktop because both services
+use Linux Unix sockets inside the VM. Test bind paths derive ONLY from broker-owned
+workspace paths and verified Docker-managed local-volume metadata, never a request.
+API sends bounded baseline plus revision deltas; Broker validates approved baseline,
+edit allowlist and all revisions, materializes private copies, and runs the existing
+fixed executor. Persistent bounded request identities prevent duplicate execution
+and preserve ambiguous crash markers. Single-job admission rejects concurrent work.

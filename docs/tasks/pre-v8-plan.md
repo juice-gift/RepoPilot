@@ -76,3 +76,13 @@ never received daemon access. New broker is design-only pending permission.
 Local milestone commits: e864545, aeb0e69, bcd7b03, 544f741, b7d5f82, 8b97521,
 29fd645, 270e8d7, 5963068, 9a9286b. Detailed historical progression is preserved in
 Git and raw reports; no history rewrite, push, PR, merge or public deployment.
+
+## Broker authorization received — 2026-11-03
+
+Owner approved the independent local Broker with six mandatory security constraints;
+host execution of third-party tests is NOT an alternative. New work: Bk1 protocol/
+independent validation, Bk2 private authenticated Unix transport/admission/dedupe,
+Bk3 nonroot no-network Compose broker and owned-volume path mapping, Bk4 actual
+container API/Web repair plus adversarial/concurrency/timeout/restart regression,
+then repeat required final B/C/D acceptance. No new remote writes/public hosting.
+Further host privilege expansion or failing isolation remains a stop condition.
