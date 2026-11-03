@@ -20,6 +20,7 @@ def main() -> None:
          "GitHub issue more-itertools/more-itertools#1336: replace produces padding or replacement output for an empty iterable with window_size greater than one. Empty input must yield nothing for either predicate outcome; preserve genuine None values and normal replacement behavior."),
     ]:
         metadata = json.loads((DATA / name / "source.json").read_text(encoding="utf-8"))
+        original_issue = json.loads((DATA / name / "issue.json").read_text(encoding="utf-8"))
         profiles.append({
             "id": "trusted-" + name, "repository": metadata["repository"],
             "commit_sha": metadata["commit"], "issue": description,
@@ -28,6 +29,10 @@ def main() -> None:
             "validation": {test: (DATA / name / test).read_text(encoding="utf-8")},
             "expected_tests": count, "baseline_failures": failures,
             "source_evidence_limit": 500_000 if name == "more-itertools" else 40_000,
+            "issue_number": original_issue["number"],
+            "original_issue_body": original_issue["body"].strip(),
+            "baseline_tree_sha": metadata["tree_sha"],
+            "baseline_entries": metadata["tree_entries"],
         })
     path = DATA / "profiles.json"
     path.write_text(json.dumps({"version": 1, "profiles": profiles}, indent=2) + "\n", encoding="utf-8")

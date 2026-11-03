@@ -32,6 +32,18 @@ class TestProfile:
     image_id: str | None = None
     import_root: str = "."
     source_evidence_limit: int = 40_000
+    issue_number: int | None = None
+    original_issue_body: str | None = None
+    baseline_tree_sha: str | None = None
+    baseline_entries: Mapping[str, Mapping[str, str]] | None = None
+
+    @property
+    def bound_issue(self) -> str:
+        return (
+            self.original_issue_body
+            if self.original_issue_body is not None
+            else self.issue
+        )
 
     def fingerprint(self) -> str:
         data = {
@@ -49,6 +61,9 @@ class TestProfile:
             "expected_tests": self.expected_tests,
             "baseline_failures": self.baseline_failures,
             "source_evidence_limit": self.source_evidence_limit,
+            "issue_number": self.issue_number,
+            "bound_issue": self.bound_issue,
+            "baseline_tree_sha": self.baseline_tree_sha,
         }
         return hashlib.sha256(json.dumps(data, sort_keys=True).encode()).hexdigest()
 

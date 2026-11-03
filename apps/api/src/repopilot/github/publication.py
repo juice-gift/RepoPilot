@@ -20,6 +20,7 @@ from repopilot.github.git_api import (
 from repopilot.github.pr_client import connect_approved_pr
 from repopilot.github.probe import object_payload
 from repopilot.github.proposals import PublicationPlan, checked_plan, git_object
+from repopilot.github.trees import nested_tree, replace_blobs
 from repopilot.resolution.profiles import load_profile
 
 
@@ -59,6 +60,49 @@ def verify_tree(value: dict | None, p: PublicationPlan) -> None:
     if value is None:
         raise GitHubMCPError("remote_tree_unavailable")
     entries = value.get("tree") if isinstance(value, dict) else None
+    if p.baseline_entries:
+        if (
+            not isinstance(entries, list)
+            or value.get("sha") != p.tree_sha
+            or value.get("truncated") is not False
+        ):
+            raise GitHubMCPError("remote_tree_mismatch")
+        blobs = {
+            e["path"]: {"mode": e["mode"], "sha": e["sha"]}
+            for e in entries
+            if e.get("type") == "blob"
+        }
+        expected_blobs = replace_blobs(p.baseline_entries, p.files)
+        if len({e.get("path") for e in entries}) != len(entries):
+            raise GitHubMCPError("remote_tree_mismatch")
+        directories = {path.rsplit("/", 1)[0] for path in expected_blobs if "/" in path}
+        directories |= {
+            "/".join(path.split("/")[:i])
+            for path in expected_blobs
+            for i in range(1, len(path.split("/")))
+        }
+        observed_directories = {
+            e.get("path") for e in entries if e.get("type") == "tree"
+        }
+        if observed_directories != directories or any(
+            e.get("type") not in {"tree", "blob"} for e in entries
+        ):
+            raise GitHubMCPError("remote_tree_mismatch")
+        for entry in entries:
+            if entry.get("type") == "tree":
+                prefix = entry["path"] + "/"
+                subtree = {
+                    path[len(prefix) :]: data
+                    for path, data in expected_blobs.items()
+                    if path.startswith(prefix)
+                }
+                if entry.get("mode") != "040000" or entry.get("sha") != nested_tree(
+                    subtree
+                ):
+                    raise GitHubMCPError("remote_tree_mismatch")
+        if blobs != expected_blobs or nested_tree(blobs) != p.tree_sha:
+            raise GitHubMCPError("remote_tree_mismatch")
+        return
     expected = {
         path: git_object("blob", text.encode()) for path, text in p.files.items()
     }
@@ -160,7 +204,7 @@ async def readonly_preflight(settings: Settings, p: PublicationPlan) -> dict:
         root = (await reader.file(p.repository, "", p.base_sha)).data.get(
             "structured_content"
         )
-        if (
+        if not p.baseline_entries and (
             not isinstance(root, list)
             or len(root) != len(p.files)
             or {
@@ -184,7 +228,11 @@ async def readonly_preflight(settings: Settings, p: PublicationPlan) -> dict:
             await reader.issue(p.repository, p.issue_number),
             p.repository,
             p.issue_number,
-            load_profile(p.profile).issue,
+            load_profile(
+                p.profile,
+                registry_path=settings.trusted_profile_registry,
+                registry_digest=settings.trusted_profile_registry_sha256,
+            ).bound_issue,
         )
         if not contract["matches_frozen_contract"]:
             raise GitHubMCPError("remote_issue_changed")
@@ -226,7 +274,7 @@ async def publish_effects(
             # GitHub may not expose an unreferenced object through GET yet. The
             # create response carries the full tree: verify it before creating
             # the exact commit; require reachable GET readback before a PR.
-            tree = created
+            tree = await git.tree() if p.baseline_entries else created
         verify_tree(tree, p)
         outcome["tree_sha"] = p.tree_sha
         commit = await git.commit()

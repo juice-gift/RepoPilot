@@ -27,9 +27,24 @@ class TrustedProfile(BaseModel):
     expected_tests: int = Field(ge=1, le=1000)
     baseline_failures: int = Field(ge=1, le=1000)
     source_evidence_limit: int = Field(default=40_000, ge=40_000, le=1_000_000)
+    issue_number: int | None = Field(default=None, ge=1)
+    original_issue_body: str | None = Field(default=None, min_length=1, max_length=4000)
+    baseline_tree_sha: str | None = Field(default=None, pattern=r"^[a-f0-9]{40}$")
+    baseline_entries: dict[str, dict[str, str]] | None = Field(
+        default=None, max_length=5000
+    )
 
     @model_validator(mode="after")
     def bounded_python_policy(self) -> "TrustedProfile":
+        if (self.issue_number is None) != (self.original_issue_body is None):
+            raise ValueError("Issue identity and original body are required together")
+        if (self.baseline_tree_sha is None) != (self.baseline_entries is None):
+            raise ValueError("Complete baseline tree metadata is required together")
+        if self.baseline_entries is not None:
+            from repopilot.github.trees import nested_tree
+
+            if nested_tree(self.baseline_entries) != self.baseline_tree_sha:
+                raise ValueError("Baseline Git tree mismatch")
         for path, digest in self.expected_sources.items():
             safe_path(path)
             if not re.fullmatch(r"[a-f0-9]{64}", digest):
@@ -112,4 +127,10 @@ def load_trusted_profile(
         profile.image_id,
         profile.import_root,
         profile.source_evidence_limit,
+        profile.issue_number,
+        profile.original_issue_body,
+        profile.baseline_tree_sha,
+        MappingProxyType(profile.baseline_entries)
+        if profile.baseline_entries is not None
+        else None,
     )

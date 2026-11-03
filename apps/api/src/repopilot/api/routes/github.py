@@ -20,7 +20,7 @@ from repopilot.db.models import (
     GitHubResolutionRun,
 )
 from repopilot.embeddings.providers import create_embedding_provider
-from repopilot.github.binding import import_frozen_issues
+from repopilot.github.binding import import_frozen_issues, import_trusted_issue
 from repopilot.github.client import GitHubMCPError
 from repopilot.github.proposals import (
     PublicationPlan,
@@ -71,6 +71,21 @@ class BindingView(BaseModel):
     commit_sha: str
     snapshot_id: int
     profile: str
+
+
+class TrustedImportRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    profile: str = Field(pattern=r"^trusted-[a-z0-9-]{1,48}$")
+
+
+@router.post("/import-trusted", response_model=BindingView)
+async def import_trusted(
+    payload: TrustedImportRequest, request: Request, session: DB
+) -> BindingView:
+    row = await import_trusted_issue(
+        session, request.app.state.settings, profile_id=payload.profile
+    )
+    return BindingView.model_validate(row)
 
 
 class RunView(BaseModel):

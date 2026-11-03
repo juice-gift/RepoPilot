@@ -27,7 +27,184 @@
       },
       "expected_tests": 8,
       "baseline_failures": 3,
-      "source_evidence_limit": 40000
+      "source_evidence_limit": 40000,
+      "issue_number": 126,
+      "original_issue_body": "My team too was \"hit\" by https://github.com/pallets/itsdangerous/issues/120 not having read the change log carefully enough.\r\n\r\nDigging deeper, a colleague discovered that while `(signs) 0.24 -> 1.1.0 (verifies)` path is broken / requires a work-around, the `1.1.0 -> 0.24` path still kinda works.\r\n\r\nIt works by the virtue of 1.1.0 sending much larger timestamps (numerically), which are interpreted as being far in the future by 0.24. Thus true positives (recent messages) work, and false positives appear (1.1.0 outdated messages are interpreted as valid by 0.24).\r\n\r\nThis is because TimedSerializer/TimestampSigner only validate that `message more recent than X`.\r\n\r\nI have a gut feeling that it's unsafe (although a point was made that since both sender and recipient are under control of same party, this is hard to exploit).\r\n\r\nI think that validation should be `message in interval [now, now+max_age)`, perhaps with affordance for clock drift / imperfect time synchronisation it would be `[now - \u03b5, now + max_age + \u03b5)`",
+      "baseline_tree_sha": "288fceb1735cf3154d363263954e08bfc87e220a",
+      "baseline_entries": {
+        ".azure-pipelines.yaml": {
+          "mode": "100644",
+          "sha": "64a81b295b2e40855b9b4022b91afac6de318c83"
+        },
+        ".editorconfig": {
+          "mode": "100644",
+          "sha": "e32c8029d1860bf40125d8458db3bd1c4d3f4058"
+        },
+        ".gitignore": {
+          "mode": "100644",
+          "sha": "fc5a65f293d02ccd0c8959cc1f8078c9f4e2dd9e"
+        },
+        ".pre-commit-config.yaml": {
+          "mode": "100644",
+          "sha": "4dd6713779f78ad883408d19f6d6025dc81f9de1"
+        },
+        "CHANGES.rst": {
+          "mode": "100644",
+          "sha": "feab627116ba2307f00bab1753b1bdf938952398"
+        },
+        "LICENSE.rst": {
+          "mode": "100644",
+          "sha": "7b190ca6712aa09eede3e6de79f68d7fa29072da"
+        },
+        "MANIFEST.in": {
+          "mode": "100644",
+          "sha": "cab56636c2eed4f47f3d8e18c1590ff3fb50c8eb"
+        },
+        "README.rst": {
+          "mode": "100644",
+          "sha": "5f79b7b3e30e23f1c3892bf2669cc33b0b4df5c5"
+        },
+        "docs/Makefile": {
+          "mode": "100644",
+          "sha": "51285967a7d9722c5bdee4f6a81c154a56aa0846"
+        },
+        "docs/_static/itsdangerous-logo-sidebar.png": {
+          "mode": "100644",
+          "sha": "807c350a69d113d339117530889f4aebdafe2bd6"
+        },
+        "docs/_static/itsdangerous-logo.png": {
+          "mode": "100644",
+          "sha": "3879e8529a60d099ec588e785ad6fc5d39d2bc1a"
+        },
+        "docs/changes.rst": {
+          "mode": "100644",
+          "sha": "955deaf27bc821a6367e818f36c016892fed3d33"
+        },
+        "docs/conf.py": {
+          "mode": "100644",
+          "sha": "8986282ac8da918f86b0ed21e45be74f30ed564a"
+        },
+        "docs/encoding.rst": {
+          "mode": "100644",
+          "sha": "0c5a0e3e77d3ed70eb5f02f1f19f3d3cd09e6389"
+        },
+        "docs/exceptions.rst": {
+          "mode": "100644",
+          "sha": "0d75655f42e3118ddc6fe8dedc3c5f84a28a0c86"
+        },
+        "docs/index.rst": {
+          "mode": "100644",
+          "sha": "c5b16cb068ecd27110250179f261584ff4fdb1d3"
+        },
+        "docs/jws.rst": {
+          "mode": "100644",
+          "sha": "06f5bcd01c82dee82f90e491fdbac652e750de07"
+        },
+        "docs/license.rst": {
+          "mode": "100644",
+          "sha": "cc8c2f32baafc7148cacdcfcf76fcb2bc826c22b"
+        },
+        "docs/make.bat": {
+          "mode": "100644",
+          "sha": "7893348a1b7dbb588983a48e6991282eae7e1b55"
+        },
+        "docs/requirements.txt": {
+          "mode": "100644",
+          "sha": "53544004d6972a14974c9b681435fa45321772cd"
+        },
+        "docs/serializer.rst": {
+          "mode": "100644",
+          "sha": "2f08e2ae11fd40a624984c7c06c202531f686e4e"
+        },
+        "docs/signer.rst": {
+          "mode": "100644",
+          "sha": "b25efb9e985622396207a4e3effba1acb5c00994"
+        },
+        "docs/timed.rst": {
+          "mode": "100644",
+          "sha": "8964d175982f5ff8cc4a95136b4c16fd88688fa3"
+        },
+        "docs/url_safe.rst": {
+          "mode": "100644",
+          "sha": "bd5e2dc56aabbdfbbc52ad33658c6aaa95c67dd5"
+        },
+        "setup.cfg": {
+          "mode": "100644",
+          "sha": "f5af1a1afef82320c74f9eac2e4418a114462290"
+        },
+        "setup.py": {
+          "mode": "100644",
+          "sha": "779a2c0c763be8b592a892549e4b37a020bb72dc"
+        },
+        "src/itsdangerous/__init__.py": {
+          "mode": "100644",
+          "sha": "1709a9bc44601342b017db0c408670d97f88a781"
+        },
+        "src/itsdangerous/_json.py": {
+          "mode": "100644",
+          "sha": "470636fd16de456f81f837fcf33362c3ac7992c9"
+        },
+        "src/itsdangerous/encoding.py": {
+          "mode": "100644",
+          "sha": "afcaca49cb7f1edc39884dfe6eb4ac52858ee026"
+        },
+        "src/itsdangerous/exc.py": {
+          "mode": "100644",
+          "sha": "8c9021db167cb2d8379cd8542bced9a9c48c0368"
+        },
+        "src/itsdangerous/jws.py": {
+          "mode": "100644",
+          "sha": "27ee1401eb8ba44d5137508ad0b846f5ea45c4d5"
+        },
+        "src/itsdangerous/serializer.py": {
+          "mode": "100644",
+          "sha": "72e84a18f1963a04b165b00411962188c42681cb"
+        },
+        "src/itsdangerous/signer.py": {
+          "mode": "100644",
+          "sha": "2dd4c803ed7110a1eb04c085145dc857bd301e30"
+        },
+        "src/itsdangerous/timed.py": {
+          "mode": "100644",
+          "sha": "2ae026195fdad135d8c4b828b64dd39cba8523e6"
+        },
+        "src/itsdangerous/url_safe.py": {
+          "mode": "100644",
+          "sha": "14aa7b9723356ee4ab96e7bb142891512ce7c3a3"
+        },
+        "tests/test_itsdangerous/__init__.py": {
+          "mode": "100644",
+          "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+        },
+        "tests/test_itsdangerous/test_encoding.py": {
+          "mode": "100644",
+          "sha": "268367e6b10b33c846beb6c60eeae64ce1c3072d"
+        },
+        "tests/test_itsdangerous/test_jws.py": {
+          "mode": "100644",
+          "sha": "e57e5cbb9608f0dd5e6f06811645156ca948d22f"
+        },
+        "tests/test_itsdangerous/test_serializer.py": {
+          "mode": "100644",
+          "sha": "fcd0ab220c9d618dd8457d5ac4d09a50e0d3efd9"
+        },
+        "tests/test_itsdangerous/test_signer.py": {
+          "mode": "100644",
+          "sha": "17599eef3aeb7a41c42370afc59ca1f528c12eee"
+        },
+        "tests/test_itsdangerous/test_timed.py": {
+          "mode": "100644",
+          "sha": "68a8c7464b79d5993273ac325f802af7dcc5b4dd"
+        },
+        "tests/test_itsdangerous/test_url_safe.py": {
+          "mode": "100644",
+          "sha": "09a7e7cf22046433f3f3bb638ce5d58f953a80ba"
+        },
+        "tox.ini": {
+          "mode": "100644",
+          "sha": "95386b74a7198e8a87cfee950a5422de073d5533"
+        }
+      }
     },
     {
       "id": "trusted-more-itertools",
@@ -49,7 +226,168 @@
       },
       "expected_tests": 9,
       "baseline_failures": 6,
-      "source_evidence_limit": 500000
+      "source_evidence_limit": 500000,
+      "issue_number": 1336,
+      "original_issue_body": "With `window_size > 1`, `replace()` yields an item for an empty iterable, and *pred* gets called with a `None` that isn't in the input:\n\n```python\n>>> from more_itertools import replace\n>>> list(replace([], lambda *args: False, [9], window_size=2))\n[None]\n>>> list(replace([], lambda *args: True, [9], window_size=2))\n[9]\n>>> list(replace([], lambda *args: False, [9]))  # window_size=1 is fine\n[]\n```\n\n`replace()` pads the iterable with `window_size - 1` `_marker`s and then strips them from each window. For an empty iterable that padding is still one item shorter than a window, so `windowed()` fills the rest with its default `fillvalue=None`, which the marker stripping doesn't remove. `locate()` avoids this by passing `fillvalue=_marker` to `windowed()`.\n\nSame result on 11.1.0 and on master.",
+      "baseline_tree_sha": "f7409b66b75d5649b9fc6414114f8035362f9fcf",
+      "baseline_entries": {
+        ".gitattributes": {
+          "mode": "100644",
+          "sha": "9aaba7a9fe8ebe94a6354dbd72f8ec3985b4b811"
+        },
+        ".github/ISSUE_TEMPLATE/other-issues.md": {
+          "mode": "100644",
+          "sha": "c80dd09502ddba8e065a01cfe09187a135d12c56"
+        },
+        ".github/ISSUE_TEMPLATE/propose-a-new-itertool.md": {
+          "mode": "100644",
+          "sha": "fa97c780bb321039c21224a0235413f141f8de11"
+        },
+        ".github/PULL_REQUEST_TEMPLATE.md": {
+          "mode": "100644",
+          "sha": "04dac1d12cb67d5d95b8bb748560f42e413f4e0d"
+        },
+        ".github/workflows/python-app.yml": {
+          "mode": "100644",
+          "sha": "16090c01a9ff7cc0349edc2f7ae0266b1eb8f72f"
+        },
+        ".gitignore": {
+          "mode": "100644",
+          "sha": "ab24966bc41cea53fdd01bf83cebed8077512be2"
+        },
+        ".readthedocs.yaml": {
+          "mode": "100644",
+          "sha": "e2768e7a3ece5ae439958bcd5ab7c0c176f80f30"
+        },
+        "LICENSE": {
+          "mode": "100644",
+          "sha": "0a523bece3e50519653c4d7a38399baa487fefa1"
+        },
+        "MANIFEST.in": {
+          "mode": "100644",
+          "sha": "f8b823d99a689fadcf77bd96fa5e0e7c8ff95b1f"
+        },
+        "Makefile": {
+          "mode": "100644",
+          "sha": "eaa3bc4cb5939e42f60224b5946936379f6f255c"
+        },
+        "README.rst": {
+          "mode": "100644",
+          "sha": "5c6b5a980d653c08a87367e3a7ff0be342be1e8a"
+        },
+        "docs/Makefile": {
+          "mode": "100644",
+          "sha": "47888da7b72bcf710f88b72b9dac22749b4d8b74"
+        },
+        "docs/_static/theme_overrides.css": {
+          "mode": "100644",
+          "sha": "3a451aeae168f717d5f0dc7bb4cc1536d675f5a9"
+        },
+        "docs/api.rst": {
+          "mode": "100644",
+          "sha": "4e4c01d3486482ee7096eb34333b3bf2b6b05753"
+        },
+        "docs/conf.py": {
+          "mode": "100644",
+          "sha": "af0af6b3c83ec10e3c674d3f83515f6d62f85b48"
+        },
+        "docs/index.rst": {
+          "mode": "100644",
+          "sha": "f74d92b502865052e1e45c978619e408ceda3603"
+        },
+        "docs/license.rst": {
+          "mode": "100644",
+          "sha": "123c0f54dcaeeaaeda93329a17872b5b128089c6"
+        },
+        "docs/make.bat": {
+          "mode": "100644",
+          "sha": "8023c0aa67409ee6552f3a73dff3a0522395d678"
+        },
+        "docs/requirements.txt": {
+          "mode": "100644",
+          "sha": "c88f2581d0614dbbcea0293551e3901537e628ec"
+        },
+        "docs/testing.rst": {
+          "mode": "100644",
+          "sha": "a67c90e00cdbce88a0d4eac272716d5b5b4bae54"
+        },
+        "docs/toctree.rst": {
+          "mode": "100644",
+          "sha": "0e60e689712c1f6f7d3af53d730d6e47538c073f"
+        },
+        "docs/versions.rst": {
+          "mode": "100644",
+          "sha": "7c1e9feb66bfc5e2507dccce4a13f9441e4406ba"
+        },
+        "more_itertools/__init__.py": {
+          "mode": "100644",
+          "sha": "c8678d0776dc5d46e3b23b247a2987cad64abf71"
+        },
+        "more_itertools/__init__.pyi": {
+          "mode": "100644",
+          "sha": "96f6e36c7f4ac9ea0aebdcd9e11b8d1ff092d2ef"
+        },
+        "more_itertools/more.py": {
+          "mode": "100755",
+          "sha": "d471de9fa2f9439041190306a0e63952f398907f"
+        },
+        "more_itertools/more.pyi": {
+          "mode": "100644",
+          "sha": "31ca1c94b650f96a0adbf2f1b01111586dcdbc64"
+        },
+        "more_itertools/py.typed": {
+          "mode": "100644",
+          "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+        },
+        "more_itertools/recipes.py": {
+          "mode": "100644",
+          "sha": "b984d86f2341b9fb74801d9b173f5e0fd00632f3"
+        },
+        "more_itertools/recipes.pyi": {
+          "mode": "100644",
+          "sha": "d035dfcb90b89f1ed695ee7f7fc9f4c4d9a155e4"
+        },
+        "pyproject.toml": {
+          "mode": "100644",
+          "sha": "cbef91f34371f61e33eda4b70386df51562a5660"
+        },
+        "requirements/development.txt": {
+          "mode": "100644",
+          "sha": "ca92c76476e00c2422014664fcf2aad4b0095e8f"
+        },
+        "requirements/packaging.txt": {
+          "mode": "100644",
+          "sha": "383f7abe2e5a1d09f5c6f21d35f7a65a4279f577"
+        },
+        "requirements/testing.txt": {
+          "mode": "100644",
+          "sha": "a9758706c0a7a7722081ebb6f00f41e5d45520f5"
+        },
+        "requirements/typechecks.txt": {
+          "mode": "100644",
+          "sha": "f0aa93ac8e33ed68cf6516ffc2e61785693a2f94"
+        },
+        "setup.cfg": {
+          "mode": "100644",
+          "sha": "9ad33d9e3d18ec4364fb9d713bf65cd90199d63b"
+        },
+        "tests/__init__.py": {
+          "mode": "100644",
+          "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+        },
+        "tests/test_more.py": {
+          "mode": "100644",
+          "sha": "a019677338d2d82a27c6b856326c5b53564e04df"
+        },
+        "tests/test_recipes.py": {
+          "mode": "100644",
+          "sha": "90a16d814f1f305d42315a88242cbb3d129ac9e1"
+        },
+        "tox.ini": {
+          "mode": "100644",
+          "sha": "12c2f5c599f939764b85e3383a7648f4f6171894"
+        }
+      }
     }
   ]
 }

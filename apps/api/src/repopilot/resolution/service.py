@@ -21,6 +21,7 @@ def resolve_snapshot(
     executor: SandboxExecutor,
     limits: ResolutionLimits | None = None,
     approved_profile: TestProfile | None = None,
+    baseline_commit_sha: str | None = None,
 ) -> ResolutionResult:
     scope = RunScope(request.repository_id, request.snapshot_id)
     profile = approved_profile or load_profile(request.profile)
@@ -31,8 +32,8 @@ def resolve_snapshot(
 
         snapshot = require_snapshot(session, scope.repository_id, scope.snapshot_id)
         if (
-            snapshot.source_revision != profile.commit_sha
-            or request.issue != profile.issue
+            (baseline_commit_sha or snapshot.source_revision) != profile.commit_sha
+            or request.issue not in {profile.issue, profile.bound_issue}
         ):
             raise WorkspaceError("Trusted profile commit or Issue mismatch")
     sources = snapshot_sources(session, scope)

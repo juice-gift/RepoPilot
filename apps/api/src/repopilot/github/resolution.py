@@ -50,10 +50,22 @@ def resolve_bound_issue(
         not in settings.github_mcp_allowed_repositories
     ):
         raise GitHubMCPError("binding_denied")
-    profile = load_profile(binding.profile)
+    profile = load_profile(
+        binding.profile,
+        registry_path=settings.trusted_profile_registry,
+        registry_digest=settings.trusted_profile_registry_sha256,
+    )
     if (
-        binding.issue_body != profile.issue
-        or binding.issue_body_hash != hashlib.sha256(profile.issue.encode()).hexdigest()
+        binding.issue_body != profile.bound_issue
+        or binding.issue_body_hash
+        != hashlib.sha256(profile.bound_issue.encode()).hexdigest()
+        or (
+            profile.commit_sha
+            and (
+                binding.commit_sha != profile.commit_sha
+                or binding.repository_full_name != profile.repository
+            )
+        )
     ):
         raise GitHubMCPError("binding_integrity_mismatch")
     snapshot = session.get(RepositorySnapshot, binding.snapshot_id)
@@ -87,6 +99,8 @@ def resolve_bound_issue(
             baseline=ToolRegistry(session, scope, embedding_factory=embedding_factory),
             provider=provider,
             executor=executor,
+            approved_profile=profile,
+            baseline_commit_sha=binding.commit_sha,
         )
         if snapshot_sources(session, scope) != before:
             raise GitHubMCPError("snapshot_changed_during_resolution")

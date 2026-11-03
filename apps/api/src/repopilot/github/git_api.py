@@ -45,10 +45,18 @@ class GitObjects:
         actor = {"name": p.author_name, "email": p.author_email, "date": p.commit_date}
         return {
             "git/trees": {
+                **({"base_tree": p.baseline_tree_sha} if p.baseline_entries else {}),
                 "tree": [
-                    {"path": path, "mode": "100644", "type": "blob", "content": text}
+                    {
+                        "path": path,
+                        "mode": p.baseline_entries[path]["mode"]
+                        if p.baseline_entries
+                        else "100644",
+                        "type": "blob",
+                        "content": text,
+                    }
                     for path, text in sorted(p.files.items())
-                ]
+                ],
             },
             "git/commits": {
                 "message": p.commit_message,
@@ -71,6 +79,7 @@ class GitObjects:
             f"git/commits/{p.base_sha}",
             f"git/commits/{p.commit_sha}",
             f"git/trees/{p.tree_sha}",
+            *({f"git/trees/{p.tree_sha}?recursive=1"} if p.baseline_entries else set()),
         }
         allowed_writes = {"git/trees", "git/commits", "git/refs"}
         if not (
@@ -128,7 +137,8 @@ class GitObjects:
         return await self._request("GET", f"git/ref/heads/{branch}")
 
     async def tree(self) -> dict | None:
-        return await self._request("GET", f"git/trees/{self.plan.tree_sha}")
+        suffix = "?recursive=1" if self.plan.baseline_entries else ""
+        return await self._request("GET", f"git/trees/{self.plan.tree_sha}" + suffix)
 
     async def commit(self, *, baseline: bool = False) -> dict | None:
         return await self._request(

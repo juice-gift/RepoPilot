@@ -97,3 +97,36 @@ Quiescent database restore to NEW pre_v8_restore_verified_20261103 succeeded:
 17 snapshots, row JSON aggregate MD5 387b77cc39bee8ca0267329d514eec1d matches
 original and restored DB. Original volume untouched; API/Web restarted afterward.
 Nested Git tree provenance tests 8 passed, not yet wired to publication.
+
+C1 integration now implemented in the existing modules: optional operator profiles
+in persist_binding, original Issue body provenance, bound commit validation,
+resolve_bound_issue -> actual index/Agent/workspace/Docker -> persisted run,
+prepare_proposal -> precise hash/approval and disabled remote-write gate. Git
+nested trees preserve baseline blobs/modes (including untouched files outside the
+executable projection); new plans carry full baseline metadata. Legacy plan JSON
+omits new empty fields so historical exact approval hashes remain unchanged.
+Actual read-only official MCP imports succeeded for BOTH public repositories:
+bindings 2138/2140 and snapshots 1566/1568. Evidence pre-v8-trusted-import.json.
+No remote writes. Original issue bodies differ from earlier reviewed task summaries;
+new policy SHA256 fa66ccada24d38ada2d50d2a1164e77b1812a64db8ba98ff04236e37296e5555.
+Earlier model/probe reports retain old policy hashes and are historical trials.
+Focused C regression 47 passed, real DB/Docker exact proposal path included;
+further nested fake-remote recovery/UI/full regression still pending.
+Current publication guard still requires private repository/owner identity/main
+baseline. Public historical upstreams are read/repair/proposal inputs only; no
+extension of write permissions or public-target publication is authorized.
+
+C1 actual bound deterministic repairs/proposals completed for both real imported
+Issues, using original Issue bodies and exact approved source/profile identity.
+Run/plan evidence: pre-v8-bound-proposals.json. Proposals fc73598c6f744186b2d7af63f802486c
+and f09d2f51abce4e078f3bc86e86903296 remain awaiting_approval. No approval or remote
+mutation performed. Public historical targets are explicitly not publishable under
+the unchanged private-owner/main guard; limitations are attached to each proposal.
+Configured-secret scan across all pre-v8 evidence found zero matches.
+Current focused MCP/profile/binding/proposal/publication regression: 85 passed /
+1 check without RUN_SANDBOX_TESTS skipped, 49.13s. Follow-up narrower suite 36 passed.
+Frontend build passed after optional baseline tree metadata type/guard updates.
+Remaining: nested fake-remote publication/recovery tests, UI trusted profile selection,
+V6 real-repository harness integration, current full regression and security audit,
+controlled deployment limitations/CI execution status, final accurate report. Do not
+mark Phase C/D or the complete goal achieved yet.
