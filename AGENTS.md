@@ -33,8 +33,8 @@ Current stage:
 **V7 / Pre-V8 engineering is authorized and in progress (2026-11-03). Stop before V8.**
 
 Local Pre-V8 implementation, real-repository integration and evaluation are validated.
-Full acceptance remains incomplete: container repair needs an approved execution
-boundary. See `docs/evaluation/pre-v8-engineering-completion.md` and
+Full acceptance remains incomplete: the owner approved a constrained local Sandbox
+Broker on 2026-11-03; implementation and actual container repair validation are pending. See `docs/evaluation/pre-v8-engineering-completion.md` and
 `docs/tasks/pre-v8-executor-decision.md`. Do not mark the goal complete or enter V8.
 
 The active goal is `docs/goals/pre-v8-engineering.md`, with progress in

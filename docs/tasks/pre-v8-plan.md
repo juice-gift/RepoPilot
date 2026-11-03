@@ -86,3 +86,22 @@ Bk3 nonroot no-network Compose broker and owned-volume path mapping, Bk4 actual
 container API/Web repair plus adversarial/concurrency/timeout/restart regression,
 then repeat required final B/C/D acceptance. No new remote writes/public hosting.
 Further host privilege expansion or failing isolation remains a stop condition.
+
+Bk1 implemented: request schema accepts only profile identity, baseline and bounded
+revision deltas; commands/images/mounts/host paths/Docker options are forbidden.
+Broker independently checks exact approved baseline, policy hash, every changed
+path, revision count, source/file budgets and cumulative diff before materializing.
+Workspace keeps private immutable delta copies; Sandbox results include actual
+source identity. Runtime core provides single-job admission, persisted pre-effect
+request markers, exact cached-result replay, conflict/ambiguous-outcome denial and
+private workspace cleanup. Execution adapters remain internal and server-selected.
+Protocol/workspace/patch focus: 43 passed. Runtime/protocol focus: 40 passed /6
+non-enabled Docker skips; actual Docker follow-up running in session 58553.
+Docker Desktop probe confirmed UID 65534 / group 0 can use its group-owned Unix
+socket without root, privileged mode, extra capabilities or TCP exposure. Official
+Docker CLI image 29.7.2 pulled and pinned at digest
+3f4743208d2338c934d7b8bcfbe1bb54c0b2355c510ad5e0f31c0c4a54bd704e.
+Next: authenticated Unix HTTP transport, strict owned-volume startup validation,
+process locking/orphan cleanup, API executor adapter and Compose wiring, then real
+container repair and the required adversarial/concurrent/timeout tests. No daemon
+socket is currently mounted in an application service; no new remote writes.

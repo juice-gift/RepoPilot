@@ -13,7 +13,7 @@ from pydantic import BaseModel, Field, computed_field
 
 from repopilot.diagnostics import event
 from repopilot.resolution.profiles import TestProfile
-from repopilot.resolution.workspace import Workspace, WorkspaceError
+from repopilot.resolution.workspace import Workspace, WorkspaceError, source_identity
 
 OUTPUT_BYTES = 8000
 
@@ -41,6 +41,7 @@ class TestResult(BaseModel):
     profile_hash: str = ""
     image_id: str | None = None
     command: list[str] = Field(default_factory=list)
+    source_hash: str = ""
 
     @computed_field
     @property
@@ -297,6 +298,7 @@ class SandboxExecutor:
 
         try:
             workspace.verify()
+            result.source_hash = source_identity(workspace.sources())
             profile.require_snapshot(workspace.baseline)
             if profile.image_id and profile.image_id != self.image_id:
                 raise SandboxError("Sandbox image differs from approved profile")

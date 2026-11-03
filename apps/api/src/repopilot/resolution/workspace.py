@@ -1,6 +1,7 @@
 """Owned, revisioned source copies. Never read a repository working tree."""
 
 import hashlib
+import json
 import re
 import shutil
 import stat
@@ -32,6 +33,14 @@ class WorkspaceError(ValueError):
 
 def digest(content: str) -> str:
     return hashlib.sha256(content.encode("utf-8")).hexdigest()
+
+
+def source_identity(sources: Mapping[str, str]) -> str:
+    return digest(
+        json.dumps(
+            {p: digest(c) for p, c in sorted(sources.items())}, separators=(",", ":")
+        )
+    )
 
 
 def safe_path(value: str) -> str:
@@ -148,6 +157,7 @@ class Workspace:
         self.revision = 0
         self._baseline = MappingProxyType(dict(sources))
         self._current = dict(sources)
+        self._revision_updates: list[dict[str, str]] = []
         self._temporary = tempfile.TemporaryDirectory(prefix="repopilot-resolution-")
         self.root = Path(self._temporary.name).resolve()
         self._closed = False
@@ -219,6 +229,10 @@ class Workspace:
         self.verify()
         return dict(self._current)
 
+    def revision_updates(self) -> list[dict[str, str]]:
+        self.verify()
+        return [dict(update) for update in self._revision_updates]
+
     def read(self, path: str) -> str:
         safe_path(path)
         self.verify()
@@ -235,6 +249,9 @@ class Workspace:
         if sources.keys() != self._current.keys():
             raise WorkspaceError("V4 permits updating existing files only")
         directory = self._write_revision(sources, self.revision + 1)
+        self._revision_updates.append(
+            {p: c for p, c in sources.items() if c != self._current[p]}
+        )
         self._current = dict(sources)
         self._source_dir = directory
         self.revision += 1
