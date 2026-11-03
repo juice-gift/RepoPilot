@@ -1,6 +1,7 @@
 import hashlib
 import json
 import os
+from pathlib import Path
 
 import pytest
 from test_resolution_workspace import saved
@@ -24,7 +25,9 @@ def test_live_trusted_full_repair_loop_and_owner_decision(name):
     from repopilot.resolution.tools import ResolutionLimits, ResolutionTools
 
     root = REPOSITORY_ROOT / "apps/api/evaluation/trusted_python"
-    registry = root / "profiles.json"
+    registry = Path(
+        os.environ.get("TEST_TRUSTED_PROFILE_REGISTRY", str(root / "profiles.json"))
+    )
     profile = load_profile(
         "trusted-" + name,
         registry_path=registry,

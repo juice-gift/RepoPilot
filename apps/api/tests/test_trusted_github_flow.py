@@ -3,6 +3,7 @@
 import hashlib
 import json
 import os
+from pathlib import Path
 from uuid import uuid4
 
 import pytest
@@ -30,7 +31,9 @@ pytestmark = pytest.mark.skipif(
 
 def test_real_python_bound_repair_and_exact_proposal_approval():
     root = REPOSITORY_ROOT / "apps/api/evaluation/trusted_python"
-    registry = root / "profiles.json"
+    registry = Path(
+        os.environ.get("TEST_TRUSTED_PROFILE_REGISTRY", str(root / "profiles.json"))
+    )
     settings = Settings(
         trusted_profile_registry=registry,
         trusted_profile_registry_sha256=hashlib.sha256(

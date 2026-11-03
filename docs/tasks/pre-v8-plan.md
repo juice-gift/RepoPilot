@@ -173,3 +173,29 @@ skip, 159.87s. D3 committed-code scripted and original-Issue live runs follow.
 Earlier summary-prompt Qwen failures remain immutable evidence; new inputs and
 fingerprints are distinct and must never be pooled or presented as retries of the
 same task definition. No remote writes or new dependencies/schema/services.
+
+D3 committed-code evidence (5963068) now complete: scripted 3/3 task success,
+2/2 repairs, 1/1 safe decision; actual dated Qwen original-Issue corpus also 3/3,
+2/2 exact-revision independent final tests, 1/1 zero-change owner decision. Raw
+reports pre-v8-harness-python-{scripted,live}.*, initial scripted report retained.
+Qwen source/claim review marks ItsDangerous prose unsupported (timestamp interval
+reversed), while repair/test success remains separate. Other two explanations
+supported by Codex review, not independent human review; exact-output reviews and
+reviewed reports saved. Earlier summary-input Qwen provider failure/max-step failure
+remain in pre-v8-python-live.json, separate task definitions, never pooled.
+
+Fresh deployment check: new repopilot-pre-v8-acceptance Compose project, NEW volume,
+ports loopback 55432/8081. Current API/Web builds succeeded; migration completed;
+DB/API/Web healthy; smoke imported repo/snapshot 1, indexed 19 chunks, answered
+with deterministic provider and one citation. API/Web restart followed by same
+smoke retained those IDs/content. Original database/volume/stack untouched.
+Alembic current 0008/check no drift and Ruff passed. Existing quiescent backup/
+restore hash verification remains recorded above. No publicly exposed services.
+
+CI now opts into trusted Python tests. Runtime image policy is generated into an
+isolated temporary file; committed historical policies/evidence stay unchanged.
+Test-only override affects only live-execution fixtures; saved-evidence grading
+and publication mocks retain original image/policy identities. Local simulation
+with an independently rebuilt labeled immutable image passed 30 tests including
+real DB/Docker adapter/repair and fake publication. Hosted GitHub CI remains NOT
+executed and cannot be reported as passed. No remote writes authorized.

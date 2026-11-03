@@ -16,6 +16,7 @@ jobs:
       GENERATION_PROVIDER: deterministic
       RUN_DATABASE_TESTS: '1'
       RUN_SANDBOX_TESTS: '1'
+      RUN_TRUSTED_PYTHON_TESTS: '1'
     services:
       database:
         image: pgvector/pgvector:0.8.6-pg17
@@ -44,7 +45,11 @@ jobs:
         working-directory: apps/api
         run: uv sync --locked
       - name: Sandbox image (no host execution of repository code)
-        run: docker build -t repopilot-tests:v4 apps/api/sandbox
+        run: |
+          docker build -t repopilot-tests:v4 apps/api/sandbox
+          docker tag repopilot-tests:v4 repopilot-tests:pre-v8
+          python docs/tasks/pre-v8-build-policy.py --output "$RUNNER_TEMP/python-profiles.json"
+          echo "TEST_TRUSTED_PROFILE_REGISTRY=$RUNNER_TEMP/python-profiles.json" >> "$GITHUB_ENV"
       - name: Ruff, migrations and complete offline regression
         working-directory: apps/api
         run: |

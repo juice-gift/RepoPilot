@@ -4,6 +4,7 @@ import copy
 import hashlib
 import json
 import os
+from pathlib import Path
 
 import pytest
 
@@ -14,8 +15,10 @@ from repopilot.evaluation.trusted import corpus_source, execute_trusted
 from repopilot.resolution.profiles import load_profile
 
 
-def approved():
+def approved(*, live=False):
     registry = REPOSITORY_ROOT / "apps/api/evaluation/trusted_python/profiles.json"
+    if live and os.getenv("TEST_TRUSTED_PROFILE_REGISTRY"):
+        registry = Path(os.environ["TEST_TRUSTED_PROFILE_REGISTRY"])
     settings = Settings(
         trusted_profile_registry=registry,
         trusted_profile_registry_sha256=hashlib.sha256(
@@ -82,7 +85,7 @@ def test_corpus_requires_exact_approved_source_and_known_profile():
     reason="requires live DB and approved trusted Docker image",
 )
 def test_live_adapter_runs_independent_tests_and_cleans_owned_database_inputs():
-    settings, profile, task = approved()
+    settings, profile, task = approved(live=True)
     result = execute_trusted(settings, profile, task, "scripted")
     assert result.status == "passed", result.model_dump_json()
     assert result.evidence["evaluation_inputs_cleaned"]

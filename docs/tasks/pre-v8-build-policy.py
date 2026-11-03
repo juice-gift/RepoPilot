@@ -1,6 +1,7 @@
 """Build reproducible reviewed policy from pinned source metadata; no source execution."""
 
 import json
+import argparse
 import subprocess
 from pathlib import Path
 
@@ -9,6 +10,9 @@ DATA = ROOT / "apps/api/evaluation/trusted_python"
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, default=DATA / "profiles.json")
+    args = parser.parse_args()
     image = subprocess.check_output([
         "docker", "image", "inspect", "repopilot-tests:pre-v8", "--format", "{{.Id}}",
     ], text=True, timeout=10).strip()
@@ -34,7 +38,7 @@ def main() -> None:
             "baseline_tree_sha": metadata["tree_sha"],
             "baseline_entries": metadata["tree_entries"],
         })
-    path = DATA / "profiles.json"
+    path = args.output
     path.write_text(json.dumps({"version": 1, "profiles": profiles}, indent=2) + "\n", encoding="utf-8")
     import hashlib
     print(json.dumps({"registry_sha256": hashlib.sha256(path.read_bytes()).hexdigest(), "image_id": image}))
