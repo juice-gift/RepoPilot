@@ -19,6 +19,7 @@ apps/web/*
 !apps/web/src/**
 !apps/web/public/**
 !apps/web/nginx.conf
+!apps/web/nginx.upstream.conf
 **/.env*
 **/__pycache__/**
 **/*.pyc

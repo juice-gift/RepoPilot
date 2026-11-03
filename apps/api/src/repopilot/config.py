@@ -48,6 +48,9 @@ class Settings(BaseSettings):
         default=None, pattern=r"^sha256:[0-9a-f]{64}$"
     )
     trusted_profile_registry: Path | None = None
+    sandbox_broker_socket: Path | None = None
+    sandbox_broker_token_file: Path | None = None
+    local_owner_unix_socket: Literal["/run/repopilot-api/api.sock"] | None = None
     trusted_profile_registry_sha256: str | None = Field(
         default=None, pattern=r"^[a-f0-9]{64}$"
     )
@@ -61,6 +64,17 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def require_explicit_deployment_settings(self) -> "Settings":
+        if (self.sandbox_broker_socket is None) != (
+            self.sandbox_broker_token_file is None
+        ):
+            raise ValueError(
+                "Broker requires both a private socket and credential file"
+            )
+        if any(
+            path is not None and not path.is_absolute()
+            for path in (self.sandbox_broker_socket, self.sandbox_broker_token_file)
+        ):
+            raise ValueError("Broker paths must be absolute operator-owned paths")
         if (self.trusted_profile_registry is None) != (
             self.trusted_profile_registry_sha256 is None
         ):

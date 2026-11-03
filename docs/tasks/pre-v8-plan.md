@@ -16,14 +16,18 @@ public Python repositories and offline Docker tests; no further selection approv
 | C Integration | Local/read-only acceptance verified | actual official MCP bindings; real DB/Docker repairs; exact awaiting-review plans; nested fake-remote recovery; UI |
 | D Regression/evaluation/security/docs | Evidence saved; full acceptance open | 414 passed /1 disabled online MCP skip; real harness; security review; decision below |
 
-## Current decision / remaining work
+## Current work / remaining acceptance
 
-Full Goal is NOT complete: application containers deliberately have no Docker
-CLI/socket and cannot perform Issue Resolution. Host-local API repairs are verified.
-Do not turn this safe refusal into a complete-container acceptance claim.
-[Concrete broker proposal](pre-v8-executor-decision.md) needs owner authorization
-under the Goal's mandatory security escalation rule. Alternative host-local-only
-acceptance is an explicit owner scope decision, not an automatic narrowing.
+Full Goal is NOT complete. Owner approved the constrained local Broker on
+2026-11-03. Its private authenticated Unix transport, independent fixed-profile
+validation, private volume mapping, nonroot/network-none execution, ledger and
+process locking are implemented. Real container API -> Broker -> Docker probes
+repair both approved repositories and independently pass 8/8 and 9/9 tests.
+Crash/restart removes only verified owned orphan resources and denies ambiguous
+request replay. Web -> API uses a separate private Unix volume; exact Origin
+checks remain mandatory, and forwarded network headers are not trusted.
+Complete the actual Web/HTTP Issue workflow, transport adversarial checks, final
+full regression and security/docs audit before accepting the Goal.
 Hosted CI is unexecuted and cannot be called GitHub PASS. No new real GitHub write
 is authorized; public historical upstream plans additionally fail the unchanged
 private-owner/current-main publication gate. After the execution-boundary decision:
@@ -96,7 +100,7 @@ source identity. Runtime core provides single-job admission, persisted pre-effec
 request markers, exact cached-result replay, conflict/ambiguous-outcome denial and
 private workspace cleanup. Execution adapters remain internal and server-selected.
 Protocol/workspace/patch focus: 43 passed. Runtime/protocol focus: 40 passed /6
-non-enabled Docker skips; actual Docker follow-up running in session 58553.
+non-enabled Docker skips; actual Docker follow-up completed with 36 passed.
 Docker Desktop probe confirmed UID 65534 / group 0 can use its group-owned Unix
 socket without root, privileged mode, extra capabilities or TCP exposure. Official
 Docker CLI image 29.7.2 pulled and pinned at digest
@@ -104,4 +108,19 @@ Docker CLI image 29.7.2 pulled and pinned at digest
 Next: authenticated Unix HTTP transport, strict owned-volume startup validation,
 process locking/orphan cleanup, API executor adapter and Compose wiring, then real
 container repair and the required adversarial/concurrent/timeout tests. No daemon
-socket is currently mounted in an application service; no new remote writes.
+socket is mounted in API/Web; only the approved dedicated Broker receives it.
+No new remote writes.
+
+### Bk2 — private Broker transport/deployment
+
+Implemented authenticated Unix HTTP, 8 MB body/32 KB response bounds, bounded
+connections and absolute input deadline, fixed server-owned image/profile/path
+selection, private Compose volume metadata mapping, Linux process lock, orphan
+verification/cleanup, persistent exact replay and API client evidence validation.
+API/Web have no Docker CLI/socket; separate private Unix API/Web transport keeps
+the existing exact Origin owner gate without trusting forwarded IP headers.
+Targeted tests: 64 passed, then 8 owner-transport cases after checking actual
+Uvicorn Unix address metadata. Actual two-repository Docker probe and force-kill/
+restart evidence saved in `docs/evaluation/pre-v8-broker-*.json`. Both repairs and
+independent rechecks pass, baseline failures retained, 20-second infinite-loop
+timeout cleaned. Full HTTP/model workflow and final complete regression remain.

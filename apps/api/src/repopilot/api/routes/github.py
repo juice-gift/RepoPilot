@@ -31,8 +31,8 @@ from repopilot.github.proposals import (
 from repopilot.github.publication import publish_proposal
 from repopilot.github.resolution import resolve_bound_issue
 from repopilot.rag.generation import create_agent_provider
+from repopilot.resolution.broker_client import create_executor
 from repopilot.resolution.models import ResolutionResult
-from repopilot.resolution.sandbox import SandboxExecutor
 from repopilot.resolution.trusted_profiles import read_registry
 from repopilot.resolution.workspace import WorkspaceError
 
@@ -153,11 +153,15 @@ def proposal_view(
 
 
 def owner_control(request: Request) -> None:
-    if (
-        request.client is None
-        or request.client.host not in {"127.0.0.1", "::1"}
-        or request.headers.get("origin") != request.app.state.settings.frontend_origin
-    ):
+    settings = request.app.state.settings
+    local_transport = (
+        request.client is not None and request.client.host in {"127.0.0.1", "::1"}
+    ) or (
+        settings.local_owner_unix_socket is not None
+        and request.client is None
+        and request.scope.get("server") == (settings.local_owner_unix_socket, None)
+    )
+    if not local_transport or request.headers.get("origin") != settings.frontend_origin:
         raise HTTPException(
             403, "Approval and publication require the local owner's configured origin"
         )
@@ -246,7 +250,7 @@ def resolve(payload: RunRequest, request: Request, session: DB):
             settings,
             binding_id=payload.binding_id,
             provider=create_agent_provider(settings),
-            executor=SandboxExecutor(settings.resolution_sandbox_image),
+            executor=create_executor(settings),
             embedding_factory=lambda: create_embedding_provider(settings),
         )
     except GitHubMCPError as exc:

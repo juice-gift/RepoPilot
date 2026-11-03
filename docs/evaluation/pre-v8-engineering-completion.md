@@ -1,6 +1,6 @@
 # Pre-V8 engineering acceptance report — 2026-11-03
 
-**Status: incomplete; container repair deployment boundary requires an owner decision.**
+**Status: incomplete; approved Broker implemented, final container workflow/regression pending.**
 Do not mark the full Goal or V8 readiness achieved. Local engineering, real corpus
 repair/review integration and evaluation are implemented and verified as below.
 No new remote write or public deployment was authorized or executed.
@@ -43,8 +43,14 @@ approval store, publication system, scheduler, cache or queue was introduced.
 Application containers and code-test containers are separate. Application containers
 do not receive Docker CLI/socket or host credentials. That safe boundary currently
 means repair is supported by the host-local API, not by the container API. The new
-local broker design in [decision proposal](../tasks/pre-v8-executor-decision.md)
-is not implemented and requires explicit trust-boundary authorization.
+local Broker in [approved decision](../tasks/pre-v8-executor-decision.md) is now
+implemented. Actual authenticated container API probes repair both projects,
+independently pass 8/8 and 9/9 tests, reject unauthorized/profile/path/command/
+oversized/concurrent requests, and enforce timeout/cleanup. Crash/restart tests
+verify exclusive process locking, owned orphan cleanup and persistent ambiguous
+request denial. The separate private Web/API Unix transport and complete HTTP
+workflow still require final validation; older acceptance rows below remain
+historical evidence until the final audit is updated.
 
 ## Real-world evaluation and failures
 

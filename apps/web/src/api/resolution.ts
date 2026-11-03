@@ -23,6 +23,10 @@ interface TestResult {
   cleanup_confirmed: boolean;
   expected_tests: number;
   observed_passed: number;
+  profile_hash: string;
+  source_hash: string;
+  image_id: string | null;
+  command: string[];
   passed: boolean;
 }
 interface ResolutionTrace {

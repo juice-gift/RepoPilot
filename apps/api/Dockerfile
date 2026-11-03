@@ -12,6 +12,7 @@ COPY apps/api/src ./src
 COPY apps/api/migrations ./migrations
 COPY apps/api/alembic.ini ./
 COPY apps/api/evaluation ./evaluation
+RUN mkdir -p /run/repopilot-api && chown 65534:65534 /run/repopilot-api && chmod 700 /run/repopilot-api
 USER 65534:65534
 EXPOSE 8000
 CMD ["uvicorn", "repopilot.main:app", "--host", "0.0.0.0", "--port", "8000", "--no-access-log", "--limit-concurrency", "32", "--timeout-keep-alive", "5"]

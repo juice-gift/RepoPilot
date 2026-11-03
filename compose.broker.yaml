@@ -1,0 +1,68 @@
+# Explicitly opt in only after reviewing docs/deployment.md's privileged Broker boundary.
+# Build the API image first: ... build api web; ... build sandbox-broker.
+services:
+  api:
+    environment:
+      SANDBOX_BROKER_SOCKET: /run/repopilot/broker.sock
+      SANDBOX_BROKER_TOKEN_FILE: /run/secrets/broker_token
+      LOCAL_OWNER_UNIX_SOCKET: /run/repopilot-api/api.sock
+      RESOLUTION_SANDBOX_IMAGE: ${BROKER_SANDBOX_IMAGE:?Set reviewed immutable Sandbox image ID}
+      TRUSTED_PROFILE_REGISTRY: /app/apps/api/evaluation/trusted_python/profiles.json
+      TRUSTED_PROFILE_REGISTRY_SHA256: ${BROKER_PROFILE_SHA256:?Set approved policy SHA256}
+      GITHUB_MCP_ALLOWED_REPOSITORIES: '["pallets/itsdangerous","more-itertools/more-itertools"]'
+    volumes:
+      - broker-ipc:/run/repopilot:ro
+      - api-ipc:/run/repopilot-api
+    command: [uvicorn, "repopilot.main:app", --uds, /run/repopilot-api/api.sock, --no-access-log, --limit-concurrency, "32", --timeout-keep-alive, "5"]
+    healthcheck:
+      test: [CMD, python, -c, "from pathlib import Path; from repopilot.resolution.broker_transport import UnixConnection; c=UnixConnection(Path('/run/repopilot-api/api.sock'), timeout=4); c.request('GET','/api/health/database'); assert c.getresponse().status == 200; c.close()"]
+    secrets: [broker_token]
+    depends_on:
+      sandbox-broker:
+        condition: service_healthy
+
+  web:
+    volumes:
+      - api-ipc:/run/repopilot-api:ro
+      - ./apps/web/nginx.broker.conf:/etc/nginx/repopilot-upstream.conf:ro
+
+  sandbox-broker:
+    profiles: [app]
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile.broker
+    image: repopilot-broker:local
+    environment:
+      BROKER_PROJECT: ${COMPOSE_PROJECT_NAME:-repopilot}
+      BROKER_SANDBOX_IMAGE: ${BROKER_SANDBOX_IMAGE:?Set reviewed immutable Sandbox image ID}
+      BROKER_PROFILE_REGISTRY: /app/apps/api/evaluation/trusted_python/profiles.json
+      BROKER_PROFILE_REGISTRY_SHA256: ${BROKER_PROFILE_SHA256:?Set approved policy SHA256}
+    network_mode: none
+    volumes:
+      - broker-data:/execution
+      - broker-ipc:/run/repopilot
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    secrets: [broker_token]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 128
+    mem_limit: 256m
+    cpus: 1
+    stop_grace_period: 75s
+    tmpfs: ["/tmp:rw,noexec,nosuid,nodev,size=16m"]
+    healthcheck:
+      test: [CMD, python, -c, "import socket; s=socket.socket(socket.AF_UNIX); s.settimeout(2); s.connect('/run/repopilot/broker.sock'); s.close()"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 15s
+
+secrets:
+  broker_token:
+    file: ${BROKER_TOKEN_FILE:?Set private generated Broker token file}
+
+volumes:
+  broker-data:
+  broker-ipc:
+  api-ipc:

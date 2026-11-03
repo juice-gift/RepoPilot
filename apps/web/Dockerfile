@@ -9,6 +9,7 @@ RUN npm run build
 
 FROM public.ecr.aws/docker/library/nginx@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236
 COPY apps/web/nginx.conf /etc/nginx/nginx.conf
+COPY apps/web/nginx.upstream.conf /etc/nginx/repopilot-upstream.conf
 COPY --from=build /app/apps/web/dist /usr/share/nginx/html
 USER 65534:65534
 EXPOSE 8080

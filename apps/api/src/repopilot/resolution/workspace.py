@@ -141,7 +141,13 @@ class Workspace:
     live in a private OS temporary directory outside RepoPilot.
     """
 
-    def __init__(self, scope: RunScope, files: Sequence[SavedSource]) -> None:
+    def __init__(
+        self,
+        scope: RunScope,
+        files: Sequence[SavedSource],
+        *,
+        temporary_parent: Path | None = None,
+    ) -> None:
         sources: dict[str, str] = {}
         for file in files:
             if (
@@ -158,7 +164,9 @@ class Workspace:
         self._baseline = MappingProxyType(dict(sources))
         self._current = dict(sources)
         self._revision_updates: list[dict[str, str]] = []
-        self._temporary = tempfile.TemporaryDirectory(prefix="repopilot-resolution-")
+        self._temporary = tempfile.TemporaryDirectory(
+            prefix="repopilot-resolution-", dir=temporary_parent
+        )
         self.root = Path(self._temporary.name).resolve()
         self._closed = False
         try:

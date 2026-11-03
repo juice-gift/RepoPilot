@@ -35,10 +35,9 @@ and credentials. Never commit that override or add secrets as build arguments.
 `/repositories` mounts only controlled evaluation source read-only. A reviewed
 override may replace it with an explicitly trusted input directory. Do not mount
 your home directory, `.env`, SSH keys or Docker socket. API images contain no
-Docker CLI and do not receive daemon access. Sandbox repair consequently fails
-closed there. Use the existing host-local API with the immutable sandbox image
-for repair workflows. This container stack does not yet provide a remote Sandbox
-execution service; adding one requires a separately reviewed security design.
+Docker CLI and do not receive daemon access. The basic stack has no executor and
+fails repair closed. The separately owner-approved optional Broker below provides
+container repair; host-local API execution remains available for development.
 
 ```powershell
 docker compose -f compose.yaml -f compose.app.yaml --profile app ps
@@ -52,6 +51,51 @@ named volume. A restart does not re-run unfinished model calls or publication
 writes. Inspect persisted run/proposal state; ambiguous remote outcomes require
 the existing read-only reconciliation before another write. No retry middleware
 replays POST requests. Keep one API process while host-local execution is used.
+
+## Optional constrained local Sandbox Broker
+
+This boundary was explicitly approved on 2026-11-03; treat Broker daemon access as
+host-level authority. Only Broker receives the Docker socket and pinned CLI.
+It has no network, runs UID 65534 / socket group 0, drops capabilities and uses a
+readonly root. API/Web receive no daemon access. Broker accepts only exact approved
+profile/source/revision data; tests/images/mounts/commands are server-owned.
+
+Build the reviewed immutable Sandbox image and policy first. The example helper
+creates NEW isolated acceptance credentials outside Git; review its fixed project,
+ports, image ID and policy digest for another deployment. Retain its private files
+for volume restarts; it never prints credentials or overwrites an existing directory.
+
+```powershell
+.\apps\api\.venv\Scripts\python.exe docs/tasks/pre-v8-broker-compose-env.py C:\private\repopilot-acceptance
+docker build -f apps/api/Dockerfile -t repopilot-api:local .
+docker build -f apps/api/Dockerfile.broker -t repopilot-broker:local .
+docker compose --env-file C:\private\repopilot-acceptance\compose.env -f compose.yaml -f compose.app.yaml -f compose.broker.yaml --profile app up -d --build --wait
+```
+
+Broker authenticates API requests using a per-deployment secret and a 0600 Unix
+socket in a private IPC volume. A distinct private API/Web volume carries the API
+Unix socket; this optional stack has no API TCP listener. Web remains loopback-only
+and exact configured Origin is required for owner operations. API mounts Broker
+IPC readonly and cannot read its execution-data volume. Only reviewed source/test
+directories are mounted readonly into test containers, never either IPC volume,
+daemon socket, credentials or application environment.
+
+Broker verifies actual container/volume metadata before mapping its private owned
+directories to daemon paths. Traversal, links, unapproved profiles/options and
+changed baseline identities fail closed. Requests are bounded to 8 MB, four
+connections with a five-second input deadline and one active test. Sandbox time
+and cleanup limits remain fixed. The persistent ledger holds at most 512 request
+identities. Full ledgers require operator maintenance while stopped; never delete
+ambiguous pending entries to force a retry. Restart takes an exclusive volume lock,
+verifies and removes only this deployment's restricted orphan test containers, and
+cleans its own abandoned workspaces. Unexpected resources stop startup for review.
+Do not scale Broker or share its data volume with another service.
+
+For live models/MCP reads, a private API-only override may map approved provider
+credentials and exact models. Never forward these variables to Broker. Remote
+publication remains separately unauthorized, even when local repair succeeds.
+Evidence: `pre-v8-broker-probe.json` and `pre-v8-broker-restart-probe.json` under
+`docs/evaluation`; complete Web workflow/final acceptance are still being checked.
 
 ## Diagnostics
 

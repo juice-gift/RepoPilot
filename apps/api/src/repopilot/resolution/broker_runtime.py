@@ -40,9 +40,12 @@ def sync_directory(path: Path) -> None:
 class MappedSandboxExecutor(SandboxExecutor):
     """Mapping is established by trusted startup volume inspection, never HTTP."""
 
-    def __init__(self, image_id: str, local_root: Path, daemon_root: Path) -> None:
+    def __init__(
+        self, image_id: str, local_root: Path, daemon_root: Path, *, owner: str = ""
+    ) -> None:
         super().__init__(image_id)
         self.local_root, self.daemon_root = local_root.resolve(), daemon_root
+        self.owner = owner
 
     def daemon_path(self, path: Path) -> Path:
         if not path.resolve().is_relative_to(self.local_root):
@@ -52,14 +55,22 @@ class MappedSandboxExecutor(SandboxExecutor):
         return self.daemon_root / path.relative_to(self.local_root)
 
     def _create_arguments(self, name: str, source: Path, validation: Path) -> list[str]:
-        return super()._create_arguments(
+        arguments = super()._create_arguments(
             name, self.daemon_path(source), self.daemon_path(validation)
         )
+        if self.owner:
+            arguments[1:1] = ["--label", "repopilot.broker=" + self.owner]
+        return arguments
 
     def _verify_container(self, data: dict, source: Path, validation: Path) -> None:
         super()._verify_container(
             data, self.daemon_path(source), self.daemon_path(validation)
         )
+        if (
+            self.owner
+            and data["Config"]["Labels"].get("repopilot.broker") != self.owner
+        ):
+            raise WorkspaceError("Broker container ownership mismatch")
 
 
 class BrokerRuntime:
@@ -70,11 +81,13 @@ class BrokerRuntime:
         executor_factory: Callable[[TestProfile], SandboxExecutor],
         ledger: Path,
         capacity: int = 512,
+        workspace_parent: Path | None = None,
     ) -> None:
         if not 1 <= capacity <= 4096:
             raise ValueError("Invalid broker ledger capacity")
         self.load_profile, self.executor_factory = load_profile, executor_factory
         self.ledger, self.capacity = ledger, capacity
+        self.workspace_parent = workspace_parent
         if any(p.is_symlink() or p.is_junction() for p in (ledger, *ledger.parents)):
             raise WorkspaceError("Broker ledger links are forbidden")
         ledger.mkdir(mode=0o700, parents=True, exist_ok=True)
@@ -128,7 +141,9 @@ class BrokerRuntime:
                 SavedSource(p, text, digest(text), len(text.encode()))
                 for p, text in request.baseline.items()
             ]
-            with Workspace(RunScope(1, 1), saved) as workspace:
+            with Workspace(
+                RunScope(1, 1), saved, temporary_parent=self.workspace_parent
+            ) as workspace:
                 owned_root = workspace.root
                 for revision, state in enumerate(states[1:]):
                     workspace.publish(state, revision)
@@ -154,7 +169,10 @@ class BrokerRuntime:
                 "result": result.model_dump(mode="json"),
             }
             temporary = ticket.with_suffix(".tmp")
-            temporary.write_text(json.dumps(complete), encoding="utf-8")
+            with temporary.open("w", encoding="utf-8") as handle:
+                json.dump(complete, handle)
+                handle.flush()
+                os.fsync(handle.fileno())
             temporary.replace(ticket)
             sync_directory(self.ledger)
             return result
