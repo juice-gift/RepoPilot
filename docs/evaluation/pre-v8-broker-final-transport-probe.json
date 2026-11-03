@@ -1,0 +1,15 @@
+{
+  "mode": "real Linux API-container Unix/socket/path probe",
+  "checks": [
+    "duplicate_content_length_400",
+    "transfer_encoding_400",
+    "expect_continue_400",
+    "duplicate_authorization_401",
+    "malformed_json_400",
+    "authentication_precedes_body_framing",
+    "absolute_input_deadline_5_seconds",
+    "private_socket_and_directory_modes",
+    "actual_symlink_outside_and_inside_root_denied",
+    "unavailable_broker_fails_closed_without_host_executor"
+  ]
+}

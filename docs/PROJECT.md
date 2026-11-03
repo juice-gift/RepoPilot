@@ -2323,9 +2323,9 @@ RepoPilot 才真正成为我的简历项目。
 
 # 五十七、当前执行状态
 
-2026-11-03 实际验收：容器构建、独立新卷 Compose/迁移/重启 Smoke、两个真实 Python 项目的受限 Profile、官方 MCP 只读绑定、持久化修复与精确审批方案、嵌套树模拟发布恢复和 V6 真实仓库评估已实现。最终 DB/Docker 回归 414 passed /1 个禁用在线 MCP skip。原始 Issue Qwen 运行修复及歧义任务均通过，但时间区间解释错误被单独标为不受支持；此前失败仍保留。GitHub CI 未远程执行，未进行新远程写入。容器 API 不能执行 Sandbox 修复，完整目标仍待执行信任边界决策；不得宣称完整验收或进入 V8。报告：`docs/evaluation/pre-v8-engineering-completion.md`。
+2026-11-03 最终工程验收：已完成授权的 Phase A–D，停在 V8 之前。经所有者批准的独立本地 Sandbox Broker 已实现并通过真实容器修复、路径/权限/并发/超时及崩溃恢复测试；API/Web 不获得 Docker Socket。最终 DB/Docker 回归 464 passed /1 个可选在线 MCP skip；全新 Compose、迁移、重启及独立策略镜像验证通过。两个真实仓库的确定性 HTTP 修复、独立复测和待审批方案通过。当前容器 Qwen 两次尝试均在步数上限安全失败，完整保留；早期成功及不受支持的解释也保留。冻结评测 12 passed /5 个语义输出未验证。GitHub 托管 CI 未执行，原开发数据库模板口令列为 Known Limitation；未进行新远程写入或公开部署。完整验收及边界：`docs/evaluation/pre-v8-engineering-completion.md`。
 
-2026-11-03：新的 `docs/goals/pre-v8-engineering.md` 已授权 V7、受信任 Python 仓库通用化和 V8 前集成。执行计划为 `docs/tasks/pre-v8-plan.md`；当前正在实施，尚未完成全部验收。历史 V6/V7 停止声明由本授权覆盖；仍禁止 V8、未授权远程写入及公开部署。
+2026-11-03：`docs/goals/pre-v8-engineering.md` 授权的 V7、受信任 Python 仓库通用化和 V8 前集成现已完成规定的可信本地工程验收。执行记录为 `docs/tasks/pre-v8-plan.md`。历史 V6/V7 停止声明已由该授权覆盖；当前停在 V8 之前。新的功能扩展、V8、远程写入及公开部署均未获本次收尾授权。
 
 当前状态：
 
@@ -2339,7 +2339,7 @@ RepoPilot 才真正成为我的简历项目。
 - 真实 MCP 身份、源码/基线/三个 Issue 正文已验证，权限阻塞已解除；M2 已完成 commit/Issue/Snapshot 持久化绑定
 - M3 已完成绑定后的受控修复和结果持久化：两个真实 Qwen 正例通过独立 Docker 测试，歧义用例零修改
 - M4 精确审批/UI、M5 真实 MCP Draft PR 发布/恢复、M6 最终验收已完成；Owner 于 2026-10-28 单独批准两份精确方案
-- V5 于 2026-10-29 完成：330 项测试、两个真实 Draft PR 及远程源码 Docker 复验通过；报告见 docs/evaluation/v5-mcp-github-completion.md。V6 CLI Evaluation Harness 已完成：最终 DB/Docker 回归 360 passed / 1 个未启用在线 MCP skip；实测 Qwen 不受支持结论及轮次耗尽仍保留。报告 docs/evaluation/v6-evaluation-completion.md；计划 docs/tasks/v6-plan.md。停在 V6 / V7 边界
+- V5 于 2026-10-29 完成：330 项测试、两个真实 Draft PR 及远程源码 Docker 复验通过；报告见 docs/evaluation/v5-mcp-github-completion.md。V6 CLI Evaluation Harness 已完成：最终 DB/Docker 回归 360 passed / 1 个未启用在线 MCP skip；实测 Qwen 不受支持结论及轮次耗尽仍保留。报告 docs/evaluation/v6-evaluation-completion.md；计划 docs/tasks/v6-plan.md。该历史停止边界已被完成的 Pre-V8 Goal 覆盖；当前停在 V8 之前
 
 当前基础架构：
 

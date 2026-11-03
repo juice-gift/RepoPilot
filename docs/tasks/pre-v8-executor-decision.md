@@ -1,11 +1,13 @@
-# Container repair execution boundary — decision proposal
+# Container repair execution boundary — approved decision
 
-Status: owner approved on 2026-11-03 with six mandatory constraints. Implementation in progress; no acceptance claim yet.
+Status: owner approved on 2026-11-03 with six mandatory constraints; implemented
+and validated. See the final completion report and Broker runtime evidence.
 The goal requires distinguishing application containers from Agent Sandbox and
 escalating major security trust-boundary changes. Current application images do
-not contain Docker CLI or mount its socket. Repair therefore fails closed there.
+not contain Docker CLI or mount its socket. Direct daemon execution fails closed;
+the approved Broker client now provides the separate repair execution boundary.
 
-Recommended next implementation, if authorized: a single-purpose local Sandbox
+Approved implementation: a single-purpose local Sandbox
 broker, separate from FastAPI/Web and the database, holding local Docker execution
 authority. Its only operation runs a registered immutable Python test profile in
 the existing restricted executor. It cannot choose a shell, install dependencies,
@@ -36,11 +38,10 @@ independent tests in final result/proposal; invalid credentials/profile/source/p
 oversized/duplicate/deadline requests and unavailable broker safely fail; restart
 and owned-resource cleanup verified; app container never receives daemon access.
 
-Decision needed only after remaining independently authorized audit/documentation
-work is complete: authorize this concrete local execution trust boundary, or
-explicitly accept host-local API execution as the supported deployment boundary.
-The latter is an owner scope/acceptance decision, not a claim that container repair
-was already implemented. Remote writes and public hosting remain unauthorized.
+The owner approved this boundary and rejected moving third-party tests onto the
+host. Actual Unix communication, strict profiles/paths/mounts, isolation, timeout,
+concurrency, restart and review checks now pass. Remote writes and public hosting
+remain unauthorized; no further host privilege expansion was introduced.
 
 ## Approved implementation refinement
 

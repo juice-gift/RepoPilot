@@ -30,15 +30,18 @@ For the complete long-term product scope, architecture direction, and version ro
 
 Current stage:
 
-**V7 / Pre-V8 engineering is authorized and in progress (2026-11-03). Stop before V8.**
+**V7 / Pre-V8 engineering acceptance is complete (2026-11-03). STOP BEFORE V8.**
 
-Local Pre-V8 implementation, real-repository integration and evaluation are validated.
-Full acceptance remains incomplete: the owner approved a constrained local Sandbox
-Broker on 2026-11-03; implementation and actual container repair validation are pending. See `docs/evaluation/pre-v8-engineering-completion.md` and
-`docs/tasks/pre-v8-executor-decision.md`. Do not mark the goal complete or enter V8.
+The owner-approved constrained Sandbox Broker and actual container repair are
+validated. Final DB/Docker regression: 464 passed /1 optional online MCP skip.
+Fresh Compose, crash recovery, exact review and security/scope audits are complete
+within the trusted-local boundary. Real Qwen failures, five unverified semantic
+outputs, hosted CI not executed and the development credential limitation remain
+recorded in `docs/evaluation/pre-v8-engineering-completion.md`.
 
-The active goal is `docs/goals/pre-v8-engineering.md`, with progress in
-`docs/tasks/pre-v8-plan.md`. It supersedes historical V6/V7 stop notices.
+The completed goal is `docs/goals/pre-v8-engineering.md`, with execution history in
+`docs/tasks/pre-v8-plan.md`. It superseded historical V6/V7 stop notices. No V8,
+new remote publication, public deployment or further feature expansion is authorized.
 The completed goal is `docs/goals/v5-mcp-github.md`; execution history is recorded
 in `docs/tasks/v5-plan.md` and completion evidence in
 `docs/evaluation/v5-mcp-github-completion.md`. The completed V6 goal is
@@ -88,8 +91,9 @@ and saved Snapshots remain unchanged. Investigation stays read-only. The complet
 V4 goal is `docs/goals/v4-issue-resolution-agent.md`. V4 acceptance is complete.
 The separately authorized V5 goal now permits scoped MCP/GitHub integration;
 V6 permits the CLI evaluation harness only. Arbitrary repository execution,
-multiple agents, V8 and unapproved remote mutations remain forbidden. The active
-Pre-V8 goal authorizes containerization and explicitly trusted Python profiles.
+multiple agents, V8 and unapproved remote mutations remain forbidden. The
+completed Pre-V8 goal authorized containerization, explicitly trusted Python
+profiles and the constrained local Broker. Further feature work needs a new task.
 
 ---
 

@@ -1,39 +1,38 @@
-# Pre-V8 security review — 2026-11-03
+# Pre-V8 final security and scope review — 2026-11-03
 
-This is a trusted single-owner local system. The evidence below distinguishes
-automated guarantees, actual runtime observations and remaining risks. It does
-not certify arbitrary hostile-code execution or public hosting.
+Scope: trusted single-owner local deployment, the two audited Python projections
+and the explicitly approved constrained Broker. This records tested properties
+and residual risks; it does not certify public or hostile multi-tenant execution.
 
-| Boundary | Evidence and result | Limit |
+| Boundary | Final evidence | Residual limit |
 | --- | --- | --- |
-| Secrets | test_github_mcp credential/header/redaction cases; test_diagnostics uses sensitive body/query/header/exception sentinels; configured-secret scans of generated evidence found zero matches | Operator must protect ignored environment files, backups and provider configuration; do not enable raw SDK debug logs |
-| Injection and authority | Model/Issue cannot set registry path/hash, image, shell, command or container flags. Invalid paths, edits, tools and schemas are denied before effects. Real ambiguity trial made zero modifications | A model can still write incorrect code or explanations inside approved Python files; source review found a real unsupported timestamp-interval explanation |
-| Paths and links | Workspace unsafe-path/collision/symlink/out-of-band-change tests; atomic multifile patch and rollback; registry symlink/junction denial; source and policy hashes | Trusted filesystem/admin remains part of the trust base; not a race-proof hostile multi-user host |
-| Source/Snapshot isolation | Actual owned-evaluation before/after source and Snapshot comparisons, exact-revision tests and cleanup; original repositories never imported/executed on host | Inputs are reviewed package-source projections, not unrestricted full repository execution |
-| Sandbox | Real Linux Docker preflight: UID/GID 65534, readonly root/inputs, network none, seccomp, no-new-privileges, caps dropped, bounded CPU/memory/pids/output/deadline, no credentials/socket | Docker/host kernel remain trusted. Protected pytest is an engineering test oracle, not adversarial remote attestation against malicious Python manipulating its own interpreter |
-| Cleanup | Actual timeout/cancellation/output/resource-limit probes and exact owned-container cleanup; both real corpus runs clean workspaces and exact-path owned DB rows | Abrupt host death/SIGKILL can interrupt finally blocks. Inspect exact owned labels/names after a crash; never blindly remove unrelated containers |
-| Daemon access | Application container inspect confirms no Docker socket/CLI; sandbox input mounts contain only source and independent validation | Host-local API/executor has local Docker authority. Container repair is currently unavailable rather than receiving uncontrolled daemon authority |
-| Remote credentials | Official endpoint only, no redirects, fixed tool/REST operation schemas, exact repository allowlists, token exclusion/redaction tests; actual MCP reads of both approved public repositories | Existing credential's GitHub-side scopes are managed by the owner; application checks do not enlarge them |
-| Approval and publication | Real DB precise hash/tamper/origin tests, immutable plan/result/revision/policy identity; nested tree blob/mode preservation; changed content invalidates authorization | Local owner controls are not multi-user authentication. Proxy clients do not acquire owner identity merely by setting headers |
-| Concurrent effects/retries | PostgreSQL row locks, durable publishing marker, exact branch/parent/tree/PR checks; ambiguous tree/commit/branch/PR fake-remote outcomes reconcile with no duplicate effects | New actual remote writes were not authorized or executed; fake outcomes are contract evidence only |
-| Dependencies | Locked uv/npm and hash-pinned Sandbox dependencies; no setup hooks/project plugins/network installs in test execution; Vite/source-map-js security fixes; npm audit zero findings at check | General dependency-vulnerability absence is not proven; only the checked advisory/database/runtime scope is claimed |
-| CI | Exact action SHAs, contents-read only, no model keys or publication calls, reviewed runtime image policy kept separate from immutable historical fixtures | Workflow not executed on GitHub; local equivalents do not establish hosted CI success |
-| Network | Application/database Compose ports bind 127.0.0.1; actual fresh stack healthy; sandbox network none. Host verification services bind 127.0.0.1 | No public authentication/authorization/isolation exists; no public deployment/tunnel is approved |
+| Credentials | 441 repository files scanned before closing docs; provider/Broker/new-deployment credential hits 0, runtime log hits 0, image-config hits 0; final-security-scan.json | Original development DB uses the public template credential found in three existing baseline template/test files. New deployments use generated private credentials; existing DB credentials were not altered |
+| Issue/model authority | Strict schemas and fixed profile/baseline/hash/revision; commands, images, host paths, mounts, Docker options and policy uploads denied | Models can produce incorrect code/prose inside the approved edit set; current real Qwen attempts failed safely and earlier unsupported prose remains |
+| Paths/source isolation | Workspace/hash/atomic-patch tests, exact baseline, actual Linux inside/outside symlink denial, independent current-source identities and before/after Snapshot checks | Trusted filesystem/admin remains part of the trust base; no hostile shared-host race-proof guarantee |
+| Broker transport | Private 0600 Unix socket in 0700 directory, per-deployment credential, duplicate framing/auth/chunked/Expect/malformed/oversize rejection, five-second absolute input deadline, four bounded connections | No public listener; policy/credential files and IPC volume must remain operator controlled |
+| Daemon authority | Only Broker receives fixed Docker socket and pinned CLI; nonroot UID, network none, dropped caps, readonly root; private local-volume ownership/mountpoint/resource validation | Broker compromise still confers local Docker authority. Runtime verified only for Docker Desktop Linux/socket group 0; no root fallback |
+| Test containers | Actual fixed nonroot/network-none/readonly/caps/seccomp/resources/timeout/credential checks, approved image and independent validation | Tests cover audited projections and bounded assertions; no general hostile-code attestation or arbitrary dependency support |
+| Concurrency/retry/crash | One active job; real 429 rejection; process lock; persistent pre-effect identity; exact replay/conflict; force-kill cleanup of fully verified owned orphan and pending retry denial | Unexpected orphan metadata, ambiguous pending state or full ledger requires operator review; no automatic blind retry |
+| API/Web owner boundary | Separate private Unix socket volume in Broker mode; no API TCP listener/CLI/socket/execution-data mount; exact Origin and actual Unix address/loopback checked; spoofed forwarding headers denied | Local owner controls are not multi-user/public authentication. Basic mode has no repair executor |
+| GitHub approval/publication | Actual MCP reads, exact result/proposal hashes, tree/mode preservation and fake-remote lock/recovery/tamper tests; proposals await approval | No new actual remote write authorized/executed; historical public upstreams fail the unchanged private-owner/current-main gate |
+| Dependencies/build | uv/npm locks, pinned application/CLI images, protected test image, no runtime installers/plugins/network installs; npm audit zero findings | Dependency-vulnerability absence outside the checked database/date/runtime is not established |
+| CI/network | Pinned action SHAs, contents-read permission, no model/publication secrets, local equivalent checks; loopback host ports, Broker/tests network none | Hosted CI unexecuted; no public deployment/tunnel authorized |
+| Scope | Existing V1–V6 components reused; one owner-approved single-purpose Broker, no new Python package/schema or speculative platform | No V8, multi-agent, queue, Redis, Kubernetes, public demo or unrelated refactor |
 
-Actual failure handling includes provider failure at revision zero, model turn
-exhaustion despite independently passing code, failed baseline tests, stale test
-revision rejection, wrong image/policy rejection, path escape refusal, altered
-approval/result denial, unavailable Docker and forced timeout cleanup. These
-failures are retained rather than rewritten as successful trials.
+Actual negative evidence is retained: failing baselines, provider/max-step failures,
+unknown semantic output, unsupported explanation, stale test identity, illegal path/
+profile/image/approval, unavailable Broker, real timeout and crash ambiguity. Current
+container Qwen failures were not tuned away or relabeled as deterministic success.
 
-No remote push, branch, commit, PR, merge or deletion was performed by this goal.
-The two real upstream proposals remain awaiting approval and would additionally
-fail the unchanged private-owner/current-main publication guard. A separately
-approved private controlled target/policy is required for a publishable repair.
+Final runtime evidence: [Broker checks](pre-v8-broker-final-probe.json),
+[transport/links/unavailable service](pre-v8-broker-final-transport-probe.json),
+[crash recovery](pre-v8-broker-final-restart-probe.json),
+[deployment/persistence](pre-v8-final-deployment-check.json),
+[credential scan](pre-v8-final-security-scan.json).
+[Completion report](pre-v8-engineering-completion.md) maps every Phase criterion.
 
-Open deployment acceptance issue: the full Compose application presently provides
-ingestion/indexing/navigation/RAG/review, while Sandbox repair runs through the
-host-local API. The container stack cannot claim complete Issue Resolution support
-until a bounded execution boundary is implemented or the owner explicitly accepts
-the documented host-local execution deployment. Do not mark the full goal achieved
-by treating this unavailable capability as passing.
+The clean test stack is stopped; volumes and original data retained. The accepted
+local review stack remains available. No owned Sandbox container remains. Full
+implementation whitespace checks pass; the verbatim owner Goal retains intentional
+Markdown line-break spaces. Existing Starlette/AnyIO deprecation remains non-blocking.
+No further architecture, feature work or tuning is authorized by this closure.

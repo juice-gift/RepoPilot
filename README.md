@@ -3,19 +3,23 @@
 
 ## Pre-V8 engineering
 
-V7 / pre-V8 work is authorized and in progress. The active scope and actual
+V7 / pre-V8 engineering acceptance is complete within the approved trusted-local
+boundary. The authorized scope and actual
 validation are tracked in [execution plan](docs/tasks/pre-v8-plan.md).
 Optional trusted-local application containers and their security/backup limits
 are described in [deployment guide](docs/deployment.md). Stop before V8;
 no new remote publication or public hosting is authorized.
 
-Current acceptance: **414 passed /1 disabled online MCP skip**. Two approved real
+Final acceptance: **464 passed /1 disabled online MCP skip**. Two approved real
 Python repositories, actual MCP imports, persisted repairs/exact proposals and
 the V6 trusted-python evaluation adapter are implemented. Scripted and original-Issue
 Qwen trials are recorded separately; a real unsupported explanation and earlier
-failures remain visible. Full acceptance is **incomplete** because container API
-repair is unavailable without a separately approved execution boundary; host-local
-repair works. Hosted CI has not run. See the [acceptance report](docs/evaluation/pre-v8-engineering-completion.md),
+failures remain visible. The owner-approved constrained local Broker now supports
+container repair with fixed profiles, private authenticated Unix communication and
+isolated Docker tests. Fresh-volume startup, restart and crash recovery pass.
+Current container Qwen attempts both failed safely at the step limit; five frozen
+semantic outputs remain unverified. Hosted CI has not run, and the original local
+development DB still uses its public template credential. See the [acceptance report](docs/evaluation/pre-v8-engineering-completion.md),
 [security review](docs/evaluation/pre-v8-security-review.md) and
 [execution-boundary decision](docs/tasks/pre-v8-executor-decision.md).
 
@@ -67,12 +71,14 @@ repository, baseline, branch, full diff, test revision, expected commit and draf
 description before approving. Approval binds the complete proposal digest. Changed
 source, result, destination or baseline requires new approval; remote content and
 model prose cannot grant permission. POST workflow controls require a loopback
-client and the configured frontend Origin. Run the API on 127.0.0.1; this local
+client or the explicitly configured private API Unix socket, plus the configured
+frontend Origin. Run the host API on 127.0.0.1; this local
 single-owner boundary is not production authentication.
 
-GitHub endpoints under `/api/github`: GET `bindings` and `runs`; POST `import`,
+GitHub endpoints under `/api/github`: GET `trusted-profiles`, `bindings` and `runs`;
+POST `import-trusted` selects one server-approved Python profile. POST `import`,
 `runs` and `proposals`; GET `proposals/{id}`; POST `proposals/{id}/approve`,
-`revoke` or `publish`. Import accepts only an authorized exact frozen fixture and
+`revoke` or `publish`. The `import` endpoint accepts an authorized exact frozen fixture and
 its SHA/three Issue numbers. Repair accepts only a saved binding id; proposal
 creation accepts only a saved run id. Callers cannot supply source, test profiles,
 branch names, patches or approval evidence in those requests. Approval requires the

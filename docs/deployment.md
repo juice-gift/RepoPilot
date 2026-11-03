@@ -105,8 +105,9 @@ Do not scale Broker or share its data volume with another service.
 For live models/MCP reads, a private API-only override may map approved provider
 credentials and exact models. Never forward these variables to Broker. Remote
 publication remains separately unauthorized, even when local repair succeeds.
-Evidence: `pre-v8-broker-probe.json` and `pre-v8-broker-restart-probe.json` under
-`docs/evaluation`; complete Web workflow/final acceptance are still being checked.
+Final actual evidence is recorded in `docs/evaluation/pre-v8-broker-final-*.json`,
+the fresh-policy/Compose reports and the completed HTTP/review flow. The criterion
+audit and retained live-model failures are in the completion report.
 
 ## Diagnostics
 
@@ -143,7 +144,11 @@ Publication credentials and external providers must stay disabled during recover
 GitHub Actions is defined with pinned actions, contents-read permissions and no
 model/GitHub secrets. A local successful equivalent is not a GitHub-hosted CI run.
 Actual commands/results and remaining acceptance are tracked in
-[execution plan](tasks/pre-v8-plan.md); the entire pre-V8 goal is still in progress.
+[completed execution plan](tasks/pre-v8-plan.md) and
+[completion report](evaluation/pre-v8-engineering-completion.md). The original
+development DB still uses its public template credential; new acceptance deployments
+use generated private credentials. No existing DB credentials were changed. Keep
+the trusted-local boundary; hosted CI remains unexecuted and V8 is unauthorized.
 
 Implementation references: [uv Docker guide](https://docs.astral.sh/uv/guides/integration/docker/),
 [Compose dependency readiness](https://docs.docker.com/compose/how-tos/startup-order/),

@@ -1,0 +1,15 @@
+{
+  "repository_files_checked": 441,
+  "provider_broker_new_deployment_credentials_checked": 5,
+  "provider_broker_new_deployment_file_hits": 0,
+  "container_log_hits": 0,
+  "image_configuration_hits": 0,
+  "existing_development_database_uses_public_template_credential": true,
+  "existing_baseline_placeholder_files": [
+    ".env.example",
+    "apps/api/tests/conftest.py",
+    "apps/api/tests/test_database_health.py"
+  ],
+  "existing_credentials_changed": false,
+  "credentials_printed": false
+}
