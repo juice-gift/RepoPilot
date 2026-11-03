@@ -93,6 +93,56 @@ def test_real_react_tsx_does_not_crash_native_parser() -> None:
     assert result.returncode == 0, result.stdout + result.stderr
 
 
+def test_real_agent_result_tsx_symbols_imports_and_ranges() -> None:
+    path = Path(__file__).resolve().parents[2] / "web/src/AgentResult.tsx"
+    source = path.read_text(encoding="utf-8")
+    assert "Tool calls & observations" in source
+    result = analyze_source(source, "tsx")
+    assert [(s.name, s.kind, s.exported) for s in result.symbols] == [
+        ("InvestigationResult", "function", True),
+        ("InvestigationSources", "function", True),
+    ]
+    lines = source.splitlines()
+    for symbol in result.symbols:
+        assert lines[symbol.start_line - 1].startswith(f"export function {symbol.name}")
+        assert lines[symbol.end_line - 1] == "}"
+    assert [(i.module, i.name) for i in result.imports] == [
+        ("./api/agent", "AgentResult")
+    ]
+    assert result == analyze_source(source, "tsx")
+
+
+@pytest.mark.parametrize("language", ["tsx", "jsx"])
+def test_jsx_text_ampersands_preserve_expression_and_utf8_locations(
+    language: str,
+) -> None:
+    source = "export const View = () => <>中文 & text &amp; &#38; {left & right}<b/> A & B {go()}</>;"
+    result = analyze_source(source, language)
+    assert [s.name for s in result.symbols] == ["View"]
+    assert {r.name for r in result.references} >= {"left", "right", "go"}
+    assert not any(r.name in {"text", "A", "B"} for r in result.references)
+    call = next(r for r in result.references if r.name == "go")
+    assert call.column == len(source[: source.index("go")].encode("utf-8")) + 1
+
+
+@pytest.mark.parametrize("language", ["tsx", "jsx"])
+@pytest.mark.parametrize(
+    "source",
+    [
+        "const V = () => <p>A & B {broken(}</p>;",
+        "const V = () => <p>A & B</p>; const broken = ;",
+        "const V = () => <p>{a & }</p>;",
+        "const V = () => <p value={a & }>A & B</p>;",
+        "const V = () => <p>A & B > C</p>;",
+    ],
+)
+def test_ampersand_compatibility_still_rejects_invalid_syntax(
+    language: str, source: str
+) -> None:
+    with pytest.raises(AnalysisError, match=r"(ERROR|MISSING).*at \d+:\d+"):
+        analyze_source(source, language)
+
+
 @pytest.mark.parametrize(
     "language, source",
     [

@@ -26,9 +26,59 @@ def analyze_javascript(content: str, language: str) -> Analysis:
     parser = Parser(Language(grammar))
     tree = parser.parse(source_bytes)
     root = tree.root_node
+    parse_source = source_bytes
+    while root.has_error and language in {"tsx", "jsx"}:
+        # The pinned grammar rejects bare '&' in JSX text accepted by tsc.
+        # Use recognized JSX boundaries, even when error recovery puts the
+        # opening tag under ERROR. Mask text only, keeping UTF-8 offsets and
+        # newlines intact. Expressions/attributes/delimiters are never changed;
+        # extraction still reads the original source and reparse must be clean.
+        compatible = bytearray(parse_source)
+        pending = [root]
+        while pending:
+            node = pending.pop()
+            if node.type == "jsx_opening_element" or (
+                node.parent is not None
+                and node.parent.type == "jsx_element"
+                and node.type
+                in {
+                    "jsx_text",
+                    "jsx_expression",
+                    "jsx_self_closing_element",
+                    "jsx_element",
+                }
+            ):
+                position = node.end_byte
+                while position < len(source_bytes):
+                    character = source_bytes[position]
+                    if character in b"<>{}":
+                        break
+                    if character == ord("&"):
+                        compatible[position] = ord(" ")
+                    position += 1
+            pending.extend(node.children)
+        if compatible == parse_source:
+            break
+        # Recovery may expose another JSX text region. Each retry must mask
+        # at least one additional '&', so this loop always makes progress.
+        parse_source = bytes(compatible)
+        tree = parser.parse(parse_source)
+        root = tree.root_node
     if root.has_error:
+        pending = [root]
+        locations = []
+        while pending and len(locations) < 5:
+            node = pending.pop()
+            if node.is_error or node.is_missing:
+                kind = f"MISSING {node.type}" if node.is_missing else "ERROR"
+                locations.append(
+                    f"{kind} at {node.start_point.row + 1}:"
+                    f"{node.start_point.column + 1}"
+                )
+            pending.extend(reversed(node.children))
         raise AnalysisError(
-            "JavaScript/TypeScript syntax tree contains errors or missing nodes"
+            "JavaScript/TypeScript syntax tree contains errors or missing nodes: "
+            + "; ".join(locations)
         )
     analyzer = _JavaScriptAnalyzer(language, source_bytes)
     try:
