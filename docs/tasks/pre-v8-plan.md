@@ -148,3 +148,14 @@ Docker skips without opt-in). Frontend TypeScript/production build passed.
 Full DB/Docker/trusted suite on 8b97521: 400 passed /1 disabled online MCP skip,
 154.71s; this predates the six new catalog/fake-publication tests. Final D rerun
 must use the current committed code and all applicable opt-ins.
+
+V6 frozen CLI regression on 29fd645 completed successfully: original 17-task dataset
+unchanged; retrieval/structure and three resolution cases passed, five semantic
+outputs remain explicitly unverified. JSON/Markdown saved as
+pre-v8-v6-frozen-regression.*. No old revision or scripted semantic claim promoted
+to a live quality PASS. New full DB/Docker/trusted suite running in exec session
+81633; poll that exact session instead of restarting it. Next D3 work: add a narrow
+trusted-Python harness adapter/subcommand reusing CaseResult, resolution_checks,
+aggregate and save_report, with independently measured cleanup/source/Snapshot
+integrity and policy/revision identities. Preserve previous live trial failures
+and distinguish reviewed task summaries from original bound Issue inputs.
