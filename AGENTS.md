@@ -30,14 +30,16 @@ For the complete long-term product scope, architecture direction, and version ro
 
 Current stage:
 
-**V6 — Evaluation System is complete (2026-10-29). Stop at V6 / V7.**
+**V7 / Pre-V8 engineering is authorized and in progress (2026-11-03). Stop before V8.**
 
+The active goal is `docs/goals/pre-v8-engineering.md`, with progress in
+`docs/tasks/pre-v8-plan.md`. It supersedes historical V6/V7 stop notices.
 The completed goal is `docs/goals/v5-mcp-github.md`; execution history is recorded
 in `docs/tasks/v5-plan.md` and completion evidence in
 `docs/evaluation/v5-mcp-github-completion.md`. The active V6 goal is
 `docs/goals/v6-evaluation.md`; progress is in `docs/tasks/v6-plan.md`. Completion evidence is in
 `docs/evaluation/v6-evaluation-completion.md`: 360 passed / 1 disabled online MCP
-skip; actual Qwen failures and review limitations remain recorded. Stop before V7. Remote
+skip; actual Qwen failures and review limitations remain recorded. Remote
 writes still require explicit human approval of a concrete publication proposal.
 
 V4 M0–M6 are complete. Local/database/Docker regressions pass, two real Qwen positive
@@ -81,7 +83,8 @@ and saved Snapshots remain unchanged. Investigation stays read-only. The complet
 V4 goal is `docs/goals/v4-issue-resolution-agent.md`. V4 acceptance is complete.
 The separately authorized V5 goal now permits scoped MCP/GitHub integration;
 V6 permits the CLI evaluation harness only. Arbitrary repository execution,
-multiple agents, V7 and unapproved remote mutations remain forbidden.
+multiple agents, V8 and unapproved remote mutations remain forbidden. The active
+Pre-V8 goal authorizes containerization and explicitly trusted Python profiles.
 
 ---
 
@@ -1129,5 +1132,6 @@ Every meaningful addition should provide at least one of:
 If a feature provides none of these:
 
 do not build it.
+
 
 
