@@ -2323,6 +2323,8 @@ RepoPilot 才真正成为我的简历项目。
 
 # 五十七、当前执行状态
 
+2026-11-03：新的 `docs/goals/pre-v8-engineering.md` 已授权 V7、受信任 Python 仓库通用化和 V8 前集成。执行计划为 `docs/tasks/pre-v8-plan.md`；当前正在实施，尚未完成全部验收。历史 V6/V7 停止声明由本授权覆盖；仍禁止 V8、未授权远程写入及公开部署。
+
 当前状态：
 
 - Stage 0 — Project Inception 已完成
@@ -2461,4 +2463,3 @@ RepoPilot 追求：
 
 1. 做出真正有意义的 AI Developer Tool。
 2. 让我能够凭这个项目证明真实的 AI 应用 / Agent 工程能力。
-

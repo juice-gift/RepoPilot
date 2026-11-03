@@ -28,3 +28,31 @@ Validation: Docker 29.7.2 available, prepared v4 sandbox image 71aebb88109c;
 existing database started without volume deletion. Frontend npm run build passed.
 Ordinary backend baseline running. Live GitHub workflow execution unavailable
 without remote write authorization; local checks cannot be called GitHub CI PASS.
+
+2026-11-03 M0 baseline complete: ordinary 310 passed /64 opt-in skips;
+live DB/Docker 373 passed /1 disabled online MCP skip; Ruff, Alembic
+0008 current/check and npm build passed. Fetch confirms main only adds V6 merge.
+
+A1 implemented and actually started: immutable API/Web base images, locked
+installs, nonroot/read-only containers, isolated app override Compose, migration
+completion gate, loopback proxy, no Docker CLI/socket/credentials in API image.
+Database/API/Web healthy. HTTP ingest -> 19 chunks -> deterministic RAG with one
+citation passed and survived API/Web stop/start (repo 1187 / snapshot 1383).
+Runtime inspect confirms API no published port, read-only /repositories only;
+image scan found no .env/Git/node_modules. Source contexts reduced to ~623KB API
+and ~62KB changed Web input. Initial malformed tmpfs YAML was rejected by Docker,
+quoted list entries corrected before successful startup. No isolation relaxation.
+Backup restored into NEW pre_v8_restore_20261103 DB: Alembic 0008 and 17 snapshots
+read back. Original volume untouched. Repeat final quiescent acceptance pending.
+
+A2 initial regression after metadata diagnostics/config changes: 376 passed /
+1 disabled live MCP skip, 160.17s. Focused config/logging/provider tests 28 passed.
+Further bounded SDK defaults/investigation log changes need final regression.
+No package/schema additions. npm audit found two existing high dependencies;
+compatible lock-only patches Vite 7.3.7 and source-map-js 1.2.2 yield zero findings.
+
+A3 CI defined with exact verified action SHAs, locked tooling, DB/Sandbox tests,
+image builds and isolated Compose smoke. NOT run on GitHub (no remote writes).
+Local deployment operations/backup guidance exists; browser UI check pending.
+Phase B repository identities requested asynchronously under explicit trust rule;
+configuration/guard implementation can proceed without executing external code.

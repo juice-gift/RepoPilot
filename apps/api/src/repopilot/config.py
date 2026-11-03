@@ -2,14 +2,15 @@ import re
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, SecretStr, field_validator
+from pydantic import Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[4]
 
 
 class Settings(BaseSettings):
-    database_url: str = Field(min_length=1)
+    environment: Literal["development", "test", "deployment"] = "development"
+    database_url: str = Field(min_length=1, repr=False)
     frontend_origin: str = Field(default="http://localhost:5173", min_length=1)
     repository_allowed_root: Path = REPOSITORY_ROOT
     embedding_provider: Literal["openai", "qwen", "deterministic"] = "openai"
@@ -53,6 +54,41 @@ class Settings(BaseSettings):
         extra="ignore",
         hide_input_in_errors=True,
     )
+
+    @model_validator(mode="after")
+    def require_explicit_deployment_settings(self) -> "Settings":
+        if self.environment != "deployment":
+            return self
+        required = {
+            "database_url",
+            "frontend_origin",
+            "repository_allowed_root",
+            "embedding_provider",
+            "generation_provider",
+            "embedding_dimensions",
+        }
+        if required - self.model_fields_set:
+            raise ValueError(
+                "Deployment requires explicit settings: "
+                + ", ".join(sorted(required - self.model_fields_set))
+            )
+        for provider, model in (
+            (self.embedding_provider, "embedding_model"),
+            (self.generation_provider, "generation_model"),
+        ):
+            if provider == "deterministic":
+                continue
+            model_field = "qwen_" + model if provider == "qwen" else model
+            key = self.dashscope_api_key if provider == "qwen" else self.openai_api_key
+            if (
+                model_field not in self.model_fields_set
+                or not key
+                or not key.get_secret_value()
+            ):
+                raise ValueError(
+                    "Deployment external providers need explicit models and credentials"
+                )
+        return self
 
     @field_validator("database_url")
     @classmethod

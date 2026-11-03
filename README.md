@@ -1,5 +1,14 @@
 # RepoPilot
 
+
+# Pre-V8 engineering
+
+V7 / pre-V8 work is authorized and in progress. The active scope and actual
+validation are tracked in [execution plan](docs/tasks/pre-v8-plan.md).
+Optional trusted-local application containers and their security/backup limits
+are described in [deployment guide](docs/deployment.md). Stop before V8;
+no new remote publication or public hosting is authorized.
+
 RepoPilot is a long-term AI codebase intelligence and issue-resolution system.
 
 **Stage 0, V1 — Codebase RAG, V2 — Code Intelligence, and V3 — Read-only Repository Agent are complete.**

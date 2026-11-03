@@ -1,0 +1,75 @@
+name: engineering
+on: [push, pull_request]
+permissions:
+  contents: read
+concurrency:
+  group: engineering-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      ENVIRONMENT: test
+      DATABASE_URL: postgresql+psycopg://repopilot:ci-local-only@127.0.0.1:5432/repopilot?connect_timeout=3
+      EMBEDDING_PROVIDER: deterministic
+      GENERATION_PROVIDER: deterministic
+      RUN_DATABASE_TESTS: '1'
+      RUN_SANDBOX_TESTS: '1'
+    services:
+      database:
+        image: pgvector/pgvector:0.8.6-pg17
+        env:
+          POSTGRES_DB: repopilot
+          POSTGRES_USER: repopilot
+          POSTGRES_PASSWORD: ci-local-only
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U repopilot -d repopilot"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.13'
+      - uses: astral-sh/setup-uv@d0d8abe699bfb85fec6de9f7adb5ae17292296ff # v6
+        with:
+          version: '0.11.8'
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Locked backend environment
+        working-directory: apps/api
+        run: uv sync --locked
+      - name: Sandbox image (no host execution of repository code)
+        run: docker build -t repopilot-tests:v4 apps/api/sandbox
+      - name: Ruff, migrations and complete offline regression
+        working-directory: apps/api
+        run: |
+          uv run ruff check src tests migrations
+          uv run alembic upgrade head
+          uv run alembic current
+          uv run alembic check
+          uv run pytest -q
+      - name: Frontend lock, audit, type check and build
+        working-directory: apps/web
+        run: |
+          npm ci --ignore-scripts
+          npm audit --audit-level=high
+          npm run build
+      - name: Application images
+        run: |
+          docker build -f apps/api/Dockerfile -t repopilot-api:local .
+          docker build -f apps/web/Dockerfile -t repopilot-web:local .
+      - name: Isolated full stack and HTTP smoke
+        env:
+          POSTGRES_DB: repopilot
+          POSTGRES_USER: repopilot
+          POSTGRES_PASSWORD: ci-stack-only
+          POSTGRES_PORT: '55432'
+          CONTAINER_DATABASE_URL: postgresql+psycopg://repopilot:ci-stack-only@database:5432/repopilot?connect_timeout=3
+        run: |
+          docker compose -p repopilot-ci -f compose.yaml -f compose.app.yaml --profile app up -d --build --wait
+          python scripts/compose_smoke.py
