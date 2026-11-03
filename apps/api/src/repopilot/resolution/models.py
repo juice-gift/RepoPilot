@@ -1,13 +1,16 @@
 """Resolution contracts are separate from V3 source-only observations."""
 
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from repopilot.resolution.patch import ChangedFile, PatchRecord
 from repopilot.resolution.sandbox import TestResult
 
-CaseId = Literal["fee-days", "dispatch-preconditions", "ambiguous-cap"]
+CaseId = (
+    Literal["fee-days", "dispatch-preconditions", "ambiguous-cap"]
+    | Annotated[str, Field(pattern=r"^trusted-[a-z0-9-]{1,48}$")]
+)
 
 
 class ResolutionRequest(BaseModel):

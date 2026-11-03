@@ -4,6 +4,7 @@ import hashlib
 import json
 from collections.abc import Mapping
 from dataclasses import dataclass
+from pathlib import Path
 from types import MappingProxyType
 
 from repopilot.config import REPOSITORY_ROOT
@@ -26,6 +27,30 @@ class TestProfile:
     expected_decision: str
     baseline_failures: int
     expected_tests: int
+    repository: str | None = None
+    commit_sha: str | None = None
+    image_id: str | None = None
+    import_root: str = "."
+    source_evidence_limit: int = 40_000
+
+    def fingerprint(self) -> str:
+        data = {
+            "id": self.case_id,
+            "issue": self.issue,
+            "sources": dict(self.expected_sources),
+            "editable": sorted(self.editable_paths),
+            "validation": {
+                p: hashlib.sha256(b).hexdigest() for p, b in self.validation.items()
+            },
+            "repository": self.repository,
+            "commit": self.commit_sha,
+            "image": self.image_id,
+            "import_root": self.import_root,
+            "expected_tests": self.expected_tests,
+            "baseline_failures": self.baseline_failures,
+            "source_evidence_limit": self.source_evidence_limit,
+        }
+        return hashlib.sha256(json.dumps(data, sort_keys=True).encode()).hexdigest()
 
     def require_snapshot(self, sources: Mapping[str, str]) -> None:
         if {path: digest(content) for path, content in sources.items()} != dict(
@@ -36,7 +61,16 @@ class TestProfile:
             )
 
 
-def load_profile(case_id: str) -> TestProfile:
+def load_profile(
+    case_id: str,
+    *,
+    registry_path: Path | None = None,
+    registry_digest: str | None = None,
+) -> TestProfile:
+    if case_id.startswith("trusted-"):
+        from repopilot.resolution.trusted_profiles import load_trusted_profile
+
+        return load_trusted_profile(case_id, registry_path, registry_digest)
     # No paths, images, commands or test arguments are taken from a caller/model.
     manifest = json.loads((GOLDEN_ROOT / "manifest.json").read_text(encoding="utf-8"))
     encoded = json.dumps(manifest, sort_keys=True, separators=(",", ":")).encode()

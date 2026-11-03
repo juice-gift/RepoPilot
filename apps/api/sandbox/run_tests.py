@@ -31,7 +31,10 @@ except Exception:
 
 print("REPOPILOT_ISOLATION=" + json.dumps(evidence, sort_keys=True), flush=True)
 os.environ["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
-sys.path.insert(0, "/workspace")
+policy_path = pathlib.Path("/validation/profile.json")
+policy = json.loads(policy_path.read_text()) if policy_path.exists() else {"import_root": "."}
+assert policy == {"import_root": "."} or policy == {"import_root": "src"}
+sys.path.insert(0, str(pathlib.Path("/workspace") / policy["import_root"]))
 import pytest  # noqa: E402 - only after mandatory isolation checks
 
 # Absolute independent test path; ignore project config/plugins and cache writes.

@@ -47,6 +47,10 @@ class Settings(BaseSettings):
     resolution_sandbox_image: str | None = Field(
         default=None, pattern=r"^sha256:[0-9a-f]{64}$"
     )
+    trusted_profile_registry: Path | None = None
+    trusted_profile_registry_sha256: str | None = Field(
+        default=None, pattern=r"^[a-f0-9]{64}$"
+    )
 
     model_config = SettingsConfigDict(
         env_file=REPOSITORY_ROOT / ".env",
@@ -57,6 +61,19 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def require_explicit_deployment_settings(self) -> "Settings":
+        if (self.trusted_profile_registry is None) != (
+            self.trusted_profile_registry_sha256 is None
+        ):
+            raise ValueError(
+                "Trusted profile registry requires its exact approved SHA256"
+            )
+        if (
+            self.trusted_profile_registry is not None
+            and not self.trusted_profile_registry.is_absolute()
+        ):
+            raise ValueError(
+                "Trusted profile registry requires an absolute operator-owned path"
+            )
         if self.environment != "deployment":
             return self
         required = {

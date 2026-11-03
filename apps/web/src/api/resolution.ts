@@ -1,6 +1,6 @@
 import { isRecord, requestJson } from "./client";
 
-export type ResolutionProfile = "fee-days" | "dispatch-preconditions" | "ambiguous-cap";
+export type ResolutionProfile = "fee-days" | "dispatch-preconditions" | "ambiguous-cap" | `trusted-${string}`;
 interface Plan {
   expected_revision: number;
   decision: "repair" | "needs_owner_decision" | "insufficient_evidence";
@@ -75,7 +75,9 @@ export function isResolutionResult(value: unknown): value is ResolutionResult {
   const d = value.diagnostics;
   return ["repository_id", "snapshot_id", "revision"].every((k) => typeof value[k] === "number")
     && typeof value.workspace_id === "string" && typeof value.final_answer === "string" && typeof value.patch === "string"
-    && ["fee-days", "dispatch-preconditions", "ambiguous-cap"].some((v) => v === value.profile)
+    && typeof value.profile === "string"
+    && (["fee-days", "dispatch-preconditions", "ambiguous-cap"].includes(value.profile)
+      || /^trusted-[a-z0-9-]{1,48}$/.test(value.profile))
     && (value.execution_status === "completed" || value.execution_status === "stopped")
     && repairStatuses.some((v) => v === value.repair_status) && stopReasons.some((v) => v === value.stop_reason)
     && typeof value.workspace_cleaned === "boolean"

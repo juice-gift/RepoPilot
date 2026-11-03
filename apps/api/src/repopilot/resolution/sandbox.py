@@ -9,8 +9,9 @@ from pathlib import Path
 from time import monotonic
 from uuid import uuid4
 
-from pydantic import BaseModel, computed_field
+from pydantic import BaseModel, Field, computed_field
 
+from repopilot.diagnostics import event
 from repopilot.resolution.profiles import TestProfile
 from repopilot.resolution.workspace import Workspace, WorkspaceError
 
@@ -37,6 +38,9 @@ class TestResult(BaseModel):
     cleanup_confirmed: bool = False
     expected_tests: int = 0
     observed_passed: int = 0
+    profile_hash: str = ""
+    image_id: str | None = None
+    command: list[str] = Field(default_factory=list)
 
     @computed_field
     @property
@@ -277,6 +281,9 @@ class SandboxExecutor:
             stderr="",
             elapsed_ms=0,
             expected_tests=profile.expected_tests,
+            profile_hash=profile.fingerprint(),
+            image_id=self.image_id,
+            command=["python", "-I", "-B", "/opt/repopilot/run_tests.py"],
         )
         attempted = False
         validation = workspace.root / ("validation-" + uuid4().hex)
@@ -291,6 +298,8 @@ class SandboxExecutor:
         try:
             workspace.verify()
             profile.require_snapshot(workspace.baseline)
+            if profile.image_id and profile.image_id != self.image_id:
+                raise SandboxError("Sandbox image differs from approved profile")
             if not profile.validation:
                 raise SandboxError("This issue has no executable validation profile")
             endpoint = json.loads(invoke("context", "inspect"))[0]["Endpoints"][
@@ -304,6 +313,8 @@ class SandboxExecutor:
             ):
                 raise SandboxError("Linux Docker with seccomp is required")
             validation.mkdir(mode=0o755)
+            policy = json.dumps({"import_root": profile.import_root}).encode()
+            (validation / "profile.json").write_bytes(policy)
             for filename, content in profile.validation.items():
                 if not re.fullmatch(r"test_[a-z_]+\.py", filename):
                     raise SandboxError("Invalid controlled validation filename")
@@ -335,6 +346,8 @@ class SandboxExecutor:
                     if not result.isolation_confirmed:
                         raise SandboxError("Runtime isolation preflight failed")
             workspace.verify()
+            if (validation / "profile.json").read_bytes() != policy:
+                raise SandboxError("Sandbox policy changed")
             if any(
                 (validation / p).read_bytes() != data
                 for p, data in profile.validation.items()
@@ -371,4 +384,14 @@ class SandboxExecutor:
             else:
                 result.cleanup_confirmed = True
             result.elapsed_ms = round((monotonic() - started) * 1000, 3)
+            event(
+                "sandbox.test",
+                revision=result.revision,
+                passed=result.passed,
+                timed_out=result.timed_out,
+                exit_code=result.exit_code,
+                isolation=result.isolation_confirmed,
+                cleanup=result.cleanup_confirmed,
+                elapsed_ms=result.elapsed_ms,
+            )
         return result

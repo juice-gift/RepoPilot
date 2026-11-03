@@ -99,7 +99,11 @@ class ResolutionTools:
             baseline,
         )
         self.reader = WorkspaceReader(workspace)
-        self.patch_engine = PatchEngine(workspace, profile.editable_paths)
+        self.patch_engine = PatchEngine(
+            workspace,
+            profile.editable_paths,
+            source_evidence_limit=profile.source_evidence_limit,
+        )
         self.plans: list[ResolutionPlan] = []
         self.tests: list[TestResult] = []
         self.patch_attempts = 0

@@ -1,0 +1,8 @@
+{
+  "number": 1336,
+  "html_url": "https://github.com/more-itertools/more-itertools/issues/1336",
+  "repository": "more-itertools/more-itertools",
+  "body": "With `window_size > 1`, `replace()` yields an item for an empty iterable, and *pred* gets called with a `None` that isn't in the input:\n\n```python\n>>> from more_itertools import replace\n>>> list(replace([], lambda *args: False, [9], window_size=2))\n[None]\n>>> list(replace([], lambda *args: True, [9], window_size=2))\n[9]\n>>> list(replace([], lambda *args: False, [9]))  # window_size=1 is fine\n[]\n```\n\n`replace()` pads the iterable with `window_size - 1` `_marker`s and then strips them from each window. For an empty iterable that padding is still one item shorter than a window, so `windowed()` fills the rest with its default `fillvalue=None`, which the marker stripping doesn't remove. `locate()` avoids this by passing `fillvalue=_marker` to `windowed()`.\n\nSame result on 11.1.0 and on master.\n",
+  "title": "replace() yields None for an empty iterable when window_size > 1",
+  "id": 5979796806
+}

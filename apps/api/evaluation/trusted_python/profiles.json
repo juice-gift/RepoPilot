@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "profiles": [
+    {
+      "id": "trusted-itsdangerous",
+      "repository": "pallets/itsdangerous",
+      "commit_sha": "1a9b8d1f9968eb248bda69f39d373a6330b692ba",
+      "issue": "GitHub issue pallets/itsdangerous#126: TimestampSigner accepts correctly signed timestamps from the future when max_age is supplied. Reject a negative age with SignatureExpired while preserving valid, expired, and unlimited-age behavior.",
+      "image_id": "sha256:8aa71903f763491db90e2fa2ec4f60944b57aef16dd874aaf8817d43e880d958",
+      "import_root": "src",
+      "expected_sources": {
+        "src/itsdangerous/__init__.py": "09dca301d34d47df8b258f4fbbced55430ae43ca0858e7e4a23c438572a64b28",
+        "src/itsdangerous/_json.py": "5943004fb3d2c84be305a36946b1bfb371b60c6380d13ceb037655813a792bd2",
+        "src/itsdangerous/encoding.py": "3c6192ed5dd7731c8f84665ff7ccee2124f1e504d5481167155d5a7489106ac8",
+        "src/itsdangerous/exc.py": "25307d061d4fdc5856c25b86c0be7f4a6cafd79f944f8f78c7ba0b3f372cdc95",
+        "src/itsdangerous/jws.py": "03ade0da2f0447c31875c7771548b6a5d3d3d58bed74bc0652dbd860c91be22a",
+        "src/itsdangerous/serializer.py": "5549cda3779af4f6b0e1ece42975cba13006d83813d27b86781415d156b5c63a",
+        "src/itsdangerous/signer.py": "3ef671ac4f78263a537c6c2ff804e00c82a37514b635420d38a2964b10890c62",
+        "src/itsdangerous/timed.py": "f0be07c03a26203279dec588d965f6af7a00013afa3ebeb223568990a3c67290",
+        "src/itsdangerous/url_safe.py": "8b478133d0d4e12767aad41a63a2867a49a74fa5a0254a3bec3a9cce456190a3"
+      },
+      "editable_paths": [
+        "src/itsdangerous/timed.py"
+      ],
+      "validation": {
+        "test_future_timestamp.py": "import pytest\nimport itsdangerous\nfrom itsdangerous import SignatureExpired, TimestampSigner\n\nassert itsdangerous.__file__.startswith(\"/workspace/src/itsdangerous/\")\n\n\nclass ClockSigner(TimestampSigner):\n    now = 10000\n\n    def get_timestamp(self):\n        return self.now\n\n\n@pytest.mark.parametrize(\"max_age\", [0, 10, 60])\ndef test_future_timestamp_is_rejected(max_age):\n    signer = ClockSigner(\"offline-test-key\")\n    signed = signer.sign(b\"payload\")\n    signer.now = 9999\n    with pytest.raises(SignatureExpired):\n        signer.unsign(signed, max_age=max_age)\n\n\n@pytest.mark.parametrize(\"age,max_age\", [(0, 0), (1, 5), (5, 5)])\ndef test_valid_age_is_accepted(age, max_age):\n    signer = ClockSigner(\"offline-test-key\")\n    signed = signer.sign(b\"payload\")\n    signer.now += age\n    assert signer.unsign(signed, max_age=max_age) == b\"payload\"\n\n\ndef test_old_timestamp_is_rejected():\n    signer = ClockSigner(\"offline-test-key\")\n    signed = signer.sign(b\"payload\")\n    signer.now += 11\n    with pytest.raises(SignatureExpired):\n        signer.unsign(signed, max_age=10)\n\n\ndef test_no_age_limit_preserves_existing_behavior():\n    signer = ClockSigner(\"offline-test-key\")\n    signed = signer.sign(b\"payload\")\n    signer.now -= 1\n    assert signer.unsign(signed) == b\"payload\"\n"
+      },
+      "expected_tests": 8,
+      "baseline_failures": 3,
+      "source_evidence_limit": 40000
+    },
+    {
+      "id": "trusted-more-itertools",
+      "repository": "more-itertools/more-itertools",
+      "commit_sha": "64be96ceb2a6e836f76f069f4a96d2394d59fd0c",
+      "issue": "GitHub issue more-itertools/more-itertools#1336: replace produces padding or replacement output for an empty iterable with window_size greater than one. Empty input must yield nothing for either predicate outcome; preserve genuine None values and normal replacement behavior.",
+      "image_id": "sha256:8aa71903f763491db90e2fa2ec4f60944b57aef16dd874aaf8817d43e880d958",
+      "import_root": ".",
+      "expected_sources": {
+        "more_itertools/__init__.py": "19cb2d318e8d45eb7d56136a55f1452c9469d21597571c31d752aa8232a2c07b",
+        "more_itertools/more.py": "f2ad17370b06905e981b524213395f0dee3d072e9c3ddab3d65e671f324e5ace",
+        "more_itertools/recipes.py": "6aff1f84b0a70b96c102e3b92a70539255f1489765fc54140b1c1478f95b4828"
+      },
+      "editable_paths": [
+        "more_itertools/more.py"
+      ],
+      "validation": {
+        "test_replace_empty.py": "import pytest\nimport more_itertools\nfrom more_itertools import replace\n\nassert more_itertools.__file__.startswith(\"/workspace/more_itertools/\")\n\n\n@pytest.mark.parametrize(\"window_size\", [2, 3, 4])\n@pytest.mark.parametrize(\"match\", [False, True])\ndef test_empty_input_never_yields_padding(window_size, match):\n    assert list(replace([], lambda *args: match, [9], window_size=window_size)) == []\n\n\ndef test_actual_none_is_preserved():\n    assert list(replace([None], lambda *args: False, [9], window_size=2)) == [None]\n\n\ndef test_normal_replacement_is_preserved():\n    assert list(replace([1, 2, 3], lambda *args: args == (1, 2), [9], window_size=2)) == [9, 3]\n\n\ndef test_default_empty_input():\n    assert list(replace([], lambda *args: True, [9])) == []\n"
+      },
+      "expected_tests": 9,
+      "baseline_failures": 6,
+      "source_evidence_limit": 500000
+    }
+  ]
+}
