@@ -237,6 +237,39 @@ def test_changed_validation_invalidates_profile_identity(tmp_path):
     assert before != after
 
 
+def test_profile_catalog_exposes_only_approved_allowed_identity(tmp_path):
+    from unittest.mock import MagicMock
+
+    from sqlalchemy.orm import Session
+    from test_structure_api import client_for
+
+    data = policy()
+    data["profiles"][0].update(issue_number=12, original_issue_body="Original issue")
+    approval = approve(tmp_path, data)
+    with client_for(MagicMock(spec=Session), tmp_path) as client:
+        settings = client.app.state.settings
+        settings.trusted_profile_registry = None
+        assert client.get("/api/github/trusted-profiles").json() == []
+        settings.trusted_profile_registry = approval["registry_path"]
+        settings.trusted_profile_registry_sha256 = approval["registry_digest"]
+        settings.github_mcp_allowed_repositories = []
+        assert client.get("/api/github/trusted-profiles").json() == []
+        settings.github_mcp_allowed_repositories = ["example/project"]
+        response = client.get("/api/github/trusted-profiles")
+        assert response.status_code == 200
+        assert response.json() == [
+            {
+                "profile": "trusted-example",
+                "repository": "example/project",
+                "commit_sha": "a" * 40,
+                "issue_number": 12,
+            }
+        ]
+        assert "validation" not in response.text and "image_id" not in response.text
+        approval["registry_path"].write_text("{}", encoding="utf-8")
+        assert client.get("/api/github/trusted-profiles").status_code == 409
+
+
 def test_real_large_module_budget_is_explicit_and_default_is_preserved():
     from repopilot.config import REPOSITORY_ROOT
     from repopilot.resolution.patch import PatchArguments, PatchEngine, PatchError

@@ -2,6 +2,9 @@ import { isRecord, requestJson } from "./client";
 import { isResolutionResult, type ResolutionResult } from "./resolution";
 
 export interface Binding { id: number; repository_full_name: string; issue_number: number; commit_sha: string; snapshot_id: number; profile: string }
+export interface TrustedProfile { profile: string; repository: string; commit_sha: string; issue_number: number }
+export const listTrustedProfiles = () => requestJson("/api/github/trusted-profiles", (v): v is TrustedProfile[] => Array.isArray(v) && v.every(p => isRecord(p) && typeof p.profile === "string" && typeof p.repository === "string" && typeof p.commit_sha === "string" && typeof p.issue_number === "number"));
+export const importTrustedProfile = (profile: string) => requestJson("/api/github/import-trusted", binding, { method: "POST", body: JSON.stringify({ profile }) });
 export interface BoundRun { id: string; binding_id: number; state: string; result: ResolutionResult | null; result_hash: string | null; failure: string | null }
 export interface Proposal {
   id: string; plan_hash: string; state: string; approved: boolean; last_error: string | null; outcome: Record<string, unknown>;

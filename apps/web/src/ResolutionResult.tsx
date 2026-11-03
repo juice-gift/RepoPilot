@@ -5,7 +5,7 @@ export function ResolutionSummary({ result }: { result: ResolutionResult }) {
     <p className="label">Issue resolution · snapshot {result.snapshot_id} · revision {result.revision}</p>
     <h3>{result.repair_status.replaceAll("_", " ")}</h3>
     <p className="muted">Execution {result.execution_status} · stop: {result.stop_reason.replaceAll("_", " ")}</p>
-    {result.repair_status === "verified_repair" && <p>Independent Golden tests passed at the final revision. Review the patch and its scope.</p>}
+    {result.repair_status === "verified_repair" && <p>Approved independent tests passed at the final revision. Review the patch and its scope.</p>}
     <p className="label">Model explanation</p><p className="answer-copy">{result.final_answer}</p>
     <div className="diagnostics"><span>{result.diagnostics.model}</span><span>{result.diagnostics.model_calls} model calls</span><span>{result.diagnostics.patch_attempts} patch attempts</span><span>{result.diagnostics.duration_ms.toFixed(0)} ms</span><span>Workspace {result.workspace_cleaned ? "cleaned" : "cleanup unconfirmed"}</span></div>
     {result.diagnostics.provider !== "qwen" && result.diagnostics.provider !== "openai" && <p className="warning">{result.diagnostics.provider} workflow: this result does not measure autonomous model repair quality.</p>}

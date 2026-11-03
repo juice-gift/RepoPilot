@@ -18,8 +18,18 @@ The API contract keeps the same four request fields. Its `profile` permits froze
 IDs and bounded `trusted-*` IDs. The server selects the profile. Local trusted
 resolution additionally requires the Snapshot commit and exact reviewed Issue
 description. A Snapshot containing retrievable files is not automatically executable.
-GitHub provenance/integration remains under active implementation; historical
-bindings continue to use frozen policies until that work is validated.
+GitHub bindings preserve the original Issue body and exact commit separately from
+the reviewed task description. `/api/github/trusted-profiles` lists only approved
+policy identities within the configured repository read allowlist; the Web GitHub
+panel selects one for `/api/github/import-trusted`. Neither endpoint can upload
+test code, alter policy approval, or grant remote write permission. Frozen fixture
+imports remain available in the regression section.
+
+The existing persisted repair and exact proposal/approval pipeline handles these
+bindings. Nested Git metadata retains unmodified files outside the execution
+projection and their modes. Public historical upstreams remain ineligible for actual
+publication under the unchanged private-owner/current-main guard. The UI displays
+this restriction. Proposal creation does not authorize a remote write.
 
 Commands and container flags remain server-owned and fixed. Root/src import roots
 are data for the trusted runner, not arbitrary PYTHONPATH or a shell command.

@@ -33,6 +33,7 @@ from repopilot.github.resolution import resolve_bound_issue
 from repopilot.rag.generation import create_agent_provider
 from repopilot.resolution.models import ResolutionResult
 from repopilot.resolution.sandbox import SandboxExecutor
+from repopilot.resolution.trusted_profiles import read_registry
 from repopilot.resolution.workspace import WorkspaceError
 
 
@@ -76,6 +77,34 @@ class BindingView(BaseModel):
 class TrustedImportRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     profile: str = Field(pattern=r"^trusted-[a-z0-9-]{1,48}$")
+
+
+class TrustedProfileView(BaseModel):
+    profile: str
+    repository: str
+    commit_sha: str
+    issue_number: int
+
+
+@router.get("/trusted-profiles", response_model=list[TrustedProfileView])
+def trusted_profiles(request: Request) -> list[TrustedProfileView]:
+    settings = request.app.state.settings
+    if settings.trusted_profile_registry is None:
+        return []
+    registry = read_registry(
+        settings.trusted_profile_registry, settings.trusted_profile_registry_sha256
+    )
+    return [
+        TrustedProfileView(
+            profile=p.id,
+            repository=p.repository,
+            commit_sha=p.commit_sha,
+            issue_number=p.issue_number,
+        )
+        for p in registry.profiles
+        if p.issue_number
+        and p.repository.lower() in settings.github_mcp_allowed_repositories
+    ]
 
 
 @router.post("/import-trusted", response_model=BindingView)

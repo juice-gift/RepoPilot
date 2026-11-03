@@ -82,11 +82,10 @@ class Registry(BaseModel):
     profiles: list[TrustedProfile] = Field(min_length=1, max_length=16)
 
 
-def load_trusted_profile(
-    case_id: str,
+def read_registry(
     registry_path: Path | None,
     registry_digest: str | None,
-) -> TestProfile:
+) -> Registry:
     try:
         if (
             registry_path is None
@@ -108,11 +107,22 @@ def load_trusted_profile(
         profiles = {p.id: p for p in registry.profiles}
         if len(profiles) != len(registry.profiles):
             raise ValueError("Duplicate trusted profile identity")
-        profile = profiles[case_id]
     except (OSError, ValueError, KeyError, ValidationError):
         raise WorkspaceError(
             "Trusted Python profile is unavailable or not approved"
         ) from None
+    return registry
+
+
+def load_trusted_profile(
+    case_id: str,
+    registry_path: Path | None,
+    registry_digest: str | None,
+) -> TestProfile:
+    registry = read_registry(registry_path, registry_digest)
+    profile = next((p for p in registry.profiles if p.id == case_id), None)
+    if profile is None:
+        raise WorkspaceError("Trusted Python profile is unavailable or not approved")
     return TestProfile(
         profile.id,
         profile.issue,

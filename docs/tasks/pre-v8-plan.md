@@ -130,3 +130,21 @@ Remaining: nested fake-remote publication/recovery tests, UI trusted profile sel
 V6 real-repository harness integration, current full regression and security audit,
 controlled deployment limitations/CI execution status, final accurate report. Do not
 mark Phase C/D or the complete goal achieved yet.
+
+C2/C3 progress: five nested fake-remote publication/reconciliation cases passed
+(real saved Docker evidence, simulated remote only). Tree/commit/branch/PR ambiguous
+outcomes reconcile without duplicated effects; partial patches preserve all
+unchanged baseline blobs and file modes. Public targets remain rejected. Current
+UI now lists approved/allowlisted Python Issue identities, imports through the
+existing binding path, and presents persisted repair/proposal/limitations. Browser
+inspection at 127.0.0.1:5174 with host API 8001 confirmed both choices, a saved
+ItsDangerous repair, complete diff, awaiting_approval, and disabled approval/publish
+before human confirmation. No approval checkbox or publish action was used.
+Evidence screenshot: pre-v8-trusted-review-browser.png. Temporary API PID 29528 /
+exec session 44676, Vite session 43209 are task-owned loopback-only test services.
+Registry catalog test confirms unapproved/denied profiles are hidden, no test code
+or image metadata leaks, and changed policy bytes fail closed (14 passed /2 real
+Docker skips without opt-in). Frontend TypeScript/production build passed.
+Full DB/Docker/trusted suite on 8b97521: 400 passed /1 disabled online MCP skip,
+154.71s; this predates the six new catalog/fake-publication tests. Final D rerun
+must use the current committed code and all applicable opt-ins.
