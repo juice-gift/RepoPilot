@@ -1,0 +1,477 @@
+{
+  "schema_version": 1,
+  "historical_evidence": [
+    {
+      "id": "authorization-before-policy",
+      "supported": true,
+      "reason": "Codex source review, 2026-10-14: the actual definition range 5–10 and auth range 1–3 are correct. E2_1/E4_1 support uncaught token rejection before retry_delay; E6_1 is the inspected helper. No incorrect line annotations remain in this answer.",
+      "provenance": "Historical Codex source review, not independent human review; not a V6 run",
+      "report": "v3-agent-qwen-grounding-report.json",
+      "report_hash": "93eddd3dc627023476c3fc32013653060aaba29027a6674af041aa64952575d8",
+      "review_hash": "72c7b2bfcea35806bbd1f9b970547916917b4d80ae55ee98acec86600a244e53",
+      "reviews_file_hash": "99d4b419fb52160880c5f74a24d1968b9f1e48f4d28d73114df1ed8a10e39c2c"
+    },
+    {
+      "id": "permanent-versus-transient",
+      "supported": false,
+      "reason": "Codex source review, 2026-10-14: the answer still claims all permanent jobs are unconditionally rejected regardless of attempt, then contradicts that with the earlier negative-attempt exception. Token preconditions are omitted. A correct summary table does not erase the unsupported universal claim.",
+      "provenance": "Historical Codex source review, not independent human review; not a V6 run",
+      "report": "v3-agent-qwen-grounding-report.json",
+      "report_hash": "93eddd3dc627023476c3fc32013653060aaba29027a6674af041aa64952575d8",
+      "review_hash": "fb24eb0692667589e558d29b2465ebc82d946cf6ba296dc16e5cec29281cb69a",
+      "reviews_file_hash": "99d4b419fb52160880c5f74a24d1968b9f1e48f4d28d73114df1ed8a10e39c2c"
+    },
+    {
+      "id": "documentation-policy-mismatch",
+      "supported": false,
+      "reason": "Codex source review, 2026-10-14: the source mismatch is correct, but the answer invents production usage and prefers the 300-second policy before confirming intent. It also uses parenthesized IDs instead of the requested citation syntax. Read-only capability does not establish which proposed fix is safer.",
+      "provenance": "Historical Codex source review, not independent human review; not a V6 run",
+      "report": "v3-agent-qwen-grounding-report.json",
+      "report_hash": "93eddd3dc627023476c3fc32013653060aaba29027a6674af041aa64952575d8",
+      "review_hash": "638b5c1ee85a0b4ae4f47f47f696e0ec6d5df27c9dcb271720cb8951a32fece5",
+      "reviews_file_hash": "99d4b419fb52160880c5f74a24d1968b9f1e48f4d28d73114df1ed8a10e39c2c"
+    },
+    {
+      "id": "fee-days",
+      "provenance": "Codex source/diff/claim review; not independent human review",
+      "verdict": "Verified independent tests and source-consistent repair",
+      "notes": "Diff preserves guards, cap and integer behavior; no test/config changes",
+      "supported": true,
+      "report": "v4-resolution-qwen-report.json",
+      "report_hash": "50a6403ca8771a2352d87cbff1666488ebb43d367f714c674980e1791d155f0e",
+      "review_hash": "65be6a550f02746fc5558a6d0898bd2e99ebae660f970ecee0d70ddc020554c0"
+    },
+    {
+      "id": "dispatch-preconditions",
+      "provenance": "Codex source/diff/claim review; not independent human review",
+      "verdict": "Verified independent tests and source-consistent repair",
+      "notes": "Both auth-before-policy and negative-attempt preconditions fixed; permanent rejection and cap preserved",
+      "supported": true,
+      "report": "v4-resolution-qwen-report.json",
+      "report_hash": "50a6403ca8771a2352d87cbff1666488ebb43d367f714c674980e1791d155f0e",
+      "review_hash": "42d7404b7bb1d64ed446a712b2448b91d329c7507948058ca125b90d8e3c1fbd"
+    },
+    {
+      "id": "ambiguous-cap",
+      "provenance": "Codex source/diff/claim review; not independent human review",
+      "verdict": "No changes; owner-decision criterion not achieved",
+      "notes": "Initial full run offered an unusable test tool and stopped safely; targeted corrected-capability runs failed at provider request 1. Provider diagnostic confirmed HTTP 403 PERMISSION_DENIED: free quota exhausted. Corrected real-model owner-decision behavior remains unverified.",
+      "supported": null,
+      "report": "v4-resolution-qwen-report.json",
+      "report_hash": "50a6403ca8771a2352d87cbff1666488ebb43d367f714c674980e1791d155f0e",
+      "review_hash": "b88c5d2ed97d2db274facd61382f5a213573cdc5220508d8fa4e41be3c18d32c"
+    },
+    {
+      "id": "ambiguous-cap",
+      "provenance": "Codex source/diff/claim review; not independent human review",
+      "verdict": "No changes; owner-decision criterion not achieved",
+      "notes": "Initial full run offered an unusable test tool and stopped safely; targeted corrected-capability runs failed at provider request 1. Provider diagnostic confirmed HTTP 403 PERMISSION_DENIED: free quota exhausted. Corrected real-model owner-decision behavior remains unverified.",
+      "supported": null,
+      "report": "v4-resolution-qwen-ambiguity-trial.json",
+      "report_hash": "143d2eb371b6537b2b81ca4b4fe9defc3c8328e4a2ed83d29e95c39acf8d7d95",
+      "review_hash": "992adeee11d305312ef93a23bd416c9e152f4498fc4a1c131b2a29220a7e1c0b"
+    },
+    {
+      "id": "ambiguous-cap",
+      "provenance": "Codex source/diff/claim review; not independent human review",
+      "verdict": "No changes; owner-decision criterion not achieved",
+      "notes": "Initial full run offered an unusable test tool and stopped safely; targeted corrected-capability runs failed at provider request 1. Provider diagnostic confirmed HTTP 403 PERMISSION_DENIED: free quota exhausted. Corrected real-model owner-decision behavior remains unverified.",
+      "supported": null,
+      "report": "v4-resolution-qwen-ambiguity-retry-report.json",
+      "report_hash": "0c12bbf79f28ce6ae2d14fe8d5ffeb790329a8569b16d44b944240f6554a10c3",
+      "review_hash": "97262b9ec36976a42a77a0e189b9148ea945e31ed2c785663afb059943bc8f62"
+    },
+    {
+      "id": "ambiguous-cap",
+      "provenance": "Codex source/diff/claim review; not independent human review",
+      "verdict": "Frozen owner-decision criterion achieved without patch attempts or changes",
+      "notes": "Owner selected qwen3.7-flash-2026-07-15. Model read all five source files and identified the documented 60/300-second conflict and explicit absence of owner intent. One submit_plan missing expected_revision was rejected; the model corrected it. Nine model calls; revision 0; zero patch/test attempts; original/Snapshot unchanged and workspace cleaned. Future plan wording assumes a code update, though choosing 300 could instead require a documentation change; no such change was attempted. Prior failures remain recorded.",
+      "supported": true,
+      "report": "v4-resolution-qwen-ambiguity-resumed.json",
+      "report_hash": "c5cdfed014565859290bd9ec940c588c45500435d85a34dbdbb32574ecd2ea1b",
+      "review_hash": "ba32c95a3124096a6b45d364dd921646b4233accb3db16d2c1e36757a6b39e80"
+    }
+  ],
+  "review_policy": "unreviewed",
+  "definitions": "v6-evidence-grading-2",
+  "dataset": {
+    "name": "RepoPilot frozen evaluation suite",
+    "version": 2,
+    "hash": "25d0666fe7666424cb84256408b3ae41da7b99fde22c9f3e838c8be5b1f3cc18",
+    "total_tasks": 17
+  },
+  "selection": [
+    "rag/missing-database-url",
+    "rag/late-fee-cap"
+  ],
+  "mode": "live",
+  "measurement": "Actual Qwen decisions; deterministic embeddings.",
+  "code_commit": "980325fc1d2b6456ecc32ddedc846298ecf06df8",
+  "dirty": true,
+  "started_at": "2026-10-29T11:19:10.229852+00:00",
+  "runtime": {
+    "model": "qwen3.7-flash-2026-07-15",
+    "provider": "qwen",
+    "retrieval_strategy": "hybrid",
+    "embedding": "deterministic-token-hash",
+    "top_k": 5,
+    "max_output_tokens": 1200,
+    "endpoint_hash": "bbb62142e7deaa55a758a3d15228c86589e0746ecc85c43dc2ee2babd0946968",
+    "sandbox_image": "sha256:71aebb88109cbb7c2eb535ef4321a4b9d23b886c0c14625bafaeb9e78b5fea5f",
+    "python": "3.13.13",
+    "platform": "Windows",
+    "fingerprints": {
+      "agent/runner.py": "cb274dddfad69fa7a652e9a80a7d86d134bc3487732ba6ef69a908d527079e2f",
+      "resolution/service.py": "eabaedc76332a9c67add8c924f0ba18d66eb073fa748003982cdb6ff08a8cd89",
+      "rag/generation.py": "fc670fd4868bd78d8f8af3f4b3cd25806b4b88e0afbfc7838b26165ce2a1397d",
+      "evaluation/grading.py": "5c29cdbc733a9ce47c906ffb9154bc8d7bb055caf3a4cc91ae0f20bc63175d85",
+      "evaluation/adapters.py": "a8bf715ae9940a33076e697ceb8d8659af3d1e5577c6eb09d10998b67eabaa01",
+      "evaluation/harness.py": "c1bb2a6f3ca402a6338f1da223ef946259a71ee35cd6effe1985d0a7ba489f19"
+    }
+  },
+  "cases": [
+    {
+      "id": "rag/missing-database-url",
+      "category": "rag",
+      "status": "unverified",
+      "checks": {
+        "evidence_discovery": "passed",
+        "citation_validity": "passed",
+        "citation_identity": "passed",
+        "claim_support": "unverified"
+      },
+      "failures": [],
+      "evidence": {
+        "answer": "Based on the provided evidence, startup rejects a missing database connection URL in the `require_database_url` function located in **`src/settings.py`**.\n\nSpecifically:\n1.  The function `require_database_url` checks if the `DATABASE_URL` environment variable is empty or missing [E1].\n2.  If it is missing, it raises a `MissingDatabaseUrlError` (defined in `src/settings.py`) to reject the startup [E1], [E2].",
+        "citations": [
+          {
+            "evidence_id": "E1",
+            "chunk_id": 4742,
+            "file_path": "src/settings.py",
+            "symbol_name": "require_database_url",
+            "qualified_name": "require_database_url",
+            "start_line": 10,
+            "end_line": 15,
+            "score": 0.505125,
+            "content": "def require_database_url() -> str:\n    \"\"\"Read DATABASE_URL and reject startup when it is missing.\"\"\"\n    database_url = os.getenv(\"DATABASE_URL\", \"\").strip()\n    if not database_url:\n        raise MissingDatabaseUrlError(\"DATABASE_URL must be configured\")\n    return database_url\n"
+          },
+          {
+            "evidence_id": "E2",
+            "chunk_id": 4741,
+            "file_path": "src/settings.py",
+            "symbol_name": "MissingDatabaseUrlError",
+            "qualified_name": "MissingDatabaseUrlError",
+            "start_line": 6,
+            "end_line": 7,
+            "score": 0.371993,
+            "content": "class MissingDatabaseUrlError(RuntimeError):\n    \"\"\"Raised when the database connection string is absent.\"\"\"\n"
+          }
+        ],
+        "invalid_ids": [],
+        "retrieved": [
+          {
+            "rank": 1,
+            "chunk_id": 4742,
+            "file_path": "src/settings.py",
+            "language": "python",
+            "chunk_type": "function",
+            "symbol_name": "require_database_url",
+            "qualified_name": "require_database_url",
+            "parent_symbol": null,
+            "start_line": 10,
+            "end_line": 15,
+            "content_hash": "d4e0c4cf5bb5eb0a0645fb045b2f27dfc01fbd73446353085e26f1687ac8cd35",
+            "score": 0.505125,
+            "distance": 0.532293,
+            "content": "def require_database_url() -> str:\n    \"\"\"Read DATABASE_URL and reject startup when it is missing.\"\"\"\n    database_url = os.getenv(\"DATABASE_URL\", \"\").strip()\n    if not database_url:\n        raise MissingDatabaseUrlError(\"DATABASE_URL must be configured\")\n    return database_url\n"
+          },
+          {
+            "rank": 2,
+            "chunk_id": 4741,
+            "file_path": "src/settings.py",
+            "language": "python",
+            "chunk_type": "class",
+            "symbol_name": "MissingDatabaseUrlError",
+            "qualified_name": "MissingDatabaseUrlError",
+            "parent_symbol": null,
+            "start_line": 6,
+            "end_line": 7,
+            "content_hash": "7490ab3cc2ae783d48660bd7a14cf31860c2e295e8e3c088b66f803dd0380d68",
+            "score": 0.371993,
+            "distance": 0.659648,
+            "content": "class MissingDatabaseUrlError(RuntimeError):\n    \"\"\"Raised when the database connection string is absent.\"\"\"\n"
+          },
+          {
+            "rank": 3,
+            "chunk_id": 4726,
+            "file_path": "docs/operations.md",
+            "language": "markdown",
+            "chunk_type": "section",
+            "symbol_name": "Database Recovery",
+            "qualified_name": "Database Recovery",
+            "parent_symbol": null,
+            "start_line": 9,
+            "end_line": 12,
+            "content_hash": "9aad67c93a5e870886123c9de5bf8f1a7cc616472125e6dbb4a5ab899592b4cb",
+            "score": 0.108895,
+            "distance": 0.901705,
+            "content": "## Database Recovery\n\nRestore the most recent snapshot before replaying the transaction log. Verify\nrecord counts before returning the service to traffic.\n"
+          },
+          {
+            "rank": 4,
+            "chunk_id": 4739,
+            "file_path": "src/report-status.tsx",
+            "language": "tsx",
+            "chunk_type": "function",
+            "symbol_name": "ReportStatus",
+            "qualified_name": "ReportStatus",
+            "parent_symbol": null,
+            "start_line": 6,
+            "end_line": 9,
+            "content_hash": "8c43e14713c31d0b46d726a5cb61e46f1016c5505c5f2aeabeffe2d194365840",
+            "score": 0.093709,
+            "distance": 0.86613,
+            "content": "export function ReportStatus({ completedRows, totalRows }: ReportStatusProps) {\n  const isComplete = completedRows >= totalRows;\n  return <p>{isComplete ? \"Report ready\" : `Loading ${completedRows}/${totalRows}`}</p>;\n}\n"
+          },
+          {
+            "rank": 5,
+            "chunk_id": 4730,
+            "file_path": "src/cache.ts",
+            "language": "typescript",
+            "chunk_type": "function",
+            "symbol_name": "buildCacheKey",
+            "qualified_name": "buildCacheKey",
+            "parent_symbol": null,
+            "start_line": 1,
+            "end_line": 4,
+            "content_hash": "0389964018bf75f9730ffa051c0cdeb2a6a634f9ebe4dc2c3983bdd916acd5a9",
+            "score": 0.093333,
+            "distance": 0.866667,
+            "content": "export function buildCacheKey(tenantId: string, reportId: string): string {\n  // Isolate cached reports by tenant and report identifier.\n  return `report:${tenantId}:${reportId}`;\n}\n"
+          }
+        ],
+        "generation_model": "qwen3.7-flash-2026-07-15",
+        "claim_check": "Startup requires a nonempty database URL."
+      },
+      "latency_ms": 6004.876,
+      "tool_calls": null,
+      "model_turns": 1,
+      "tokens": null,
+      "cost": null
+    },
+    {
+      "id": "rag/late-fee-cap",
+      "category": "rag",
+      "status": "unverified",
+      "checks": {
+        "evidence_discovery": "passed",
+        "citation_validity": "passed",
+        "citation_identity": "passed",
+        "claim_support": "unverified"
+      },
+      "failures": [],
+      "evidence": {
+        "answer": "Based on the provided repository evidence, the overdue invoice fee is calculated and capped as follows:\n\n*   **Calculation:** The fee is charged at a rate of **1% per overdue week**. The number of weeks is determined by dividing the number of days overdue by 7 (integer division). The total fee is then calculated as `balance * rate` [E1].\n*   **Capping:** The total fee rate is **capped at 10%** of the balance [E1].\n*   **Rounding:** The final calculated fee amount is rounded to two decimal places [E1].\n\nThis logic is implemented in the `calculate_late_fee` function within `src/invoices.py` [E1].",
+        "citations": [
+          {
+            "evidence_id": "E1",
+            "chunk_id": 4755,
+            "file_path": "src/invoices.py",
+            "symbol_name": "calculate_late_fee",
+            "qualified_name": "calculate_late_fee",
+            "start_line": 6,
+            "end_line": 10,
+            "score": 0.270004,
+            "content": "def calculate_late_fee(balance: Decimal, days_overdue: int) -> Decimal:\n    \"\"\"Charge one percent per overdue week, capped at ten percent.\"\"\"\n    overdue_weeks = max(days_overdue, 0) // 7\n    rate = min(Decimal(\"0.01\") * overdue_weeks, Decimal(\"0.10\"))\n    return (balance * rate).quantize(Decimal(\"0.01\"))\n"
+          }
+        ],
+        "invalid_ids": [],
+        "retrieved": [
+          {
+            "rank": 1,
+            "chunk_id": 4755,
+            "file_path": "src/invoices.py",
+            "language": "python",
+            "chunk_type": "function",
+            "symbol_name": "calculate_late_fee",
+            "qualified_name": "calculate_late_fee",
+            "parent_symbol": null,
+            "start_line": 6,
+            "end_line": 10,
+            "content_hash": "0a8a4afcda11b32261f7facdcaf44e359f3b1069a6f46ddad6141b0b2cfe7678",
+            "score": 0.270004,
+            "distance": 0.748246,
+            "content": "def calculate_late_fee(balance: Decimal, days_overdue: int) -> Decimal:\n    \"\"\"Charge one percent per overdue week, capped at ten percent.\"\"\"\n    overdue_weeks = max(days_overdue, 0) // 7\n    rate = min(Decimal(\"0.01\") * overdue_weeks, Decimal(\"0.10\"))\n    return (balance * rate).quantize(Decimal(\"0.01\"))\n"
+          },
+          {
+            "rank": 2,
+            "chunk_id": 4756,
+            "file_path": "src/invoices.py",
+            "language": "python",
+            "chunk_type": "function",
+            "symbol_name": "format_invoice_number",
+            "qualified_name": "format_invoice_number",
+            "parent_symbol": null,
+            "start_line": 13,
+            "end_line": 15,
+            "content_hash": "2886f75c084cd37abe327d7c1c4b97f3939831ccf3b597864348e17622336058",
+            "score": 0.196095,
+            "distance": 0.80755,
+            "content": "def format_invoice_number(sequence: int) -> str:\n    \"\"\"Render the public invoice identifier.\"\"\"\n    return f\"INV-{sequence:08d}\"\n"
+          },
+          {
+            "rank": 3,
+            "chunk_id": 4744,
+            "file_path": "docs/operations.md",
+            "language": "markdown",
+            "chunk_type": "section",
+            "symbol_name": "Retry Policy",
+            "qualified_name": "Retry Policy",
+            "parent_symbol": null,
+            "start_line": 3,
+            "end_line": 8,
+            "content_hash": "b92b94cc10eb62c16c78d821306579387d525add91c5407ef8053a4fd00a4bd8",
+            "score": 0.195973,
+            "distance": 0.751548,
+            "content": "## Retry Policy\n\nFailed outbound deliveries use exponential backoff. The delay doubles after each\nfailure and is capped at five minutes. Permanent authentication failures are not\nretried.\n\n"
+          },
+          {
+            "rank": 4,
+            "chunk_id": 4754,
+            "file_path": "src/invoices.py",
+            "language": "python",
+            "chunk_type": "module",
+            "symbol_name": null,
+            "qualified_name": null,
+            "parent_symbol": null,
+            "start_line": 1,
+            "end_line": 5,
+            "content_hash": "8e8ee7489b928b807acd57a03d33fa241937b82656a1059665c553c66c0072a1",
+            "score": 0.130273,
+            "distance": 0.857866,
+            "content": "\"\"\"Invoice calculations for the Golden Repository.\"\"\"\n\nfrom decimal import Decimal\n\n\n"
+          },
+          {
+            "rank": 5,
+            "chunk_id": 4745,
+            "file_path": "docs/operations.md",
+            "language": "markdown",
+            "chunk_type": "section",
+            "symbol_name": "Database Recovery",
+            "qualified_name": "Database Recovery",
+            "parent_symbol": null,
+            "start_line": 9,
+            "end_line": 12,
+            "content_hash": "9aad67c93a5e870886123c9de5bf8f1a7cc616472125e6dbb4a5ab899592b4cb",
+            "score": 0.103209,
+            "distance": 0.852558,
+            "content": "## Database Recovery\n\nRestore the most recent snapshot before replaying the transaction log. Verify\nrecord counts before returning the service to traffic.\n"
+          }
+        ],
+        "generation_model": "qwen3.7-flash-2026-07-15",
+        "claim_check": "Fee is balance times min(0.01 * (max(days_overdue, 0) // 7), 0.10), quantized to Decimal 0.01. Verify weekly units, zero floor and ten-percent rate cap."
+      },
+      "latency_ms": 4177.604,
+      "tool_calls": null,
+      "model_turns": 1,
+      "tokens": null,
+      "cost": null
+    }
+  ],
+  "aggregate": {
+    "tool_calls": 0,
+    "tool_calls_measured_cases": 0,
+    "model_turns": 2,
+    "model_turns_measured_cases": 2,
+    "case_count": 2,
+    "statuses": {
+      "unverified": 2
+    },
+    "metrics": {
+      "task_success": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null,
+        "statuses": {}
+      },
+      "verified_repair": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null,
+        "statuses": {}
+      },
+      "safe_decision": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null,
+        "statuses": {}
+      },
+      "patch_apply": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null,
+        "statuses": {}
+      },
+      "independent_test": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null,
+        "statuses": {}
+      },
+      "evidence_discovery": {
+        "numerator": 2,
+        "denominator": 2,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 2
+        }
+      },
+      "citation_validity": {
+        "numerator": 2,
+        "denominator": 2,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 2
+        }
+      },
+      "citation_identity": {
+        "numerator": 2,
+        "denominator": 2,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 2
+        }
+      },
+      "claim_support": {
+        "numerator": 0,
+        "denominator": 2,
+        "rate": 0.0,
+        "statuses": {
+          "unverified": 2
+        }
+      },
+      "patch_apply_attempts": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null,
+        "statuses": {
+          "not_run_cases": 0
+        }
+      }
+    },
+    "tokens": null,
+    "cost": null,
+    "usage_note": "Existing provider result contracts do not expose trustworthy usage/cost.",
+    "measured_latency_ms": 10182.48,
+    "latency_measured_cases": 2
+  },
+  "limitations": [
+    "Three frozen Issue cases cannot establish general repair reliability.",
+    "Tokens/cost unavailable from provider contracts; null is not zero.",
+    "Current answer claim support is unreviewed; valid citations do not prove grounding.",
+    "Historical V3/V4 unsupported claims remain in original reports/reviews.",
+    "One repetition per task; no general accuracy or improvement claim."
+  ],
+  "finished_at": "2026-10-29T11:19:20.423848+00:00",
+  "complete": true
+}

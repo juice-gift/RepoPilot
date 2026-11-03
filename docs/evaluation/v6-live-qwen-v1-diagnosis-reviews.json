@@ -1,0 +1,42 @@
+[
+  {
+    "id": "investigation/authorization-before-policy",
+    "evidence_hash": "ba9d85201ceebffcfb32aec0f12442e493176421b1576231c79470dc9543c0ca",
+    "supported": true,
+    "reviewer": "Codex",
+    "provenance": "Codex source/claim review on 2026-10-29; not independent human review, not a new model run",
+    "reason": "workflow.py calls verify_token before retry_delay; auth.py raises PermissionError for invalid token; actual cited ranges and causal ordering match."
+  },
+  {
+    "id": "investigation/permanent-versus-transient",
+    "evidence_hash": "aeb36636f61fea47d15db48b7d3b3d5c9e8a7c2e1b28a9f31f5534da4e208c60",
+    "supported": false,
+    "reviewer": "Codex",
+    "provenance": "Codex source/claim review on 2026-10-29; not independent human review, not a new model run",
+    "reason": "The answer asserts permanence alone determines rejection and no attempt number raises, contradicting policy.py negative-attempt ValueError and workflow.py token precondition. The summary table also omits these preconditions."
+  },
+  {
+    "id": "investigation/documentation-policy-mismatch",
+    "evidence_hash": "e6f5a2b3fadcf290ad48125d2854c2e94da4e1f66052e6397886e2fe47b0a4fc",
+    "supported": false,
+    "reviewer": "Codex",
+    "provenance": "Codex source/claim review on 2026-10-29; not independent human review, not a new model run",
+    "reason": "The 60/300 discrepancy is supported. Claims about why the implementation was designed and that resolution must align documentation lack source support or owner intent. Read-only capability cannot decide the intended contract."
+  },
+  {
+    "id": "rag/missing-database-url",
+    "evidence_hash": "21cfd984219593851f3461ea930014bb14aa922776b5e1a64490c48c06169be1",
+    "supported": true,
+    "reviewer": "Codex",
+    "provenance": "Codex source/claim review on 2026-10-29; not independent human review, not a new model run",
+    "reason": "src/settings.py strips DATABASE_URL, checks emptiness and raises the defined MissingDatabaseUrlError; cited source spans support this answer."
+  },
+  {
+    "id": "rag/late-fee-cap",
+    "evidence_hash": "e57ca03748c4ada74296080a0e4680e281f291bfc94d8275541dc78d481ce6ca",
+    "supported": true,
+    "reviewer": "Codex",
+    "provenance": "Codex source/claim review on 2026-10-29; not independent human review, not a new model run",
+    "reason": "src/invoices.py computes max(days,0)//7 weeks at Decimal 0.01, caps the rate at Decimal 0.10 and quantizes balance*rate to Decimal 0.01. The actual weekly calculation/cap/rounding claims are supported. The initial V6-v1 daily annotation was an evaluator error, not an error in this answer."
+  }
+]

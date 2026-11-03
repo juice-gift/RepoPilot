@@ -2335,7 +2335,7 @@ RepoPilot 才真正成为我的简历项目。
 - 真实 MCP 身份、源码/基线/三个 Issue 正文已验证，权限阻塞已解除；M2 已完成 commit/Issue/Snapshot 持久化绑定
 - M3 已完成绑定后的受控修复和结果持久化：两个真实 Qwen 正例通过独立 Docker 测试，歧义用例零修改
 - M4 精确审批/UI、M5 真实 MCP Draft PR 发布/恢复、M6 最终验收已完成；Owner 于 2026-10-28 单独批准两份精确方案
-- V5 于 2026-10-29 完成：330 项测试、两个真实 Draft PR 及远程源码 Docker 复验通过；报告见 docs/evaluation/v5-mcp-github-completion.md。停在 V5 / V6 边界，V6 未授权
+- V5 于 2026-10-29 完成：330 项测试、两个真实 Draft PR 及远程源码 Docker 复验通过；报告见 docs/evaluation/v5-mcp-github-completion.md。V6 CLI Evaluation Harness 已完成：最终 DB/Docker 回归 360 passed / 1 个未启用在线 MCP skip；实测 Qwen 不受支持结论及轮次耗尽仍保留。报告 docs/evaluation/v6-evaluation-completion.md；计划 docs/tasks/v6-plan.md。停在 V6 / V7 边界
 
 当前基础架构：
 

@@ -1,0 +1,295 @@
+{
+  "compatible": true,
+  "case_changes": [],
+  "metrics": {
+    "task_success": {
+      "before": {
+        "numerator": 3,
+        "denominator": 3,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 3
+        }
+      },
+      "after": {
+        "numerator": 3,
+        "denominator": 3,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 3
+        }
+      }
+    },
+    "verified_repair": {
+      "before": {
+        "numerator": 2,
+        "denominator": 2,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 2
+        }
+      },
+      "after": {
+        "numerator": 2,
+        "denominator": 2,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 2
+        }
+      }
+    },
+    "safe_decision": {
+      "before": {
+        "numerator": 1,
+        "denominator": 1,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "after": {
+        "numerator": 1,
+        "denominator": 1,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 1
+        }
+      }
+    },
+    "patch_apply": {
+      "before": {
+        "numerator": 2,
+        "denominator": 2,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 2
+        }
+      },
+      "after": {
+        "numerator": 2,
+        "denominator": 2,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 2
+        }
+      }
+    },
+    "independent_test": {
+      "before": {
+        "numerator": 2,
+        "denominator": 2,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 2
+        }
+      },
+      "after": {
+        "numerator": 2,
+        "denominator": 2,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 2
+        }
+      }
+    },
+    "evidence_discovery": {
+      "before": {
+        "numerator": 13,
+        "denominator": 13,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 13
+        }
+      },
+      "after": {
+        "numerator": 13,
+        "denominator": 13,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 13
+        }
+      }
+    },
+    "citation_validity": {
+      "before": {
+        "numerator": 5,
+        "denominator": 5,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 5
+        }
+      },
+      "after": {
+        "numerator": 5,
+        "denominator": 5,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 5
+        }
+      }
+    },
+    "citation_identity": {
+      "before": {
+        "numerator": 5,
+        "denominator": 5,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 5
+        }
+      },
+      "after": {
+        "numerator": 5,
+        "denominator": 5,
+        "rate": 1.0,
+        "statuses": {
+          "passed": 5
+        }
+      }
+    },
+    "claim_support": {
+      "before": {
+        "numerator": 0,
+        "denominator": 8,
+        "rate": 0.0,
+        "statuses": {
+          "unverified": 8
+        }
+      },
+      "after": {
+        "numerator": 0,
+        "denominator": 8,
+        "rate": 0.0,
+        "statuses": {
+          "unverified": 8
+        }
+      }
+    },
+    "retrieval_hit@1": {
+      "before": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "after": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      }
+    },
+    "retrieval_recall@1": {
+      "before": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "after": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      }
+    },
+    "retrieval_mrr@1": {
+      "before": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "after": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      }
+    },
+    "retrieval_hit@3": {
+      "before": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "after": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      }
+    },
+    "retrieval_recall@3": {
+      "before": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "after": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      }
+    },
+    "retrieval_mrr@3": {
+      "before": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "after": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      }
+    },
+    "retrieval_hit@5": {
+      "before": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "after": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      }
+    },
+    "retrieval_recall@5": {
+      "before": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "after": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      }
+    },
+    "retrieval_mrr@5": {
+      "before": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      },
+      "after": {
+        "numerator": 8.0,
+        "denominator": 8,
+        "rate": 1.0,
+        "statuses": {}
+      }
+    }
+  },
+  "limitations": "Single-run differences do not establish reliability or statistical improvement."
+}

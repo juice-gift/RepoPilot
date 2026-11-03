@@ -187,11 +187,19 @@ def summarize_task(
 
 
 def evaluate_agent(
-    *, settings: Settings, mode: str = "scripted", root: Path = DEFAULT_EVALUATION_ROOT
+    *,
+    settings: Settings,
+    mode: str = "scripted",
+    root: Path = DEFAULT_EVALUATION_ROOT,
+    selected_cases: tuple[str, ...] | None = None,
 ) -> dict[str, object]:
     if mode not in ("scripted", "qwen", "openai"):
         raise ValueError("Unknown evaluation mode")
     dataset = load_agent_dataset(root)
+    if selected_cases is not None and (
+        not selected_cases or not set(selected_cases) <= {t.id for t in dataset.tasks}
+    ):
+        raise ValueError("Unknown or empty investigation selection")
     engine = create_database_engine(settings.database_url)
     factory = create_database_session_factory(engine)
     cases: list[dict[str, object]] = []
@@ -216,6 +224,8 @@ def evaluate_agent(
                 provider=DeterministicEmbeddingProvider(),
             )
             for task in dataset.tasks:
+                if selected_cases is not None and task.id not in selected_cases:
+                    continue
                 provider: AgentProvider = (
                     BaselineScriptProvider(task)
                     if mode == "scripted"
