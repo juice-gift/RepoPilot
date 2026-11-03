@@ -46,6 +46,8 @@ class UnixConnection(http.client.HTTPConnection):
         self.path = path
 
     def connect(self) -> None:
+        if not hasattr(socket, "AF_UNIX"):
+            raise OSError("Broker Unix transport requires the Linux container API")
         self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         self.sock.settimeout(self.timeout)
         try:

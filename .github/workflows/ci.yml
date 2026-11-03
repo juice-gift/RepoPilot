@@ -67,6 +67,7 @@ jobs:
       - name: Application images
         run: |
           docker build -f apps/api/Dockerfile -t repopilot-api:local .
+          docker build -f apps/api/Dockerfile.broker -t repopilot-broker:local .
           docker build -f apps/web/Dockerfile -t repopilot-web:local .
       - name: Isolated full stack and HTTP smoke
         env:

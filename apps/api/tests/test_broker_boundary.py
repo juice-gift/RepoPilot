@@ -21,6 +21,9 @@ def boundary():
             "ReadonlyRootfs": True,
             "CapDrop": ["ALL"],
             "SecurityOpt": ["no-new-privileges:true"],
+            "Memory": 268435456,
+            "NanoCpus": 1_000_000_000,
+            "PidsLimit": 128,
         },
         "Mounts": [
             {
@@ -42,6 +45,7 @@ def boundary():
                 "Type": "bind",
                 "RW": False,
             },
+            {"Destination": "/policy/profiles.json", "Type": "bind", "RW": False},
         ],
     }
     volume = {
@@ -55,13 +59,23 @@ def boundary():
             "com.docker.compose.volume": "broker-data",
         },
     }
-    return container, volume
+    ipc_volume = copy.deepcopy(volume)
+    ipc_volume.update(
+        Name="probe_broker-ipc",
+        Mountpoint="/var/lib/docker/volumes/probe_broker-ipc/_data",
+    )
+    ipc_volume["Labels"]["com.docker.compose.volume"] = "broker-ipc"
+    return container, volume, ipc_volume
 
 
 def test_broker_maps_only_verified_private_volume():
-    container, volume = boundary()
+    container, volume, ipc_volume = boundary()
     assert (
-        str(inspect_boundary(container, volume, "probe", "/var/lib/docker"))
+        str(
+            inspect_boundary(
+                container, volume, "probe", "/var/lib/docker", ipc_volume=ipc_volume
+            )
+        )
         == volume["Mountpoint"]
     )
 
@@ -79,10 +93,15 @@ def test_broker_maps_only_verified_private_volume():
         "options",
         "escape",
         "socket",
+        "foreign_ipc",
+        "unconfined",
+        "memory",
+        "pids",
+        "policy_write",
     ],
 )
 def test_broker_rejects_changed_service_or_volume_boundary(attack):
-    container, volume = copy.deepcopy(boundary())
+    container, volume, ipc_volume = boundary()
     if attack == "public":
         container["HostConfig"]["NetworkMode"] = "bridge"
     elif attack == "root":
@@ -101,7 +120,19 @@ def test_broker_rejects_changed_service_or_volume_boundary(attack):
         volume["Options"] = {"device": "/host"}
     elif attack == "escape":
         volume["Mountpoint"] = "/var/lib/docker/volumes/../../host"
+    elif attack == "foreign_ipc":
+        ipc_volume["Labels"]["com.docker.compose.project"] = "other"
+    elif attack == "unconfined":
+        container["HostConfig"]["SecurityOpt"].append("seccomp=unconfined")
+    elif attack == "memory":
+        container["HostConfig"]["Memory"] = 0
+    elif attack == "pids":
+        container["HostConfig"]["PidsLimit"] = 0
+    elif attack == "policy_write":
+        container["Mounts"][4]["RW"] = True
     else:
         container["Mounts"][3]["Source"] = "/other.sock"
     with pytest.raises(SandboxError):
-        inspect_boundary(container, volume, "probe", "/var/lib/docker")
+        inspect_boundary(
+            container, volume, "probe", "/var/lib/docker", ipc_volume=ipc_volume
+        )

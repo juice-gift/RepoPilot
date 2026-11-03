@@ -7,12 +7,13 @@ services:
       SANDBOX_BROKER_TOKEN_FILE: /run/secrets/broker_token
       LOCAL_OWNER_UNIX_SOCKET: /run/repopilot-api/api.sock
       RESOLUTION_SANDBOX_IMAGE: ${BROKER_SANDBOX_IMAGE:?Set reviewed immutable Sandbox image ID}
-      TRUSTED_PROFILE_REGISTRY: /app/apps/api/evaluation/trusted_python/profiles.json
+      TRUSTED_PROFILE_REGISTRY: /policy/profiles.json
       TRUSTED_PROFILE_REGISTRY_SHA256: ${BROKER_PROFILE_SHA256:?Set approved policy SHA256}
       GITHUB_MCP_ALLOWED_REPOSITORIES: '["pallets/itsdangerous","more-itertools/more-itertools"]'
     volumes:
       - broker-ipc:/run/repopilot:ro
       - api-ipc:/run/repopilot-api
+      - ${BROKER_PROFILE_FILE:-./apps/api/evaluation/trusted_python/profiles.json}:/policy/profiles.json:ro
     command: [uvicorn, "repopilot.main:app", --uds, /run/repopilot-api/api.sock, --no-access-log, --limit-concurrency, "32", --timeout-keep-alive, "5"]
     healthcheck:
       test: [CMD, python, -c, "from pathlib import Path; from repopilot.resolution.broker_transport import UnixConnection; c=UnixConnection(Path('/run/repopilot-api/api.sock'), timeout=4); c.request('GET','/api/health/database'); assert c.getresponse().status == 200; c.close()"]
@@ -35,13 +36,13 @@ services:
     environment:
       BROKER_PROJECT: ${COMPOSE_PROJECT_NAME:-repopilot}
       BROKER_SANDBOX_IMAGE: ${BROKER_SANDBOX_IMAGE:?Set reviewed immutable Sandbox image ID}
-      BROKER_PROFILE_REGISTRY: /app/apps/api/evaluation/trusted_python/profiles.json
       BROKER_PROFILE_REGISTRY_SHA256: ${BROKER_PROFILE_SHA256:?Set approved policy SHA256}
     network_mode: none
     volumes:
       - broker-data:/execution
       - broker-ipc:/run/repopilot
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ${BROKER_PROFILE_FILE:-./apps/api/evaluation/trusted_python/profiles.json}:/policy/profiles.json:ro
     secrets: [broker_token]
     read_only: true
     cap_drop: [ALL]

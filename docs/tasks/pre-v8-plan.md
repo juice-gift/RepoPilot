@@ -124,3 +124,24 @@ Uvicorn Unix address metadata. Actual two-repository Docker probe and force-kill
 restart evidence saved in `docs/evaluation/pre-v8-broker-*.json`. Both repairs and
 independent rechecks pass, baseline failures retained, 20-second infinite-loop
 timeout cleaned. Full HTTP/model workflow and final complete regression remain.
+
+### Bk3 — HTTP integration and final hardening
+
+Actual Web proxy/Unix API/MCP/Qwen attempts on 0377114 imported both originals but
+both exhausted 18 turns at revision zero. Retained in
+`pre-v8-container-flow-live-1.json`; no selective retry or success claim. Separate
+scripted-provider test process inside API used actual loopback HTTP routes, real
+DB, Broker and Docker: both repairs verified; separately rerun protected tests
+match the exact result source hashes. Both proposals remain awaiting approval.
+Browser review verified full diff/identity and disabled unapproved actions; image
+saved. Production provider configuration was not changed to a scripted mode.
+
+Adversarial Linux transport checks reject duplicate framing/authentication,
+chunked/Expect requests and malformed JSON, enforce a five-second absolute input
+deadline, verify 0600 socket/0700 directory and actual inside/outside symlink denial.
+Final startup hardening independently verifies BOTH local-volume labels/mountpoints,
+Broker resource limits and directory ownership/modes. A single fixed readonly
+operator-policy mount supports rebuilt reviewed image IDs without rewriting the
+historical corpus; requests still cannot name policy paths or execution options.
+CI now also builds the Broker image; hosted execution remains unperformed.
+Final complete regression, current-image probes/restart and documentation audit next.

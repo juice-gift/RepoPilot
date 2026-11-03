@@ -60,7 +60,18 @@ It has no network, runs UID 65534 / socket group 0, drops capabilities and uses 
 readonly root. API/Web receive no daemon access. Broker accepts only exact approved
 profile/source/revision data; tests/images/mounts/commands are server-owned.
 
-Build the reviewed immutable Sandbox image and policy first. The example helper
+This Broker runtime is verified on Windows Docker Desktop's Linux engine with a
+group-0 Docker socket. A differently owned socket requires a separately reviewed
+service configuration; no root/privileged fallback is provided.
+
+Build the reviewed immutable Sandbox image and policy first. For a rebuilt image,
+generate a NEW runtime policy outside the immutable historical corpus with
+`python docs/tasks/pre-v8-build-policy.py --output C:\private\python-profiles.json`
+after reviewing the existing `repopilot-tests:pre-v8` image. Pass that file with
+the helper's `--policy` and the inspected immutable ID with `--sandbox-image`.
+API and Broker mount ONLY that reviewed file readonly at `/policy/profiles.json`
+and independently verify its exact SHA256. No request may upload/choose a policy.
+The example helper
 creates NEW isolated acceptance credentials outside Git; review its fixed project,
 ports, image ID and policy digest for another deployment. Retain its private files
 for volume restarts; it never prints credentials or overwrites an existing directory.

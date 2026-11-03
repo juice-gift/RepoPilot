@@ -8,6 +8,7 @@ import signal
 import stat
 from pathlib import Path, PurePosixPath
 
+from repopilot.diagnostics import configure_logging, event
 from repopilot.resolution.broker_runtime import BrokerRuntime, MappedSandboxExecutor
 from repopilot.resolution.broker_transport import BrokerServer, read_token
 from repopilot.resolution.profiles import load_profile
@@ -18,10 +19,11 @@ from repopilot.resolution.workspace import WorkspaceError
 DATA = Path("/execution")
 SOCKET = Path("/run/repopilot/broker.sock")
 TOKEN = Path("/run/secrets/broker_token")
+POLICY = Path("/policy/profiles.json")
 
 
 def inspect_boundary(
-    container: dict, volume: dict, project: str, docker_root: str
+    container: dict, volume: dict, project: str, docker_root: str, *, ipc_volume: dict
 ) -> PurePosixPath:
     """Fail closed unless daemon metadata confirms our private Compose volume."""
     if not re.fullmatch(r"[a-z0-9][a-z0-9_-]{0,62}", project):
@@ -30,12 +32,13 @@ def inspect_boundary(
     mounts = {m["Destination"]: m for m in container["Mounts"]}
     labels = config.get("Labels") or {}
     if (
-        len(container["Mounts"]) != 4
+        len(container["Mounts"]) != 5
         or set(mounts)
         != {
             DATA.as_posix(),
             SOCKET.parent.as_posix(),
             TOKEN.as_posix(),
+            POLICY.as_posix(),
             "/var/run/docker.sock",
         }
         or config["User"] != "65534:0"
@@ -44,6 +47,12 @@ def inspect_boundary(
         or not host["ReadonlyRootfs"]
         or host["CapDrop"] != ["ALL"]
         or host.get("CapAdd")
+        or host.get("Devices")
+        or host.get("PidMode")
+        or host["Memory"] != 268435456
+        or host["NanoCpus"] != 1_000_000_000
+        or host["PidsLimit"] != 128
+        or any("unconfined" in item for item in host["SecurityOpt"])
         or "no-new-privileges:true" not in host["SecurityOpt"]
         and "no-new-privileges=true" not in host["SecurityOpt"]
         or labels.get("com.docker.compose.project") != project
@@ -61,24 +70,24 @@ def inspect_boundary(
             or not re.fullmatch(r"[a-zA-Z0-9][a-zA-Z0-9_.-]{0,127}", mount["Name"])
         ):
             raise SandboxError("Broker private volume is invalid")
-        if target == DATA.as_posix():
-            expected = str(
-                PurePosixPath(docker_root) / "volumes" / mount["Name"] / "_data"
-            )
-            if (
-                volume["Name"] != mount["Name"]
-                or volume["Driver"] != "local"
-                or volume["Scope"] != "local"
-                or volume.get("Options")
-                or volume["Mountpoint"] != expected
-                or volume.get("Labels", {}).get("com.docker.compose.project") != project
-                or volume.get("Labels", {}).get("com.docker.compose.volume")
-                != logical_name
-            ):
-                raise SandboxError("Broker data volume ownership is invalid")
+        metadata = volume if target == DATA.as_posix() else ipc_volume
+        expected = str(PurePosixPath(docker_root) / "volumes" / mount["Name"] / "_data")
+        if (
+            metadata["Name"] != mount["Name"]
+            or metadata["Driver"] != "local"
+            or metadata["Scope"] != "local"
+            or metadata.get("Options")
+            or metadata["Mountpoint"] != expected
+            or metadata.get("Labels", {}).get("com.docker.compose.project") != project
+            or metadata.get("Labels", {}).get("com.docker.compose.volume")
+            != logical_name
+        ):
+            raise SandboxError("Broker private volume ownership is invalid")
     if (
         mounts[TOKEN.as_posix()]["RW"]
         or mounts[TOKEN.as_posix()]["Type"] != "bind"
+        or mounts[POLICY.as_posix()]["RW"]
+        or mounts[POLICY.as_posix()]["Type"] != "bind"
         or mounts["/var/run/docker.sock"]["Type"] != "bind"
         or mounts["/var/run/docker.sock"]["RW"]
         or mounts["/var/run/docker.sock"]["Source"]
@@ -157,9 +166,10 @@ def main() -> None:
     import fcntl  # Linux-only; API/Windows imports never require this module.
 
     os.umask(0o077)
+    configure_logging()
     project = os.environ["BROKER_PROJECT"]
     image = os.environ["BROKER_SANDBOX_IMAGE"]
-    registry = Path(os.environ["BROKER_PROFILE_REGISTRY"])
+    registry = POLICY
     registry_hash = os.environ["BROKER_PROFILE_REGISTRY_SHA256"]
     approved = read_registry(registry, registry_hash)
     profiles = {
@@ -186,10 +196,23 @@ def main() -> None:
     if len(data_mounts) != 1 or data_mounts[0]["Type"] != "volume":
         raise SandboxError("Broker requires its own execution volume")
     volume = json.loads(docker("volume", "inspect", data_mounts[0]["Name"]))[0]
+    ipc_mounts = [
+        m for m in container["Mounts"] if m["Destination"] == SOCKET.parent.as_posix()
+    ]
+    if len(ipc_mounts) != 1 or ipc_mounts[0]["Type"] != "volume":
+        raise SandboxError("Broker requires a private communication volume")
+    ipc_volume = json.loads(docker("volume", "inspect", ipc_mounts[0]["Name"]))[0]
     info = json.loads(docker("info", "--format", "{{json .}}"))
-    daemon_root = inspect_boundary(container, volume, project, info["DockerRootDir"])
+    daemon_root = inspect_boundary(
+        container, volume, project, info["DockerRootDir"], ipc_volume=ipc_volume
+    )
     for path in (DATA, DATA / "workspaces", DATA / "requests", SOCKET.parent):
-        if any(p.is_symlink() for p in (path, *path.parents)) or not path.is_dir():
+        if (
+            any(p.is_symlink() for p in (path, *path.parents))
+            or not path.is_dir()
+            or path.stat().st_uid != os.geteuid()
+            or stat.S_IMODE(path.stat().st_mode) != 0o700
+        ):
             raise WorkspaceError("Broker directories must be owned regular directories")
     lock_path = DATA / "broker.lock"
     descriptor = os.open(lock_path, os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600)
@@ -212,6 +235,8 @@ def main() -> None:
         workspace_parent=DATA / "workspaces",
     )
     with lock, BrokerServer(SOCKET, read_token(TOKEN), runtime) as server:
+        event("broker.ready", project=project, transport="private_unix")
+
         # Raising on SIGTERM unwinds server_close, waits for handlers and keeps the
         # volume lock until their Sandbox finally blocks have finished.
         def terminate(signum, frame):
