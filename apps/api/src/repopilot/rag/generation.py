@@ -3,6 +3,7 @@ from typing import Protocol
 from openai import OpenAI
 
 from repopilot.config import Settings
+from repopilot.diagnostics import operation
 from repopilot.rag.tool_calling import (
     AgentProvider,
     AgentTurn,
@@ -39,7 +40,7 @@ class OpenAIResponsesGenerationProvider:
             )
         self.model_name = model_name
         self.max_output_tokens = max_output_tokens
-        self._client = client or OpenAI(api_key=api_key)
+        self._client = client or OpenAI(api_key=api_key, timeout=30, max_retries=0)
 
     def complete(
         self,
@@ -57,6 +58,7 @@ class OpenAIResponsesGenerationProvider:
             tools=tools,
         )
 
+    @operation("llm.generation")
     def generate(self, *, instructions: str, input_text: str) -> str:
         response = self._client.responses.create(
             model=self.model_name,
@@ -94,7 +96,9 @@ class QwenResponsesGenerationProvider:
             )
         self.model_name = model_name
         self.max_output_tokens = max_output_tokens
-        self._client = client or OpenAI(api_key=api_key, base_url=base_url)
+        self._client = client or OpenAI(
+            api_key=api_key, base_url=base_url, timeout=30, max_retries=0
+        )
 
     def complete(
         self,
@@ -112,6 +116,7 @@ class QwenResponsesGenerationProvider:
             tools=tools,
         )
 
+    @operation("llm.generation")
     def generate(self, *, instructions: str, input_text: str) -> str:
         response = self._client.responses.create(
             model=self.model_name,

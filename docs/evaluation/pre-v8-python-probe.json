@@ -1,0 +1,93 @@
+{
+  "registry_sha256": "f4923cbfead59f1a6bec1127340ed4ed76118e51254efa296048ca2570a70be8",
+  "cases": [
+    {
+      "repository": "pallets/itsdangerous",
+      "commit": "1a9b8d1f9968eb248bda69f39d373a6330b692ba",
+      "profile_hash": "9c8c42c556b629964cd2b7c6448bf488cdf8ad844cc84822f7c8d1ced79d52c0",
+      "mode": "deterministic-real-docker",
+      "baseline": {
+        "workspace_id": "5fb9fa4b99404016b495d7c64d4e6404",
+        "revision": 0,
+        "profile": "trusted-itsdangerous",
+        "exit_code": 1,
+        "stdout": "REPOPILOT_ISOLATION={\"network\": \"none\", \"no_new_privileges\": true, \"read_only_inputs\": true, \"seccomp\": true, \"uid\": 65534}\nFFF.....\n=================================== FAILURES ===================================\n_____________________ test_future_timestamp_is_rejected[0] _____________________\n/validation/test_future_timestamp.py:20: in test_future_timestamp_is_rejected\n    with pytest.raises(SignatureExpired):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   Failed: DID NOT RAISE <class 'itsdangerous.exc.SignatureExpired'>\n____________________ test_future_timestamp_is_rejected[10] _____________________\n/validation/test_future_timestamp.py:20: in test_future_timestamp_is_rejected\n    with pytest.raises(SignatureExpired):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   Failed: DID NOT RAISE <class 'itsdangerous.exc.SignatureExpired'>\n____________________ test_future_timestamp_is_rejected[60] _____________________\n/validation/test_future_timestamp.py:20: in test_future_timestamp_is_rejected\n    with pytest.raises(SignatureExpired):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   Failed: DID NOT RAISE <class 'itsdangerous.exc.SignatureExpired'>\n=========================== short test summary info ============================\nFAILED ../dev/test_future_timestamp.py::test_future_timestamp_is_rejected[0]\nFAILED ../dev/test_future_timestamp.py::test_future_timestamp_is_rejected[10]\nFAILED ../dev/test_future_timestamp.py::test_future_timestamp_is_rejected[60]\n3 failed, 5 passed in 0.82s\n",
+        "stderr": "",
+        "elapsed_ms": 4669.113,
+        "timed_out": false,
+        "truncated": false,
+        "infrastructure_error": null,
+        "isolation_confirmed": true,
+        "cleanup_confirmed": true,
+        "expected_tests": 8,
+        "observed_passed": 5,
+        "profile_hash": "9c8c42c556b629964cd2b7c6448bf488cdf8ad844cc84822f7c8d1ced79d52c0",
+        "passed": false
+      },
+      "diff": "--- a/src/itsdangerous/timed.py\n+++ b/src/itsdangerous/timed.py\n@@ -97,7 +97,7 @@\n         if max_age is not None:\n             age = self.get_timestamp() - timestamp\n \n-            if age > max_age:\n+            if age < 0 or age > max_age:\n                 raise SignatureExpired(\n                     f\"Signature age {age} > {max_age} seconds\",\n                     payload=value,\n",
+      "verification": {
+        "workspace_id": "5fb9fa4b99404016b495d7c64d4e6404",
+        "revision": 1,
+        "profile": "trusted-itsdangerous",
+        "exit_code": 0,
+        "stdout": "REPOPILOT_ISOLATION={\"network\": \"none\", \"no_new_privileges\": true, \"read_only_inputs\": true, \"seccomp\": true, \"uid\": 65534}\n........\n8 passed in 0.57s\n",
+        "stderr": "",
+        "elapsed_ms": 4143.231,
+        "timed_out": false,
+        "truncated": false,
+        "infrastructure_error": null,
+        "isolation_confirmed": true,
+        "cleanup_confirmed": true,
+        "expected_tests": 8,
+        "observed_passed": 8,
+        "profile_hash": "9c8c42c556b629964cd2b7c6448bf488cdf8ad844cc84822f7c8d1ced79d52c0",
+        "passed": true
+      },
+      "workspace_cleaned": true
+    },
+    {
+      "repository": "more-itertools/more-itertools",
+      "commit": "64be96ceb2a6e836f76f069f4a96d2394d59fd0c",
+      "profile_hash": "5dc9e6a9ef9fe9c8c658fee8c0608707fbf2bfd7ea3f27828cc5fe83a782cf61",
+      "mode": "deterministic-real-docker",
+      "baseline": {
+        "workspace_id": "0b82abda03564626981987e048bca3c7",
+        "revision": 0,
+        "profile": "trusted-more-itertools",
+        "exit_code": 1,
+        "stdout": "REPOPILOT_ISOLATION={\"network\": \"none\", \"no_new_privileges\": true, \"read_only_inputs\": true, \"seccomp\": true, \"uid\": 65534}\nFFFFFF...\n=================================== FAILURES ===================================\n________________ test_empty_input_never_yields_padding[False-2] ________________\n/validation/test_replace_empty.py:11: in test_empty_input_never_yields_padding\n    assert list(replace([], lambda *args: match, [9], window_size=window_size)) == []\nE   assert [None] == []\nE     \nE     Left contains one more item: None\nE     Use -v to get more diff\n________________ test_empty_input_never_yields_padding[False-3] ________________\n/validation/test_replace_empty.py:11: in test_empty_input_never_yields_padding\n    assert list(replace([], lambda *args: match, [9], window_size=window_size)) == []\nE   assert [None] == []\nE     \nE     Left contains one more item: None\nE     Use -v to get more diff\n________________ test_empty_input_never_yields_padding[False-4] ________________\n/validation/test_replace_empty.py:11: in test_empty_input_never_yields_padding\n    assert list(replace([], lambda *args: match, [9], window_size=window_size)) == []\nE   assert [None] == []\nE     \nE     Left contains one more item: None\nE     Use -v to get more diff\n________________ test_empty_input_never_yields_padding[True-2] _________________\n/validation/test_replace_empty.py:11: in test_empty_input_never_yields_padding\n    assert list(replace([], lambda *args: match, [9], window_size=window_size)) == []\nE   assert [9] == []\nE     \nE     Left contains one more item: 9\nE     Use -v to get more diff\n________________ test_empty_input_never_yields_padding[True-3] _________________\n/validation/test_replace_empty.py:11: in test_empty_input_never_yields_padding\n    assert list(replace([], lambda *args: match, [9], window_size=window_size)) == []\nE   assert [9] == []\nE     \nE     Left contains one more item: 9\nE     Use -v to get more diff\n________________ test_empty_input_never_yields_padding[True-4] _________________\n/validation/test_replace_empty.py:11: in test_empty_input_never_yields_padding\n    assert list(replace([], lambda *args: match, [9], window_size=window_size)) == []\nE   assert [9] == []\nE     \nE     Left contains one more item: 9\nE     Use -v to get more diff\n=========================== short test summary info ============================\nFAILED ../dev/test_replace_empty.py::test_empty_input_never_yields_padding[False-2]\nFAILED ../dev/test_replace_empty.py::test_empty_input_never_yields_padding[False-3]\nFAILED ../dev/test_replace_empty.py::test_empty_input_never_yields_padding[False-4]\nFAILED ../dev/test_replace_empty.py::test_empty_input_never_yields_padding[True-2]\nFAILED ../dev/test_replace_empty.py::test_empty_input_never_yields_padding[True-3]\nFAILED ../dev/test_replace_empty.py::test_empty_input_never_yields_padding[True-4]\n6 failed, 3 passed in 0.49s\n",
+        "stderr": "",
+        "elapsed_ms": 3824.255,
+        "timed_out": false,
+        "truncated": false,
+        "infrastructure_error": null,
+        "isolation_confirmed": true,
+        "cleanup_confirmed": true,
+        "expected_tests": 9,
+        "observed_passed": 3,
+        "profile_hash": "5dc9e6a9ef9fe9c8c658fee8c0608707fbf2bfd7ea3f27828cc5fe83a782cf61",
+        "passed": false
+      },
+      "diff": "--- a/more_itertools/more.py\n+++ b/more_itertools/more.py\n@@ -3418,7 +3418,7 @@\n     # Add padding such that the number of windows matches the length of the\n     # iterable\n     it = chain(iterable, repeat(_marker, window_size - 1))\n-    windows = windowed(it, window_size)\n+    windows = windowed(it, window_size, fillvalue=_marker)\n \n     n = 0\n     for w in windows:\n",
+      "verification": {
+        "workspace_id": "0b82abda03564626981987e048bca3c7",
+        "revision": 1,
+        "profile": "trusted-more-itertools",
+        "exit_code": 0,
+        "stdout": "REPOPILOT_ISOLATION={\"network\": \"none\", \"no_new_privileges\": true, \"read_only_inputs\": true, \"seccomp\": true, \"uid\": 65534}\n.........\n9 passed in 0.24s\n",
+        "stderr": "",
+        "elapsed_ms": 3562.541,
+        "timed_out": false,
+        "truncated": false,
+        "infrastructure_error": null,
+        "isolation_confirmed": true,
+        "cleanup_confirmed": true,
+        "expected_tests": 9,
+        "observed_passed": 9,
+        "profile_hash": "5dc9e6a9ef9fe9c8c658fee8c0608707fbf2bfd7ea3f27828cc5fe83a782cf61",
+        "passed": true
+      },
+      "workspace_cleaned": true
+    }
+  ]
+}

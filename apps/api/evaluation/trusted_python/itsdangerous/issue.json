@@ -1,0 +1,8 @@
+{
+  "number": 126,
+  "html_url": "https://github.com/pallets/itsdangerous/issues/126",
+  "repository": "pallets/itsdangerous",
+  "body": "My team too was \"hit\" by https://github.com/pallets/itsdangerous/issues/120 not having read the change log carefully enough.\r\n\r\nDigging deeper, a colleague discovered that while `(signs) 0.24 -> 1.1.0 (verifies)` path is broken / requires a work-around, the `1.1.0 -> 0.24` path still kinda works.\r\n\r\nIt works by the virtue of 1.1.0 sending much larger timestamps (numerically), which are interpreted as being far in the future by 0.24. Thus true positives (recent messages) work, and false positives appear (1.1.0 outdated messages are interpreted as valid by 0.24).\r\n\r\nThis is because TimedSerializer/TimestampSigner only validate that `message more recent than X`.\r\n\r\nI have a gut feeling that it's unsafe (although a point was made that since both sender and recipient are under control of same party, this is hard to exploit).\r\n\r\nI think that validation should be `message in interval [now, now+max_age)`, perhaps with affordance for clock drift / imperfect time synchronisation it would be `[now - ε, now + max_age + ε)`",
+  "title": "TimedSerializer accepts timestamps from the future",
+  "id": 407514106
+}

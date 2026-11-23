@@ -1,0 +1,2 @@
+# Approval hashes bind exact exported blobs/policy bytes across Windows/Linux.
+/apps/api/evaluation/trusted_python/** -text whitespace=cr-at-eol

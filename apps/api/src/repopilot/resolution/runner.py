@@ -4,6 +4,7 @@ from dataclasses import asdict
 from time import monotonic
 
 from repopilot.agent.runner import RunLimits, input_size, valid_turn
+from repopilot.diagnostics import event
 from repopilot.rag.tool_calling import AgentProvider
 from repopilot.resolution.models import (
     ResolutionDiagnostics,
@@ -132,6 +133,14 @@ def run_resolution(
                     observation=observation,
                     duration_ms=round((monotonic() - tool_started) * 1000, 3),
                 )
+            )
+            event(
+                "agent.tool",
+                step=len(trace),
+                model_turn=model_turn,
+                outcome="failed" if observation.error_code else "ok",
+                elapsed_ms=trace[-1].duration_ms,
+                revision=workspace.revision,
             )
             history.extend(
                 [

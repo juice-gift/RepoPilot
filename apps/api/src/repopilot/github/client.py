@@ -245,7 +245,8 @@ class GitHubReadClient:
             if result.is_error:
                 raise GitHubMCPError("tool_failed")
             encoded = result.model_dump_json()
-            if len(encoded.encode()) > MAX_RESULT_BYTES:
+            limit = 512_000 if name == "get_file_contents" else MAX_RESULT_BYTES
+            if len(encoded.encode()) > limit:
                 raise GitHubMCPError("result_limit")
             if self._token:
                 token = self._token.get_secret_value()

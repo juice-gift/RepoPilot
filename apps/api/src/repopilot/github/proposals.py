@@ -5,7 +5,7 @@ from datetime import UTC, datetime
 from typing import Literal
 from uuid import uuid4
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field, model_serializer
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session
@@ -20,6 +20,7 @@ from repopilot.db.models import (
 )
 from repopilot.github.client import GitHubMCPError
 from repopilot.github.resolution import result_hash
+from repopilot.github.trees import nested_tree, replace_blobs
 from repopilot.resolution.models import ResolutionResult
 from repopilot.resolution.patch import source_diff
 from repopilot.resolution.profiles import load_profile
@@ -73,6 +74,14 @@ class PublicationPlan(BaseModel):
     draft: Literal[True] = True
     test_passed: int
     tested_revision: int
+    baseline_entries: dict[str, dict[str, str]] = Field(default_factory=dict)
+
+    @model_serializer(mode="wrap")
+    def preserve_legacy_plan_bytes(self, handler):
+        data = handler(self)
+        if not self.baseline_entries:
+            data.pop("baseline_entries", None)
+        return data
 
 
 def commit_hash(tree: str, parent: str, message: str, date: str) -> str:
@@ -101,9 +110,13 @@ def verified_run(
         or binding.repository_full_name not in settings.github_mcp_allowed_repositories
     ):
         raise GitHubMCPError("repository_denied")
-    profile = load_profile(binding.profile)
+    profile = load_profile(
+        binding.profile,
+        registry_path=settings.trusted_profile_registry,
+        registry_digest=settings.trusted_profile_registry_sha256,
+    )
     if (
-        binding.issue_body != profile.issue
+        binding.issue_body != profile.bound_issue
         or hashlib.sha256(binding.issue_body.encode()).hexdigest()
         != binding.issue_body_hash
     ):
@@ -118,6 +131,11 @@ def verified_run(
         )
     }
     profile.require_snapshot(source)
+    if profile.commit_sha and (
+        binding.commit_sha != profile.commit_sha
+        or binding.repository_full_name != profile.repository
+    ):
+        raise GitHubMCPError("trusted_binding_scope_mismatch")
     result = ResolutionResult.model_validate(run.result)
     if (result.repository_id, result.snapshot_id, result.profile) != (
         snapshot.repository_id,
@@ -166,6 +184,11 @@ def verified_run(
         or not set(changed) <= profile.editable_paths
     ):
         raise GitHubMCPError("test_or_patch_not_verified")
+    if profile.commit_sha and any(
+        t.profile_hash != profile.fingerprint() or t.image_id != profile.image_id
+        for t in [*baseline, *tested]
+    ):
+        raise GitHubMCPError("test_profile_changed")
     modified = dict(source)
     for file in result.changed_files:
         if file.original != source[file.path] or file.original == file.modified:
@@ -208,12 +231,24 @@ def build_plan(
     files = dict(source)
     for changed in result.changed_files:
         files[changed.path] = changed.modified
-    tree = tree_hash(files)
+    profile = load_profile(
+        binding.profile,
+        registry_path=settings.trusted_profile_registry,
+        registry_digest=settings.trusted_profile_registry_sha256,
+    )
+    entries = {p: dict(v) for p, v in (profile.baseline_entries or {}).items()}
+    if profile.commit_sha:
+        if not entries or nested_tree(entries) != profile.baseline_tree_sha:
+            raise GitHubMCPError("baseline_tree_unavailable")
+        files = {f.path: f.modified for f in result.changed_files}
+        tree = nested_tree(replace_blobs(entries, files))
+    else:
+        tree = tree_hash(files)
     message = f"fix: resolve issue #{binding.issue_number} ({binding.profile})\n\nRepoPilot proposal {proposal_id}\n"
     body = (
         f"Controlled repair for #{binding.issue_number}.\n\n"
         f"Base: `{binding.commit_sha}`\nSnapshot: `{binding.snapshot_id}`\n"
-        f"Result: `{run.result_hash}`\nIndependent tests: {load_profile(binding.profile).expected_tests} passed at revision {result.revision}.\n\n"
+        f"Result: `{run.result_hash}`\nIndependent tests: {profile.expected_tests} passed at revision {result.revision}.\n\n"
         f"RepoPilot-Proposal: {proposal_id}\n\nHuman review required. No merge is authorized.\n"
     )
     return PublicationPlan(
@@ -231,7 +266,8 @@ def build_plan(
         baseline_hashes={
             p: hashlib.sha256(t.encode()).hexdigest() for p, t in source.items()
         },
-        baseline_tree_sha=tree_hash(source),
+        baseline_tree_sha=profile.baseline_tree_sha if entries else tree_hash(source),
+        baseline_entries=entries,
         changed_paths=sorted(f.path for f in result.changed_files),
         diff=result.patch,
         tree_sha=tree,
@@ -240,7 +276,7 @@ def build_plan(
         commit_date=date,
         pr_title=f"Fix issue #{binding.issue_number}: {binding.profile}",
         pr_body=body,
-        test_passed=load_profile(binding.profile).expected_tests,
+        test_passed=profile.expected_tests,
         tested_revision=result.revision,
     )
 

@@ -20,7 +20,7 @@ from repopilot.db.models import (
     GitHubResolutionRun,
 )
 from repopilot.embeddings.providers import create_embedding_provider
-from repopilot.github.binding import import_frozen_issues
+from repopilot.github.binding import import_frozen_issues, import_trusted_issue
 from repopilot.github.client import GitHubMCPError
 from repopilot.github.proposals import (
     PublicationPlan,
@@ -31,8 +31,9 @@ from repopilot.github.proposals import (
 from repopilot.github.publication import publish_proposal
 from repopilot.github.resolution import resolve_bound_issue
 from repopilot.rag.generation import create_agent_provider
+from repopilot.resolution.broker_client import create_executor
 from repopilot.resolution.models import ResolutionResult
-from repopilot.resolution.sandbox import SandboxExecutor
+from repopilot.resolution.trusted_profiles import read_registry
 from repopilot.resolution.workspace import WorkspaceError
 
 
@@ -73,6 +74,49 @@ class BindingView(BaseModel):
     profile: str
 
 
+class TrustedImportRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    profile: str = Field(pattern=r"^trusted-[a-z0-9-]{1,48}$")
+
+
+class TrustedProfileView(BaseModel):
+    profile: str
+    repository: str
+    commit_sha: str
+    issue_number: int
+
+
+@router.get("/trusted-profiles", response_model=list[TrustedProfileView])
+def trusted_profiles(request: Request) -> list[TrustedProfileView]:
+    settings = request.app.state.settings
+    if settings.trusted_profile_registry is None:
+        return []
+    registry = read_registry(
+        settings.trusted_profile_registry, settings.trusted_profile_registry_sha256
+    )
+    return [
+        TrustedProfileView(
+            profile=p.id,
+            repository=p.repository,
+            commit_sha=p.commit_sha,
+            issue_number=p.issue_number,
+        )
+        for p in registry.profiles
+        if p.issue_number
+        and p.repository.lower() in settings.github_mcp_allowed_repositories
+    ]
+
+
+@router.post("/import-trusted", response_model=BindingView)
+async def import_trusted(
+    payload: TrustedImportRequest, request: Request, session: DB
+) -> BindingView:
+    row = await import_trusted_issue(
+        session, request.app.state.settings, profile_id=payload.profile
+    )
+    return BindingView.model_validate(row)
+
+
 class RunView(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: str
@@ -109,11 +153,15 @@ def proposal_view(
 
 
 def owner_control(request: Request) -> None:
-    if (
-        request.client is None
-        or request.client.host not in {"127.0.0.1", "::1"}
-        or request.headers.get("origin") != request.app.state.settings.frontend_origin
-    ):
+    settings = request.app.state.settings
+    local_transport = (
+        request.client is not None and request.client.host in {"127.0.0.1", "::1"}
+    ) or (
+        settings.local_owner_unix_socket is not None
+        and request.client is None
+        and request.scope.get("server") == (settings.local_owner_unix_socket, None)
+    )
+    if not local_transport or request.headers.get("origin") != settings.frontend_origin:
         raise HTTPException(
             403, "Approval and publication require the local owner's configured origin"
         )
@@ -202,7 +250,7 @@ def resolve(payload: RunRequest, request: Request, session: DB):
             settings,
             binding_id=payload.binding_id,
             provider=create_agent_provider(settings),
-            executor=SandboxExecutor(settings.resolution_sandbox_image),
+            executor=create_executor(settings),
             embedding_factory=lambda: create_embedding_provider(settings),
         )
     except GitHubMCPError as exc:

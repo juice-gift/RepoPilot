@@ -23,7 +23,7 @@ from repopilot.ingestion.scanner import (
     ScannedFile,
     calculate_snapshot_hash,
 )
-from repopilot.resolution.profiles import load_profile
+from repopilot.resolution.profiles import TestProfile, load_profile
 from repopilot.resolution.workspace import snapshot_sources
 
 
@@ -32,6 +32,7 @@ def persist_binding(
     *,
     audit: dict[str, object],
     sources: dict[str, str],
+    approved_profiles: list[TestProfile] | None = None,
 ) -> list[GitHubIssueSnapshot]:
     """Internal trusted orchestration entry; never accepts HTTP/model audit claims."""
     if audit.get("status") != "passed" or not all(audit["checks"].values()):
@@ -45,8 +46,13 @@ def persist_binding(
         or not re.fullmatch(r"[a-f0-9]{40}", commit)
     ):
         raise GitHubMCPError("remote_identity_invalid")
-    profiles = [load_profile(case) for case in CASES]
-    profiles[0].require_snapshot(sources)
+    profiles = approved_profiles or [load_profile(case) for case in CASES]
+    for profile in profiles:
+        profile.require_snapshot(sources)
+        if profile.commit_sha and (
+            profile.commit_sha != commit or profile.repository != audit["repository"]
+        ):
+            raise GitHubMCPError("trusted_binding_scope_mismatch")
     files = tuple(
         ScannedFile(
             path,
@@ -110,7 +116,9 @@ def persist_binding(
         for profile, issue in zip(profiles, audit["issues"], strict=True):
             if issue["case"] != profile.case_id or not issue["matches_frozen_contract"]:
                 raise GitHubMCPError("issue_contract_mismatch")
-            body_hash = hashlib.sha256(profile.issue.encode()).hexdigest()
+            if profile.issue_number and issue["number"] != profile.issue_number:
+                raise GitHubMCPError("issue_contract_mismatch")
+            body_hash = hashlib.sha256(profile.bound_issue.encode()).hexdigest()
             session.execute(
                 insert(GitHubIssueSnapshot)
                 .values(
@@ -119,7 +127,7 @@ def persist_binding(
                     commit_sha=commit,
                     issue_number=issue["number"],
                     profile=profile.case_id,
-                    issue_body=profile.issue,
+                    issue_body=profile.bound_issue,
                     issue_body_hash=body_hash,
                     snapshot_id=snapshot.id,
                     audit=audit,
@@ -138,7 +146,7 @@ def persist_binding(
                 binding.profile,
                 binding.issue_body_hash,
                 binding.issue_body,
-            ) != (snapshot.id, profile.case_id, body_hash, profile.issue):
+            ) != (snapshot.id, profile.case_id, body_hash, profile.bound_issue):
                 raise GitHubMCPError("binding_conflict")
             bindings.append(binding)
         session.commit()
@@ -176,3 +184,73 @@ async def import_frozen_issues(
         if object_payload(await reader.commit(repository, "main")).get("sha") != commit:
             raise GitHubMCPError("baseline_moved")
     return persist_binding(session, audit=audit, sources=sources)
+
+
+async def import_trusted_issue(
+    session: Session,
+    settings: Settings,
+    *,
+    profile_id: str,
+) -> GitHubIssueSnapshot:
+    from repopilot.github.fixture_audit import issue_contract
+    from repopilot.github.trees import object_hash
+
+    profile = load_profile(
+        profile_id,
+        registry_path=settings.trusted_profile_registry,
+        registry_digest=settings.trusted_profile_registry_sha256,
+    )
+    if not (
+        profile.repository
+        and profile.commit_sha
+        and profile.issue_number
+        and profile.baseline_entries
+    ):
+        raise GitHubMCPError("trusted_remote_profile_required")
+    repository, commit = profile.repository, profile.commit_sha
+    async with connect_github_readonly(settings) as reader:
+        metadata = object_payload(await reader.repository(repository))
+        items = metadata.get("items", [])
+        if (
+            metadata.get("total_count") != 1
+            or len(items) != 1
+            or items[0].get("full_name", "").lower() != repository
+        ):
+            raise GitHubMCPError("repository_identity_mismatch")
+        if object_payload(await reader.commit(repository, commit)).get("sha") != commit:
+            raise GitHubMCPError("commit_unverified")
+        contract = issue_contract(
+            await reader.issue(repository, profile.issue_number),
+            repository,
+            profile.issue_number,
+            profile.bound_issue,
+        )
+        if not contract["matches_frozen_contract"]:
+            raise GitHubMCPError("issue_contract_mismatch")
+        sources = {}
+        for path in profile.expected_sources:
+            text = embedded_source(
+                await reader.file(repository, path, commit), repository, commit, path
+            )
+            entry = profile.baseline_entries.get(path, {})
+            if entry.get("mode") not in {"100644", "100755"} or entry.get(
+                "sha"
+            ) != object_hash("blob", text.encode()):
+                raise GitHubMCPError("source_tree_mismatch")
+            sources[path] = text
+        profile.require_snapshot(sources)
+        audit = {
+            "status": "passed",
+            "checks": {"commit_source_issue_verified": True},
+            "repository": repository,
+            "repository_id": items[0].get("id"),
+            "actual_commit": commit,
+            "measurement": "actual official MCP trusted Python import",
+            "connection": reader.connection_evidence,
+            "baseline_tree_sha": profile.baseline_tree_sha,
+            "profile_hash": profile.fingerprint(),
+            "issues": [{"case": profile.case_id, **contract}],
+        }
+    return persist_binding(
+        session, audit=audit, sources=sources, approved_profiles=[profile]
+    )[0]

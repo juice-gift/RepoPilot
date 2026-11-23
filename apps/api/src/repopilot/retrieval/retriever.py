@@ -6,6 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from repopilot.db.models import RepositorySnapshot
+from repopilot.diagnostics import operation
 from repopilot.embeddings.providers import EmbeddingProvider
 from repopilot.indexing.vector_store import exact_vector_search
 from repopilot.retrieval.lexical import rerank_hybrid
@@ -52,6 +53,7 @@ class RetrievalResult:
     evidence: tuple[RetrievalEvidence, ...]
 
 
+@operation("retrieval")
 def retrieve_evidence(
     session: Session,
     *,

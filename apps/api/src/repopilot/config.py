@@ -2,14 +2,15 @@ import re
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, SecretStr, field_validator
+from pydantic import Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[4]
 
 
 class Settings(BaseSettings):
-    database_url: str = Field(min_length=1)
+    environment: Literal["development", "test", "deployment"] = "development"
+    database_url: str = Field(min_length=1, repr=False)
     frontend_origin: str = Field(default="http://localhost:5173", min_length=1)
     repository_allowed_root: Path = REPOSITORY_ROOT
     embedding_provider: Literal["openai", "qwen", "deterministic"] = "openai"
@@ -46,6 +47,13 @@ class Settings(BaseSettings):
     resolution_sandbox_image: str | None = Field(
         default=None, pattern=r"^sha256:[0-9a-f]{64}$"
     )
+    trusted_profile_registry: Path | None = None
+    sandbox_broker_socket: Path | None = None
+    sandbox_broker_token_file: Path | None = None
+    local_owner_unix_socket: Literal["/run/repopilot-api/api.sock"] | None = None
+    trusted_profile_registry_sha256: str | None = Field(
+        default=None, pattern=r"^[a-f0-9]{64}$"
+    )
 
     model_config = SettingsConfigDict(
         env_file=REPOSITORY_ROOT / ".env",
@@ -53,6 +61,65 @@ class Settings(BaseSettings):
         extra="ignore",
         hide_input_in_errors=True,
     )
+
+    @model_validator(mode="after")
+    def require_explicit_deployment_settings(self) -> "Settings":
+        if (self.sandbox_broker_socket is None) != (
+            self.sandbox_broker_token_file is None
+        ):
+            raise ValueError(
+                "Broker requires both a private socket and credential file"
+            )
+        if any(
+            path is not None and not path.is_absolute()
+            for path in (self.sandbox_broker_socket, self.sandbox_broker_token_file)
+        ):
+            raise ValueError("Broker paths must be absolute operator-owned paths")
+        if (self.trusted_profile_registry is None) != (
+            self.trusted_profile_registry_sha256 is None
+        ):
+            raise ValueError(
+                "Trusted profile registry requires its exact approved SHA256"
+            )
+        if (
+            self.trusted_profile_registry is not None
+            and not self.trusted_profile_registry.is_absolute()
+        ):
+            raise ValueError(
+                "Trusted profile registry requires an absolute operator-owned path"
+            )
+        if self.environment != "deployment":
+            return self
+        required = {
+            "database_url",
+            "frontend_origin",
+            "repository_allowed_root",
+            "embedding_provider",
+            "generation_provider",
+            "embedding_dimensions",
+        }
+        if required - self.model_fields_set:
+            raise ValueError(
+                "Deployment requires explicit settings: "
+                + ", ".join(sorted(required - self.model_fields_set))
+            )
+        for provider, model in (
+            (self.embedding_provider, "embedding_model"),
+            (self.generation_provider, "generation_model"),
+        ):
+            if provider == "deterministic":
+                continue
+            model_field = "qwen_" + model if provider == "qwen" else model
+            key = self.dashscope_api_key if provider == "qwen" else self.openai_api_key
+            if (
+                model_field not in self.model_fields_set
+                or not key
+                or not key.get_secret_value()
+            ):
+                raise ValueError(
+                    "Deployment external providers need explicit models and credentials"
+                )
+        return self
 
     @field_validator("database_url")
     @classmethod

@@ -1,0 +1,9 @@
+FROM public.ecr.aws/docker/library/docker@sha256:3f4743208d2338c934d7b8bcfbe1bb54c0b2355c510ad5e0f31c0c4a54bd704e AS cli
+FROM repopilot-api:local
+COPY --from=cli /usr/local/bin/docker /usr/local/bin/docker
+USER 0
+RUN mkdir -p /execution/workspaces /execution/requests /run/repopilot \
+    && chown -R 65534:65534 /execution /run/repopilot \
+    && chmod 700 /execution /execution/workspaces /execution/requests /run/repopilot
+USER 65534:0
+CMD ["python", "-m", "repopilot.resolution.broker_server"]

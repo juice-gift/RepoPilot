@@ -1,0 +1,26 @@
+[
+  {
+    "id": "python/itsdangerous",
+    "evidence_hash": "30a49977f89e878e5a3434bab1331f43ca844304c23f8108b3544ae3d392623d",
+    "supported": false,
+    "reviewer": "Codex",
+    "provenance": "Codex source/claim review on 2026-11-03; not independent human review or a new model execution",
+    "reason": "Actual patch and 8/8 tests support rejecting negative age. The final prose states a timestamp validation interval [now, now+max_age), which contradicts the implemented timestamp range [now-max_age, now] with inclusive tested boundaries. The source does not establish the added more-precise timestamp claim. Repair/test success is retained separately from unsupported explanation."
+  },
+  {
+    "id": "python/more-itertools",
+    "evidence_hash": "25d1beffecc8b4737a4d08ad335db8550aac3c717727a18645bad1be2df2222c",
+    "supported": true,
+    "reviewer": "Codex",
+    "provenance": "Codex source/claim review on 2026-11-03; not independent human review or a new model execution",
+    "reason": "The exact diff adds fillvalue=_marker to windowed. Source strips marker padding before calling the predicate and yielding. Protected tests independently cover empty inputs, true/false predicates, real None values and ordinary replacement; all 9 pass."
+  },
+  {
+    "id": "python/ambiguous-clock-drift",
+    "evidence_hash": "ad7fcf24184d2d6648c8b909c5db1f23d972c3490c484ad4ec533823d4095e44",
+    "supported": true,
+    "reviewer": "Codex",
+    "provenance": "Codex source/claim review on 2026-11-03; not independent human review or a new model execution",
+    "reason": "The separate task explicitly omits tolerance, compatibility policy and interval. Trace submits needs_owner_decision, revision remains zero, and no patches or tests run. The final request for owner parameters is consistent with the recorded evidence."
+  }
+]

@@ -7,6 +7,8 @@ from typing import Protocol, cast
 from openai import OpenAI
 from openai.types.responses import ResponseInputItemParam, ToolParam
 
+from repopilot.diagnostics import operation
+
 
 @dataclass(frozen=True)
 class ToolCall:
@@ -35,6 +37,7 @@ class AgentProvider(Protocol):
     ) -> AgentTurn: ...
 
 
+@operation("llm.tool_call")
 def complete_response(
     client: OpenAI,
     *,

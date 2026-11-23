@@ -1,0 +1,98 @@
+{
+  "measurement": "actual official GitHub MCP reads; local DB binding",
+  "remote_writes": 0,
+  "cases": [
+    {
+      "profile": "trusted-itsdangerous",
+      "state": "bound",
+      "binding_id": 2138,
+      "repository": "pallets/itsdangerous",
+      "commit": "1a9b8d1f9968eb248bda69f39d373a6330b692ba",
+      "snapshot_id": 1566,
+      "audit": {
+        "status": "passed",
+        "checks": {
+          "commit_source_issue_verified": true
+        },
+        "repository": "pallets/itsdangerous",
+        "repository_id": 1945034,
+        "actual_commit": "1a9b8d1f9968eb248bda69f39d373a6330b692ba",
+        "measurement": "actual official MCP trusted Python import",
+        "connection": {
+          "endpoint": "https://api.githubcopilot.com/mcp/",
+          "protocol": "2026-07-28",
+          "server_name": "github-mcp-server",
+          "server_version": "github-mcp-server/remote-ce91dbec5909b8b3dac6d86d44703bb8371f26da",
+          "tools": {
+            "get_commit": "f95666ef940c7191c683d26875a1c53074121158a5b8055318d49ac1a3df93a3",
+            "get_file_contents": "9c2f0944bfb2574ca6c795d3c9e9d18157e017f6ef3d54a262b829d147996406",
+            "get_me": "9e2fcd061b033258d31fc0f42563ff024009ee9307c7cb2bb3f9911422010efb",
+            "issue_read": "eee2681d3262d3357b19b0696f0e3308938a5732b689d85dddc41d538fdc1a93",
+            "list_pull_requests": "7b17ee3fc8cc63fd9c96d445eff03251c7cb8681d93e6d25c5f71c0b469213bc",
+            "pull_request_read": "1baa610eb0d11d3d3d7047c33de2fd2c2f9eeddc1dd10216be77587198fe5c93",
+            "search_repositories": "6cc54b7ffaf8d45b71eecf4e74dcf43f0d99667a1f55e470ec39c42167adff79"
+          },
+          "readonly": true
+        },
+        "baseline_tree_sha": "288fceb1735cf3154d363263954e08bfc87e220a",
+        "profile_hash": "46cfbd1e4922827666d5b18b5eb8676630a160379a6a126109864fd4ab5bf43a",
+        "issues": [
+          {
+            "case": "trusted-itsdangerous",
+            "number": 126,
+            "url": "https://github.com/pallets/itsdangerous/issues/126",
+            "body_present": true,
+            "body_sha256": "4e8257e703f00cfd4a48e969175df79cfd2a9cf30e868ced75f3935605e4e404",
+            "matches_frozen_contract": true
+          }
+        ]
+      }
+    },
+    {
+      "profile": "trusted-more-itertools",
+      "state": "bound",
+      "binding_id": 2140,
+      "repository": "more-itertools/more-itertools",
+      "commit": "64be96ceb2a6e836f76f069f4a96d2394d59fd0c",
+      "snapshot_id": 1568,
+      "audit": {
+        "status": "passed",
+        "checks": {
+          "commit_source_issue_verified": true
+        },
+        "repository": "more-itertools/more-itertools",
+        "repository_id": 4144530,
+        "actual_commit": "64be96ceb2a6e836f76f069f4a96d2394d59fd0c",
+        "measurement": "actual official MCP trusted Python import",
+        "connection": {
+          "endpoint": "https://api.githubcopilot.com/mcp/",
+          "protocol": "2026-07-28",
+          "server_name": "github-mcp-server",
+          "server_version": "github-mcp-server/remote-ce91dbec5909b8b3dac6d86d44703bb8371f26da",
+          "tools": {
+            "get_commit": "f95666ef940c7191c683d26875a1c53074121158a5b8055318d49ac1a3df93a3",
+            "get_file_contents": "9c2f0944bfb2574ca6c795d3c9e9d18157e017f6ef3d54a262b829d147996406",
+            "get_me": "9e2fcd061b033258d31fc0f42563ff024009ee9307c7cb2bb3f9911422010efb",
+            "issue_read": "eee2681d3262d3357b19b0696f0e3308938a5732b689d85dddc41d538fdc1a93",
+            "list_pull_requests": "7b17ee3fc8cc63fd9c96d445eff03251c7cb8681d93e6d25c5f71c0b469213bc",
+            "pull_request_read": "1baa610eb0d11d3d3d7047c33de2fd2c2f9eeddc1dd10216be77587198fe5c93",
+            "search_repositories": "6cc54b7ffaf8d45b71eecf4e74dcf43f0d99667a1f55e470ec39c42167adff79"
+          },
+          "readonly": true
+        },
+        "baseline_tree_sha": "f7409b66b75d5649b9fc6414114f8035362f9fcf",
+        "profile_hash": "707c0a3bf77d28499a8e8595de73352ae57c3f783edf3f7b1e2e4e0002f37345",
+        "issues": [
+          {
+            "case": "trusted-more-itertools",
+            "number": 1336,
+            "url": "https://github.com/more-itertools/more-itertools/issues/1336",
+            "body_present": true,
+            "body_sha256": "39fcfb1cb8578e0eaa959c814e076b0617ee047da8c633bcd196b95486a999df",
+            "matches_frozen_contract": true
+          }
+        ]
+      }
+    }
+  ]
+}

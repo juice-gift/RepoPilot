@@ -1,0 +1,129 @@
+{
+  "runtime_commit": "ecbc22b18ebfa67e3614e8ed86c448069c3e03c5",
+  "checks": [
+    "private_api_unix_transport_only",
+    "no_api_web_daemon_or_execution_mount",
+    "broker_network_none_nonprivileged_no_application_credentials",
+    "all_services_healthy_before_after_restart",
+    "exact_binding_run_hashes_preserved",
+    "no_owned_test_container_residue"
+  ],
+  "services": {
+    "api": {
+      "image": "sha256:26c04a1521c57a53765990b03f5761e4495cd1ad9b27b588fd4ff250b44cdc8b",
+      "user": "65534:65534",
+      "health": "healthy",
+      "network": "repopilot-broker-acceptance_default",
+      "privileged": false,
+      "mount_targets": [
+        "/policy/profiles.json",
+        "/repositories",
+        "/run/repopilot",
+        "/run/repopilot-api",
+        "/run/secrets/broker_token"
+      ],
+      "published_ports": {}
+    },
+    "web": {
+      "image": "sha256:4690f543bc2abd2358e09233480af529e790ecc095da5a69ef92f7b15fc4fb5c",
+      "user": "65534:65534",
+      "health": "healthy",
+      "network": "repopilot-broker-acceptance_default",
+      "privileged": false,
+      "mount_targets": [
+        "/etc/nginx/repopilot-upstream.conf",
+        "/run/repopilot-api"
+      ],
+      "published_ports": {
+        "8080/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "8082"
+          }
+        ]
+      }
+    },
+    "sandbox-broker": {
+      "image": "sha256:aae41dab7780ef0d787de2527adeea0953309228b055133c4bda71069ed4c507",
+      "user": "65534:0",
+      "health": "healthy",
+      "network": "none",
+      "privileged": false,
+      "mount_targets": [
+        "/execution",
+        "/policy/profiles.json",
+        "/run/repopilot",
+        "/run/secrets/broker_token",
+        "/var/run/docker.sock"
+      ],
+      "published_ports": {},
+      "environment_names": [
+        "BROKER_PROFILE_REGISTRY_SHA256",
+        "BROKER_PROJECT",
+        "BROKER_SANDBOX_IMAGE",
+        "GPG_KEY",
+        "PATH",
+        "PYTHONDONTWRITEBYTECODE",
+        "PYTHONPATH",
+        "PYTHONUNBUFFERED",
+        "PYTHON_SHA256",
+        "PYTHON_VERSION"
+      ]
+    },
+    "database": {
+      "image": "sha256:cf134a767f474095eeba57e0117be8e568e011a63f33fbf252f14c9b760f8e6f",
+      "user": "",
+      "health": "healthy",
+      "network": "repopilot-broker-acceptance_default",
+      "privileged": false,
+      "mount_targets": [
+        "/var/lib/postgresql/data"
+      ],
+      "published_ports": {
+        "5432/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "55433"
+          }
+        ]
+      }
+    }
+  },
+  "persisted": {
+    "bindings": [
+      {
+        "id": 1,
+        "commit_sha": "1a9b8d1f9968eb248bda69f39d373a6330b692ba",
+        "snapshot_id": 1
+      },
+      {
+        "id": 2,
+        "commit_sha": "64be96ceb2a6e836f76f069f4a96d2394d59fd0c",
+        "snapshot_id": 2
+      }
+    ],
+    "runs": [
+      {
+        "id": "1255514a3f38454c8cb32e87e08149b3",
+        "result_hash": "a8c0e2ab90c85164d4a35a838a10fdee073d0dedf2db1ebc3665e0390438f9fc",
+        "state": "completed"
+      },
+      {
+        "id": "196d3be6d1594f7db2c12bfef9b94636",
+        "result_hash": "c7e798263fc1173ea00b8cee3eaeabe7586f737750c315c8c4c85a2718abb496",
+        "state": "completed"
+      },
+      {
+        "id": "9aa8f74eee004159981b93622a5dd05e",
+        "result_hash": "344aebcdf0951b63412380ce0916ed901dd1e7d899c1929672ee31ae4689ba9e",
+        "state": "completed"
+      },
+      {
+        "id": "d9ad417aa9e04dcfbfbece79f9b1dbb6",
+        "result_hash": "c56b6b893802bfa1ef444aec3ff8ee5a9b3534c94e3efe8a5ee4fd8f9a03f21c",
+        "state": "completed"
+      }
+    ]
+  },
+  "remote_writes": 0
+}

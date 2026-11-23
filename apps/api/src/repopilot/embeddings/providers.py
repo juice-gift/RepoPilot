@@ -42,7 +42,7 @@ class OpenAIEmbeddingProvider:
             )
         self.model_name = model_name
         self.dimensions = dimensions
-        self._client = client or OpenAI(api_key=api_key)
+        self._client = client or OpenAI(api_key=api_key, timeout=30, max_retries=0)
 
     def embed(self, texts: Sequence[str]) -> list[list[float]]:
         if not texts:
@@ -81,7 +81,9 @@ class QwenEmbeddingProvider:
             )
         self.model_name = model_name
         self.dimensions = dimensions
-        self._client = client or OpenAI(api_key=api_key, base_url=base_url)
+        self._client = client or OpenAI(
+            api_key=api_key, base_url=base_url, timeout=30, max_retries=0
+        )
 
     def embed(self, texts: Sequence[str]) -> list[list[float]]:
         vectors: list[list[float]] = []

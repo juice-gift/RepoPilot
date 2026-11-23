@@ -10,8 +10,10 @@ from repopilot.config import Settings
 from repopilot.embeddings.providers import create_embedding_provider
 from repopilot.intelligence.service import SnapshotNotFoundError
 from repopilot.rag.generation import GenerationConfigurationError, create_agent_provider
+from repopilot.resolution.broker_client import create_executor
 from repopilot.resolution.models import ResolutionRequest, ResolutionResult
-from repopilot.resolution.sandbox import SandboxError, SandboxExecutor
+from repopilot.resolution.profiles import load_profile
+from repopilot.resolution.sandbox import SandboxError
 from repopilot.resolution.service import resolve_snapshot
 from repopilot.resolution.tools import ResolutionLimits
 from repopilot.resolution.workspace import WorkspaceError
@@ -44,7 +46,12 @@ def resolve(
             session=session,
             baseline=baseline,
             provider=create_agent_provider(settings),
-            executor=SandboxExecutor(settings.resolution_sandbox_image),
+            executor=create_executor(settings),
+            approved_profile=load_profile(
+                payload.profile,
+                registry_path=settings.trusted_profile_registry,
+                registry_digest=settings.trusted_profile_registry_sha256,
+            ),
             limits=ResolutionLimits(
                 context_characters=settings.agent_context_character_limit,
                 model_output_characters=settings.agent_model_output_character_limit,

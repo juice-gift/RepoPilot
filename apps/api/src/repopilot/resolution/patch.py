@@ -102,9 +102,18 @@ def source_diff(before: Mapping[str, str], after: Mapping[str, str]) -> str:
 
 
 class PatchEngine:
-    def __init__(self, workspace: Workspace, editable_paths: frozenset[str]) -> None:
+    def __init__(
+        self,
+        workspace: Workspace,
+        editable_paths: frozenset[str],
+        *,
+        source_evidence_limit: int = 40_000,
+    ) -> None:
+        if not 40_000 <= source_evidence_limit <= 1_000_000:
+            raise PatchError("Invalid approved source evidence limit")
         self.workspace = workspace
         self.editable_paths = editable_paths
+        self.source_evidence_limit = source_evidence_limit
         self.records: list[PatchRecord] = []
 
     def apply(self, args: PatchArguments, *, attempt: int) -> PatchRecord:
@@ -130,7 +139,7 @@ class PatchEngine:
             for p, c in after.items()
             if c != self.workspace.baseline[p]
         )
-        if len(diff) > 40_000 or changed_size > 40_000:
+        if len(diff) > 40_000 or changed_size > self.source_evidence_limit:
             raise PatchError("Cumulative patch evidence exceeds its bound")
         paths = sorted(p for p in before if before[p] != after[p])
         record = PatchRecord(

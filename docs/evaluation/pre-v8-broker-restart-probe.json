@@ -1,0 +1,13 @@
+{
+  "project": "repopilot-broker-acceptance",
+  "request_id": "b8d151ed9f2f42a2961aa02780faca4c",
+  "checks": [
+    "second_broker_process_lock_denied",
+    "active_broker_killed",
+    "restricted_owned_orphan_removed_on_restart",
+    "private_workspace_cleaned",
+    "pending_request_preserved",
+    "exact_retry_denied_409"
+  ],
+  "remote_writes": false
+}

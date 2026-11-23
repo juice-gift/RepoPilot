@@ -21,6 +21,7 @@ from repopilot.db.session import (
     create_database_engine,
     create_database_session_factory,
 )
+from repopilot.diagnostics import RequestDiagnostics, configure_logging
 
 
 def create_app(
@@ -28,6 +29,7 @@ def create_app(
     database_engine: Engine | None = None,
 ) -> FastAPI:
     resolved_settings = settings or Settings()
+    configure_logging()
     resolved_engine = database_engine or create_database_engine(
         resolved_settings.database_url
     )
@@ -43,6 +45,7 @@ def create_app(
 
     app = FastAPI(title="RepoPilot API", lifespan=lifespan)
     app.state.settings = resolved_settings
+    app.add_middleware(RequestDiagnostics)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[resolved_settings.frontend_origin],

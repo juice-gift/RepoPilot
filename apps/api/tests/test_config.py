@@ -76,3 +76,28 @@ def test_settings_reject_non_psycopg_database_url(
 
     with pytest.raises(ValidationError, match=r"postgresql\+psycopg"):
         Settings(_env_file=None)
+
+
+def test_deployment_rejects_implicit_development_defaults() -> None:
+    with pytest.raises(ValidationError, match="Deployment requires explicit settings"):
+        Settings(
+            _env_file=None,
+            environment="deployment",
+            database_url="postgresql+psycopg://user:password@localhost/database",
+        )
+
+
+def test_deployment_requires_explicit_external_model_and_credential(tmp_path) -> None:
+    values = {
+        "environment": "deployment",
+        "database_url": "postgresql+psycopg://user:password@database/database",
+        "frontend_origin": "http://localhost:8080",
+        "repository_allowed_root": tmp_path,
+        "embedding_dimensions": 512,
+        "embedding_provider": "deterministic",
+        "generation_provider": "deterministic",
+    }
+    assert Settings(_env_file=None, **values).environment == "deployment"
+    values["generation_provider"] = "openai"
+    with pytest.raises(ValidationError, match="explicit models and credentials"):
+        Settings(_env_file=None, **values, openai_api_key=None)
